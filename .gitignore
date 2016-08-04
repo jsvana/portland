@@ -3,5 +3,4 @@ cmake/
 bin/*
 build/*
 
-.hg
-.hgignore
+compile_commands.json
