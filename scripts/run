@@ -10,4 +10,4 @@ fi
 
 make
 cd ..
-./build/vania
+./build/becoming_portland

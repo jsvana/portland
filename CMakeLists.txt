@@ -1,9 +1,9 @@
 cmake_minimum_required(VERSION 3.0)
-project(vania)
+project(becoming_portland)
 
 # Use our modified FindSDL2* modules
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${vania_SOURCE_DIR}/cmake")
-set(BIN_DIR ${vania_SOURCE_DIR}/bin)
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${becoming_portland_SOURCE_DIR}/cmake")
+set(BIN_DIR ${becoming_portland_SOURCE_DIR}/bin)
 
 # Bump up warning levels appropriately for clang, gcc & msvc and build in debug mode
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
@@ -31,7 +31,7 @@ include_directories(${SDL2_TTF_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIRS})
 
 add_executable(
-	vania
+	becoming_portland
 
 	src/asset_manager.cpp
 	src/dialog.cpp
@@ -49,6 +49,6 @@ add_executable(
 
 	src/main.cpp
 )
-target_link_libraries(vania ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES})
-install(TARGETS vania RUNTIME DESTINATION ${BIN_DIR})
+target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES})
+install(TARGETS becoming_portland RUNTIME DESTINATION ${BIN_DIR})
 
