@@ -1,12 +1,13 @@
 #!/bin/bash
 
+set -e
+
 cd build
-make
-RET="$?"
-cd ..
-if [ "$RET" = "0" ]; then
-  ./build/vania
-  exit "$?"
-else
-  exit "$RET"
+
+if [[ ! -f ./CMakeCache.txt ]]; then
+  cmake -DCMAKE_BUILD_TYPE=Debug ..
 fi
+
+make
+cd ..
+./build/vania

@@ -61,3 +61,5 @@
 - [x] Snap character to tile below when falling to prevent fall jitter
 
 - [ ] Fix jump jitter when jumping to edge of map (possibly unnecessary)
+
+- [ ] Handle window killing
