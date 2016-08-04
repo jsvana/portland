@@ -147,29 +147,38 @@ int main(int, char **) {
       int w, h;
       SDL_GetWindowSize(window, &w, &h);
 
-      newWindowSize.w = w;
-      newWindowSize.h = h;
+      // The smaller of the two, based on the aspect ratio should be the base
+      // size. Then we can resize the other, based on the aspect ratio.
+      if (w * 9 > h * 16) {
+        newWindowSize.w = h * 16 / 9;
+        newWindowSize.h = h;
+      } else {
+        newWindowSize.w = w;
+        newWindowSize.h = w * 9 / 16;
+      }
+
+      // Half of the difference between the native size and the window size will
+      // give us the size the black bars should be.
+      newWindowSize.x = (w - newWindowSize.w) / 2;
+      newWindowSize.y = (h - newWindowSize.h) / 2;
 
       SDL_DestroyTexture(backBuffer);
       backBuffer = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
                                      SDL_TEXTUREACCESS_TARGET, nativeSize.w,
                                      nativeSize.h);
 
-      SDL_Rect viewPort;
-      SDL_RenderGetViewport(renderer, &viewPort);
-
-      if (viewPort.w != newWindowSize.w || viewPort.h != newWindowSize.h) {
-        SDL_RenderSetViewport(renderer, &newWindowSize);
-      }
-
       resize = false;
     }
+
+    SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
+    SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, backBuffer, &nativeSize, &newWindowSize);
     SDL_RenderPresent(renderer);
     SDL_RenderClear(renderer);
 
     SDL_SetRenderTarget(renderer, backBuffer);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     frames += 1;
