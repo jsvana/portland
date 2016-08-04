@@ -1,4 +1,8 @@
-# TODO
+[index](index.md)
+
+# To-do list
+
+## General
 
 - [x] Proper multiupdate game loop
 
@@ -40,6 +44,10 @@
 
 - [ ] Only render visible parts of map
 
+- [ ] Game console
+
+  - [ ] Run lua code on GameState
+
 ## Code Quality
 
 - [ ] Standardize method decorators (const, noexcept) and argument passing
@@ -54,7 +62,7 @@
 
 - [x] Remove dependence on renderer (make global?)
 
-- [ ] Fix dialog segfault when leaving town
+- [x] Fix dialog segfault when leaving town
 
 - [x] Don't allow restart of jump when character hits something above
 
