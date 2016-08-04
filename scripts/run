@@ -2,12 +2,18 @@
 
 set -e
 
-cd build
+pushd build
 
 if [[ ! -f ./CMakeCache.txt ]]; then
-  cmake -DCMAKE_BUILD_TYPE=Debug ..
+  cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 fi
 
 make
-cd ..
+
+popd
+
+if [[ ! -f ./compile_commands.json ]]; then
+  ln -s ./build/compile_commands.json ./
+fi
+
 ./build/becoming_portland
