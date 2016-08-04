@@ -170,7 +170,7 @@ int main(int, char **) {
       resize = false;
     }
 
-    SDL_SetRenderDrawColor(renderer, 255, 0, 255, 255);
+    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     SDL_RenderCopy(renderer, backBuffer, &nativeSize, &newWindowSize);
@@ -178,7 +178,6 @@ int main(int, char **) {
     SDL_RenderClear(renderer);
 
     SDL_SetRenderTarget(renderer, backBuffer);
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
     SDL_RenderClear(renderer);
 
     frames += 1;
