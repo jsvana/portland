@@ -1,0 +1,10 @@
+{
+    "width": 24,
+    "height": 24,
+    "scale": 0.5,
+    "multi_file": false,
+    "tile": 21,
+    "texture": "../img/oryx16/oryx_16bit_fantasy_creatures_trans.png",
+    "total_frames": 2,
+    "frame_spacing": 20
+}

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd build
+make
+RET="$?"
+cd ..
+if [ "$RET" = "0" ]; then
+  ./build/vania
+  exit "$?"
+else
+  exit "$RET"
+fi
