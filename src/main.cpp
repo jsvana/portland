@@ -123,6 +123,10 @@ int main(int, char **) {
           }
         }
 
+        if (!running) {
+          goto exit;
+        }
+
         screen->handleEvent(event);
       }
 
@@ -183,6 +187,7 @@ int main(int, char **) {
     frames += 1;
   }
 
+exit:
   std::cout << "Thanks for playing!" << std::endl;
 
   AssetManager::destroy();
