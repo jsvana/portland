@@ -1,0 +1,67 @@
+_realname=lua52
+
+pkgname="${MINGW_PACKAGE_PREFIX}-${_realname}"
+pkgver=5.2.4
+pkgrel=1
+pkgdesc="A powerful light-weight programming language designed for extending applications. Version 5.2.x. (mingw-w64)"
+arch=('any')
+url="http://www.lua.org/"
+license=('MIT')
+makedepends=("${MINGW_PACKAGE_PREFIX}-gcc")
+options=('staticlibs' 'strip' 'emptydirs')
+source=($url/ftp/lua-$pkgver.tar.gz lua52.pc)
+md5sums=('SKIP' 'SKIP')
+
+prepare() {
+  cd lua-$pkgver
+
+  sed "s/%VER%/${pkgver%.*}/g;s/%REL%/$pkgver/g" ../lua52.pc > lua52.pc
+  sed -r -e '/^LUA_(SO|A|T)=/ s/lua/lua5.2/' \
+    -e '/^LUAC_T=/ s/luac/luac5.2/' \
+    -e 's/lua.exe/lua5.2.exe/' \
+    -e 's/luac.exe/luac5.2.exe/' \
+    -e 's/luac.exe/luac5.2.exe/' \
+    -i src/Makefile
+}
+
+build() {
+  cd ${srcdir}/lua-${pkgver}
+
+  make -j1 \
+    AR="ar rcu" \
+    RANLIB="ranlib" \
+    STRIP="strip" \
+    CC="${MINGW_CHOST}-gcc" \
+    INSTALL_TOP="${pkgdir}${MINGW_PREFIX}" \
+    INSTALL_DATA='cp -d' \
+    INSTALL_INC="${pkgdir}${MINGW_PREFIX}"/include/lua5.2 \
+    INSTALL_MAN="${pkgdir}${MINGW_PREFIX}"/share/man/man1 \
+    TO_BIN="lua5.2.exe luac5.2.exe lua52.dll" \
+    TO_LIB="liblua5.2.a" \
+    mingw
+}
+
+package(){
+  cd lua-${pkgver}
+
+  make -j1 \
+    AR="ar rcu" \
+    RANLIB="ranlib" \
+    STRIP="strip" \
+    CC="${MINGW_CHOST}-gcc" \
+    INSTALL_TOP="${pkgdir}${MINGW_PREFIX}" \
+    INSTALL_DATA='cp -d' \
+    INSTALL_INC="${pkgdir}${MINGW_PREFIX}"/include/lua5.2 \
+    INSTALL_MAN="${pkgdir}${MINGW_PREFIX}"/share/man/man1 \
+    TO_BIN="lua5.2.exe luac5.2.exe lua52.dll" \
+    TO_LIB="liblua5.2.a" \
+    mingw install
+
+  install -Dm644 lua52.pc ${pkgdir}${MINGW_PREFIX}/lib/pkgconfig/$_realname.pc
+  install -d "${pkgdir}${MINGW_PREFIX}/share/doc/$_realname"
+  install -m644 doc/*.{gif,png,css,html} "${pkgdir}${MINGW_PREFIX}"/share/doc/${_realname}
+
+  cd "${pkgdir}${MINGW_PREFIX}"/share/man/man1
+  mv lua.1 lua5.2.4
+  mv luac.1 luac5.2.4
+}
