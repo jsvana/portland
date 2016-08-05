@@ -1,8 +1,12 @@
 cmake/
 
+# Built stuff
 bin/*
 build/*
 
+# Editor things
 compile_commands.json
-
 .vscode
+
+# Vendor junk
+vendor/*/*
