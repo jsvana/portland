@@ -68,6 +68,23 @@ bool Sprite::load(const std::string &path) {
   return true;
 }
 
+void Sprite::updateVelocity() {
+  velocityY_ += GRAVITY;
+
+  // Necessary to prevent jumping after initiating a fall
+  jumping_ = true;
+}
+
+void Sprite::startJump(float magnitudePercent) {
+  velocityY_ = (int)((float)STARTING_JUMP_VELOCITY * magnitudePercent);
+  jumping_ = true;
+}
+
+void Sprite::zeroVelocity(bool stopJump) {
+  velocityY_ = 0;
+  jumping_ = !stopJump;
+}
+
 void Sprite::update(unsigned long ticks) {
   if (ticks - lastTicks_ >= FRAME_TICKS_INTERVAL) {
     int limit = textures_.size();

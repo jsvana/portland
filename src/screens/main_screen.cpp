@@ -93,8 +93,8 @@ bool MainScreen::update(unsigned long ticks) {
     }
   }
 
-  if (shouldJump && !GameState::heroJumping()) {
-    GameState::startHeroJump(jumpHoldDuration_ / MAX_JUMP_HOLD_DURATION);
+  if (shouldJump && !GameState::hero()->jumping()) {
+    GameState::hero()->startJump(jumpHoldDuration_ / MAX_JUMP_HOLD_DURATION);
   }
 
   if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]) {
@@ -152,17 +152,17 @@ bool MainScreen::update(unsigned long ticks) {
   }
   if (GameState::positionWalkable(dim)) {
     if (GameState::map()->isLadder(dim)) {
-      GameState::zeroHeroVelocity(/*stopJump = */true);
+      GameState::hero()->zeroVelocity(/*stopJump = */true);
     } else {
       // Falling
-      GameState::updateHeroVelocity();
-      Point jumpDelta(0, GameState::heroVelocity());
+      GameState::hero()->updateVelocity();
+      Point jumpDelta(0, GameState::hero()->velocity());
       if (!fixMovement(dim, jumpDelta)) {
         bool stopJump = true;
         if (jumpDelta.y < 0) {
           stopJump = false;
         }
-        GameState::zeroHeroVelocity(stopJump);
+        GameState::hero()->zeroVelocity(stopJump);
 
         if (stopJump) {
           dim = GameState::map()->snapRectToTileBelow(dim);

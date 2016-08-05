@@ -63,39 +63,6 @@ Sprite *hero();
 int heroMoveSpeed();
 
 /**
- * Gets the hero's vertical velocity
- *
- * @return Hero's vertical velocity
- */
-int heroVelocity();
-
-/**
- * Updates the vertical velocity with the gravity constant
- */
-void updateHeroVelocity();
-
-/**
- * Initiates jump by setting vertical velocity
- *
- * @param magnitudePercent Percentage of total jump to start
- */
-void startHeroJump(float magnitudePercent);
-
-/**
- * Clears out falling velocity
- *
- * @param stopJump Whether or not jump should stop
- */
-void zeroHeroVelocity(bool stopJump);
-
-/**
- * Gets whether or not hero is jumping
- *
- * @return Whether or not hero is jumping
- */
-bool heroJumping();
-
-/**
  * Increments the internal sprite ID counter and returns the previous
  * value
  *

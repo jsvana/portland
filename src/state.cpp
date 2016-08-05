@@ -71,27 +71,6 @@ void setHeroMoveSpeed(int speed) { moveSpeed_ = speed; }
 
 int heroMoveSpeed() { return moveSpeed_; }
 
-int heroVelocity() { return velocityY_; }
-
-void updateHeroVelocity() {
-  velocityY_ += GRAVITY;
-
-  // Necessary to prevent jumping after initiating a fall
-  jumping_ = true;
-}
-
-void startHeroJump(float magnitudePercent) {
-  velocityY_ = (int)((float)STARTING_JUMP_VELOCITY * magnitudePercent);
-  jumping_ = true;
-}
-
-void zeroHeroVelocity(bool stopJump) {
-  velocityY_ = 0;
-  jumping_ = !stopJump;
-}
-
-bool heroJumping() { return jumping_; }
-
 unsigned int allocateSpriteId() {
   unsigned int spriteId = nextSpriteId_;
   nextSpriteId_ += 1;

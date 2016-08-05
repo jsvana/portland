@@ -20,6 +20,9 @@ enum SpriteDirection {
  */
 class Sprite {
  private:
+  const int GRAVITY = 2;
+  const int STARTING_JUMP_VELOCITY = -15;
+
   Rect dimensions_;
   int totalFrames_ = 0;
   int tile_;
@@ -31,6 +34,9 @@ class Sprite {
 
   int hp_;
   int maxHp_;
+
+  bool jumping_ = false;
+  int velocityY_ = 0;
 
   // Ticks at last frame transition
   unsigned long lastTicks_ = 0;
@@ -210,6 +216,39 @@ class Sprite {
    * @param tile New spritesheet tile for sprite
    */
   void setTile(int tile) { tile_ = tile; }
+
+  /**
+   * Gets the sprite's vertical velocity
+   *
+   * @return Sprite's vertical velocity
+   */
+  int velocity() { return velocityY_; }
+
+  /**
+   * Updates the vertical velocity with the gravity constant
+   */
+  void updateVelocity();
+
+  /**
+   * Initiates jump by setting vertical velocity
+   *
+   * @param magnitudePercent Percentage of total jump to start
+   */
+  void startJump(float magnitudePercent);
+
+  /**
+   * Clears out falling velocity
+   *
+   * @param stopJump Whether or not jump should stop
+   */
+  void zeroVelocity(bool stopJump);
+
+  /**
+   * Gets whether or not sprite is jumping
+   *
+   * @return Whether or not sprite is jumping
+   */
+  bool jumping() { return jumping_; }
 
   /**
    * Animates sprite
