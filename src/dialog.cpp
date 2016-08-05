@@ -91,7 +91,7 @@ void Dialog::reflowText() {
 
   // Show all lines that should be visible
   unsigned int upperBound =
-      std::min<int>(lines_.size() - lineIndex_ + 1, lineIndex_ + VISIBLE_LINES);
+      std::min<int>(lines_.size() - lineIndex_, lineIndex_ + VISIBLE_LINES);
   for (unsigned int i = lineIndex_; i < upperBound; i++) {
     lines_[i]->show();
   }
