@@ -70,4 +70,4 @@
 
 - [ ] Fix jump jitter when jumping to edge of map (possibly unnecessary)
 
-- [ ] Handle window killing
+- [x] Handle window killing

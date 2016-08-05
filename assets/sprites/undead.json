@@ -1,0 +1,11 @@
+{
+    "width": 16,
+    "height": 16,
+    "scale": 1,
+    "multi_file": true,
+    "tile": 0,
+    "frames": [
+        "../img/dawnlike/Characters/Undead0.png",
+        "../img/dawnlike/Characters/Undead1.png"
+    ]
+}

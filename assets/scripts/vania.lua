@@ -12,6 +12,9 @@ function init()
   gameSetCharacterMaxHp(100)
 
   gameRegisterTileEvent(9, 6, "showSign")
+
+  local npc = helpers.Npc("assets/sprites/undead.json", 0, 1, 1)
+  helpers.npcs:append(npc)
 end
 
 readSign = false
