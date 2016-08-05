@@ -119,40 +119,25 @@ void runTileEvent() {
   clearTileEvent(tileNumber);
 }
 
-bool positionWalkable(Rect dim, unsigned int entityId) {
+bool positionWalkable(Sprite *sprite, Rect dim) {
   if (!map()->positionWalkable(dim)) {
     return false;
   }
 
   // Check sprite walkability
-  for (auto &sprite : sprites()) {
-    if (sprite.first == entityId) {
+  for (auto &s : sprites()) {
+    if (s.first == sprite->id) {
       continue;
     }
-    Rect otherDim = sprite.second->getDimensions();
+    Rect otherDim = s.second->getDimensions();
     if (!(dim.x > otherDim.x + otherDim.w || dim.x + dim.w < otherDim.x ||
           dim.y > otherDim.y + otherDim.h || dim.y + dim.h < otherDim.y)) {
       return false;
     }
   }
 
-  Rect otherDim = hero_->getDimensions();
-  if (!(dim.x > otherDim.x + otherDim.w || dim.x + dim.w < otherDim.x ||
-        dim.y > otherDim.y + otherDim.h || dim.y + dim.h < otherDim.y)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool positionWalkable(Rect dim) {
-  if (!map()->positionWalkable(dim)) {
-    return false;
-  }
-
-  // Check sprite walkability
-  for (auto &sprite : sprites()) {
-    Rect otherDim = sprite.second->getDimensions();
+  if (sprite != hero_) {
+    Rect otherDim = hero_->getDimensions();
     if (!(dim.x > otherDim.x + otherDim.w || dim.x + dim.w < otherDim.x ||
           dim.y > otherDim.y + otherDim.h || dim.y + dim.h < otherDim.y)) {
       return false;
@@ -250,7 +235,7 @@ bool moveNpc(unsigned int npcId, int dx, int dy) {
   auto pos = npc->getDimensions();
   pos.x += dx;
   pos.y += dy;
-  if (positionWalkable(pos, npcId)) {
+  if (positionWalkable(npc, pos)) {
     npc->setDimensions(pos);
     return true;
   } else {

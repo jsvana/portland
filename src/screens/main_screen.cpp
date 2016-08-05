@@ -27,20 +27,11 @@ bool MainScreen::fixMovement(Sprite *sprite, Point moveDelta) {
   Rect dim = sprite->getDimensions();
   Rect oldDim = dim;
   dim.move(moveDelta.x, moveDelta.y);
-  if (sprite == GameState::hero()) {
-    if (!GameState::positionWalkable(dim)) {
-      dim.move(-moveDelta.x, 0);
-    }
-    if (!GameState::positionWalkable(dim)) {
-      dim.move(moveDelta.x, -moveDelta.y);
-    }
-  } else {
-    if (!GameState::positionWalkable(dim, sprite->id)) {
-      dim.move(-moveDelta.x, 0);
-    }
-    if (!GameState::positionWalkable(dim, sprite->id)) {
-      dim.move(moveDelta.x, -moveDelta.y);
-    }
+  if (!GameState::positionWalkable(sprite, dim)) {
+    dim.move(-moveDelta.x, 0);
+  }
+  if (!GameState::positionWalkable(sprite, dim)) {
+    dim.move(moveDelta.x, -moveDelta.y);
   }
   sprite->setDimensions(dim);
   return dim != oldDim;
@@ -49,7 +40,7 @@ bool MainScreen::fixMovement(Sprite *sprite, Point moveDelta) {
 Rect MainScreen::updateGravity(Sprite *sprite, Point &moveDelta) {
   Rect dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
-    sprite->zeroVelocity(/*stopJump = */true);
+    sprite->zeroVelocity(/*stopJump = */ true);
   } else {
     // Falling
     sprite->updateVelocity();
@@ -79,9 +70,9 @@ bool MainScreen::update(unsigned long ticks) {
 
   GameState::map()->update(ticks);
   GameState::hero()->update(ticks);
-	for (auto &sprite : GameState::sprites()) {
-		sprite.second->update(ticks);
-	}
+  for (auto &sprite : GameState::sprites()) {
+    sprite.second->update(ticks);
+  }
   GameState::lua()["update"]();
 
   auto state = SDL_GetKeyboardState(nullptr);
@@ -107,7 +98,8 @@ bool MainScreen::update(unsigned long ticks) {
   }
 
   bool shouldJump = false;
-  if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP] || state[SDL_SCANCODE_SPACE]) {
+  if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP] ||
+      state[SDL_SCANCODE_SPACE]) {
     if (GameState::map()->isLadder(GameState::hero()->getDimensions())) {
       moveDelta.y -= GameState::heroMoveSpeed();
     } else if (jumpHeld_) {
@@ -123,7 +115,8 @@ bool MainScreen::update(unsigned long ticks) {
     }
   }
 
-  if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_UP] && !state[SDL_SCANCODE_SPACE]) {
+  if (!state[SDL_SCANCODE_W] && !state[SDL_SCANCODE_UP] &&
+      !state[SDL_SCANCODE_SPACE]) {
     if (jumpHeld_) {
       shouldJump = true;
       jumpHeld_ = false;
@@ -160,7 +153,8 @@ bool MainScreen::update(unsigned long ticks) {
 
   // Check for interactions
   if (state[SDL_SCANCODE_SPACE]) {
-    Point interactionPoint = GameState::map()->pixelToMap(GameState::hero()->getPosition());
+    Point interactionPoint =
+        GameState::map()->pixelToMap(GameState::hero()->getPosition());
     SpriteDirection dir = GameState::hero()->getDirection();
     if (dir == SPRITE_LEFT) {
       interactionPoint.x -= 1;
@@ -174,7 +168,8 @@ bool MainScreen::update(unsigned long ticks) {
 
     // TODO(jsvana): should probably use a quadtree here
     for (auto &sprite : GameState::sprites()) {
-      auto spritePos = GameState::map()->pixelToMap(sprite.second->getPosition());
+      auto spritePos =
+          GameState::map()->pixelToMap(sprite.second->getPosition());
       if (spritePos == interactionPoint && sprite.second->callbackFunc != "") {
         GameState::lua()[sprite.second->callbackFunc.c_str()](sprite.first);
         break;
@@ -189,7 +184,7 @@ bool MainScreen::update(unsigned long ticks) {
 
   Rect dim = updateGravity(GameState::hero(), moveDelta);
 
-  if (GameState::positionWalkable(dim)) {
+  if (GameState::positionWalkable(GameState::hero(), dim)) {
     GameState::hero()->setDimensions(dim);
 
     GameState::runTileEvent();
@@ -197,19 +192,25 @@ bool MainScreen::update(unsigned long ticks) {
     // Scrolling
     Point mapPos = GameState::map()->getPosition();
     Point cameraPad = cameraPadding();
-    if ((moveDelta.x > 0 && dim.x + dim.w - GameState::camera().x + cameraPad.x >= mapPos.x + width_) ||
-        (moveDelta.x < 0 && dim.x - GameState::camera().x - cameraPad.x < mapPos.x)) {
+    if ((moveDelta.x > 0 &&
+         dim.x + dim.w - GameState::camera().x + cameraPad.x >=
+             mapPos.x + width_) ||
+        (moveDelta.x < 0 &&
+         dim.x - GameState::camera().x - cameraPad.x < mapPos.x)) {
       GameState::camera().move(moveDelta.x, 0);
     }
-    if ((moveDelta.y > 0 && dim.y + dim.h - GameState::camera().y + cameraPad.y >= mapPos.y + height_) ||
-        (moveDelta.y < 0 && dim.y - GameState::camera().y - cameraPad.y < mapPos.y)) {
+    if ((moveDelta.y > 0 &&
+         dim.y + dim.h - GameState::camera().y + cameraPad.y >=
+             mapPos.y + height_) ||
+        (moveDelta.y < 0 &&
+         dim.y - GameState::camera().y - cameraPad.y < mapPos.y)) {
       GameState::camera().move(0, moveDelta.y);
     }
   }
 
   for (auto &sprite : GameState::sprites()) {
     Rect dim = updateGravity(sprite.second);
-    if (GameState::positionWalkable(dim, sprite.first)) {
+    if (GameState::positionWalkable(sprite.second, dim)) {
       sprite.second->setDimensions(dim);
     }
   }
@@ -220,8 +221,8 @@ bool MainScreen::update(unsigned long ticks) {
 void MainScreen::render(float) {
   GameState::map()->render(GameState::camera());
   GameState::hero()->render(GameState::camera());
-	for (const auto &sprite : GameState::sprites()) {
-		sprite.second->render(GameState::camera());
-	}
+  for (const auto &sprite : GameState::sprites()) {
+    sprite.second->render(GameState::camera());
+  }
   DialogManager::render();
 }

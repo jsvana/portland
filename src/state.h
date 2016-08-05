@@ -129,19 +129,11 @@ void clearTileEvents();
 /**
  * Checks if a position is walkable by a given entity ID
  *
- * @param dim Rectangle to check
- * @param entityId ID of moving entity
- * @return Whether position is walkable
- */
-bool positionWalkable(Rect dim, unsigned int entityId);
-
-/**
- * Checks if a position is walkable by the character
- *
+ * @param sprite Moving entity
  * @param dim Rectangle to check
  * @return Whether position is walkable
  */
-bool positionWalkable(Rect dim);
+bool positionWalkable(Sprite *sprite, Rect dim);
 
 /**
  * Checks for an event on the character's current tile, runs the event, and
