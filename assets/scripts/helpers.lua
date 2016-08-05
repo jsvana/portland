@@ -60,6 +60,10 @@ function Npc:heal(amount)
   gameHealNpc(self.id, amount)
 end
 
+function Npc:jump(magnitude)
+  gameJumpNpc(self.id, magnitude)
+end
+
 function Npc:setUpdate(update)
   self.updateMethod = update
 end

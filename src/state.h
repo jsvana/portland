@@ -63,39 +63,6 @@ Sprite *hero();
 int heroMoveSpeed();
 
 /**
- * Gets the hero's vertical velocity
- *
- * @return Hero's vertical velocity
- */
-int heroVelocity();
-
-/**
- * Updates the vertical velocity with the gravity constant
- */
-void updateHeroVelocity();
-
-/**
- * Initiates jump by setting vertical velocity
- *
- * @param magnitudePercent Percentage of total jump to start
- */
-void startHeroJump(float magnitudePercent);
-
-/**
- * Clears out falling velocity
- *
- * @param stopJump Whether or not jump should stop
- */
-void zeroHeroVelocity(bool stopJump);
-
-/**
- * Gets whether or not hero is jumping
- *
- * @return Whether or not hero is jumping
- */
-bool heroJumping();
-
-/**
  * Increments the internal sprite ID counter and returns the previous
  * value
  *
@@ -305,6 +272,15 @@ bool damageNpc(unsigned int npcId, int amount);
  * @return Whether the operation is successful
  */
 bool healNpc(unsigned int npcId, int amount);
+
+/**
+ * Makes an NPC jump
+ *
+ * @param npcId ID of NPC to jump
+ * @param magnitude Magnitude of the jump, from 0 to 100
+ * @return Whether the operation is successful
+ */
+bool jumpNpc(unsigned int npcId, int magnitude);
 
 /**
  * Queues a dialog to be shown

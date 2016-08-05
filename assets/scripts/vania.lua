@@ -13,7 +13,7 @@ function init()
 
   gameRegisterTileEvent(9, 6, "showSign")
 
-  local npc = helpers.Npc("assets/sprites/undead.json", 0, 1, 1)
+  local npc = helpers.Npc("assets/sprites/undead.json", 0, 3, 1)
   helpers.npcs:append(npc)
 end
 
@@ -35,6 +35,7 @@ function update()
       if npc.updateMethod then
         npc:update(ticks)
       end
+      npc:jump(100)
     end)
   end
 end

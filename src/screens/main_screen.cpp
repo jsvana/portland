@@ -19,21 +19,58 @@ MainScreen::MainScreen(int width, int height) : Screen(width, height) {
   // Load the game script
   GameState::lua().Load("assets/scripts/vania.lua");
   GameState::lua()["init"]();
-
 }
 
 void MainScreen::handleEvent(const SDL_Event &) {}
 
-bool MainScreen::fixMovement(Rect &dim, Point moveDelta) {
+bool MainScreen::fixMovement(Sprite *sprite, Point moveDelta) {
+  Rect dim = sprite->getDimensions();
   Rect oldDim = dim;
   dim.move(moveDelta.x, moveDelta.y);
-  if (!GameState::positionWalkable(dim)) {
-    dim.move(-moveDelta.x, 0);
+  if (sprite == GameState::hero()) {
+    if (!GameState::positionWalkable(dim)) {
+      dim.move(-moveDelta.x, 0);
+    }
+    if (!GameState::positionWalkable(dim)) {
+      dim.move(moveDelta.x, -moveDelta.y);
+    }
+  } else {
+    if (!GameState::positionWalkable(dim, sprite->id)) {
+      dim.move(-moveDelta.x, 0);
+    }
+    if (!GameState::positionWalkable(dim, sprite->id)) {
+      dim.move(moveDelta.x, -moveDelta.y);
+    }
   }
-  if (!GameState::positionWalkable(dim)) {
-    dim.move(moveDelta.x, -moveDelta.y);
-  }
+  sprite->setDimensions(dim);
   return dim != oldDim;
+}
+
+Rect MainScreen::updateGravity(Sprite *sprite, Point &moveDelta) {
+  Rect dim = sprite->getDimensions();
+  if (GameState::map()->isLadder(dim)) {
+    sprite->zeroVelocity(/*stopJump = */true);
+  } else {
+    // Falling
+    sprite->updateVelocity();
+    Point jumpDelta(0, sprite->velocity());
+    bool moved = fixMovement(sprite, jumpDelta);
+    dim = sprite->getDimensions();
+    if (!moved) {
+      bool stopJump = true;
+      if (jumpDelta.y < 0) {
+        stopJump = false;
+      }
+      sprite->zeroVelocity(stopJump);
+
+      if (stopJump) {
+        dim = GameState::map()->snapRectToTileBelow(dim);
+      }
+    } else {
+      moveDelta.move(jumpDelta);
+    }
+  }
+  return dim;
 }
 
 bool MainScreen::update(unsigned long ticks) {
@@ -93,8 +130,8 @@ bool MainScreen::update(unsigned long ticks) {
     }
   }
 
-  if (shouldJump && !GameState::heroJumping()) {
-    GameState::startHeroJump(jumpHoldDuration_ / MAX_JUMP_HOLD_DURATION);
+  if (shouldJump && !GameState::hero()->jumping()) {
+    GameState::hero()->startJump(jumpHoldDuration_ / MAX_JUMP_HOLD_DURATION);
   }
 
   if (state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]) {
@@ -146,32 +183,13 @@ bool MainScreen::update(unsigned long ticks) {
   }
 
   // Walkability check
-  Rect dim = GameState::hero()->getDimensions();
   if (moveDelta.x != 0 || moveDelta.y != 0) {
-    fixMovement(dim, moveDelta);
+    fixMovement(GameState::hero(), moveDelta);
   }
+
+  Rect dim = updateGravity(GameState::hero(), moveDelta);
+
   if (GameState::positionWalkable(dim)) {
-    if (GameState::map()->isLadder(dim)) {
-      GameState::zeroHeroVelocity(/*stopJump = */true);
-    } else {
-      // Falling
-      GameState::updateHeroVelocity();
-      Point jumpDelta(0, GameState::heroVelocity());
-      if (!fixMovement(dim, jumpDelta)) {
-        bool stopJump = true;
-        if (jumpDelta.y < 0) {
-          stopJump = false;
-        }
-        GameState::zeroHeroVelocity(stopJump);
-
-        if (stopJump) {
-          dim = GameState::map()->snapRectToTileBelow(dim);
-        }
-      } else {
-        moveDelta.move(jumpDelta);
-      }
-    }
-
     GameState::hero()->setDimensions(dim);
 
     GameState::runTileEvent();
@@ -186,6 +204,13 @@ bool MainScreen::update(unsigned long ticks) {
     if ((moveDelta.y > 0 && dim.y + dim.h - GameState::camera().y + cameraPad.y >= mapPos.y + height_) ||
         (moveDelta.y < 0 && dim.y - GameState::camera().y - cameraPad.y < mapPos.y)) {
       GameState::camera().move(0, moveDelta.y);
+    }
+  }
+
+  for (auto &sprite : GameState::sprites()) {
+    Rect dim = updateGravity(sprite.second);
+    if (GameState::positionWalkable(dim, sprite.first)) {
+      sprite.second->setDimensions(dim);
     }
   }
 
