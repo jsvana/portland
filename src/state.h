@@ -274,6 +274,15 @@ bool damageNpc(unsigned int npcId, int amount);
 bool healNpc(unsigned int npcId, int amount);
 
 /**
+ * Makes an NPC jump
+ *
+ * @param npcId ID of NPC to jump
+ * @param magnitude Magnitude of the jump, from 0 to 100
+ * @return Whether the operation is successful
+ */
+bool jumpNpc(unsigned int npcId, int magnitude);
+
+/**
  * Queues a dialog to be shown
  *
  * @param message Message to show in dialog

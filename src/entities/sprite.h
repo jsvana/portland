@@ -61,6 +61,8 @@ class Sprite {
   // Name of Lua function to call when sprite is interacted with
   std::string callbackFunc;
 
+  unsigned int id;
+
   Sprite(const std::string &path);
 
   /**

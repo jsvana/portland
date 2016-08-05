@@ -48,17 +48,17 @@ class MainScreen : public Screen {
   }
 
   /**
-   * Take a rect and move it according to moveDelta. If one
+   * Take a sprite and move it according to moveDelta. If one
    * component of the move fails, only use the working one.
    *
    * If (x, y) fails, try (x, 0) and (0, y). If nothing works
    * move becomes a no-op.
    *
-   * @param dim Rectangle to move
-   * @param moveDelta Distance to try to move the rectangle
-   * @return Whether the rectangle was moved
+   * @param sprite Sprite to move
+   * @param moveDelta Distance to try to move the sprite
+   * @return Whether the sprite was moved
    */
-  bool fixMovement(Rect &dim, Point moveDelta);
+  bool fixMovement(Sprite *sprite, Point moveDelta);
 
   /**
    * Takes a sprite and updates its gravity, also updates
@@ -66,8 +66,21 @@ class MainScreen : public Screen {
    *
    * @param sprite Sprite to update
    * @param moveDelta Previous move amount
+   * @return Updated sprite dimensions
    */
-  void updateGravity(Sprite *sprite, Point &moveDelta);
+  Rect updateGravity(Sprite *sprite, Point &moveDelta);
+
+  /**
+   * Helper for updateGravity that passes an initial
+   * movement of (0, 0).
+   *
+   * @param sprite Sprite to update
+   * @return Updated sprite dimensions
+   */
+  Rect updateGravity(Sprite *sprite) {
+    Point moveDelta;
+    return updateGravity(sprite, moveDelta);
+  }
 
  public:
   MainScreen(int width, int height);

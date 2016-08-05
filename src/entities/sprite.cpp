@@ -76,8 +76,10 @@ void Sprite::updateVelocity() {
 }
 
 void Sprite::startJump(float magnitudePercent) {
-  velocityY_ = (int)((float)STARTING_JUMP_VELOCITY * magnitudePercent);
-  jumping_ = true;
+  if (!jumping_) {
+    velocityY_ = (int)((float)STARTING_JUMP_VELOCITY * magnitudePercent);
+    jumping_ = true;
+  }
 }
 
 void Sprite::zeroVelocity(bool stopJump) {

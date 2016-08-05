@@ -40,6 +40,7 @@ void initLuaApi() {
   lua_["gameSetNpcMaxHp"] = &GameState::setNpcMaxHp;
   lua_["gameDamageNpc"] = &GameState::damageNpc;
   lua_["gameHealNpc"] = &GameState::healNpc;
+  lua_["gameJumpNpc"] = &GameState::jumpNpc;
 
   lua_["gameShowDialog"] = &GameState::showDialog;
   lua_["gameAddDialogOption"] = &GameState::addDialogOption;
@@ -223,6 +224,7 @@ unsigned int addNpc(std::string path, int tile, int x, int y) {
   npc->setTile(tile);
 
   unsigned int spriteId = GameState::allocateSpriteId();
+  npc->id = spriteId;
   sprites()[spriteId] = npc;
   return spriteId;
 }
@@ -283,6 +285,21 @@ bool healNpc(unsigned int npcId, int amount) {
     return false;
   }
   iter->second->heal(amount);
+  return true;
+}
+
+bool jumpNpc(unsigned int npcId, int magnitude) {
+  if (magnitude < 0 || magnitude > 100) {
+    std::cerr << "Jump magnitude must be between 0 and 1, inclusive"
+              << std::endl;
+    return false;
+  }
+  auto iter = sprites().find(npcId);
+  if (iter == sprites().end()) {
+    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    return false;
+  }
+  iter->second->startJump((float)magnitude / 100.0);
   return true;
 }
 
