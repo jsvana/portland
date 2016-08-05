@@ -42,6 +42,7 @@ bool Sprite::load(const std::string &path) {
   std::vector<std::string> texturePaths;
   if (multiFile_) {
     texturePaths = spriteData["frames"].get<std::vector<std::string>>();
+    totalFrames_ = (int) texturePaths.size();
   } else {
     texturePaths.push_back(spriteData["texture"].get<std::string>());
     totalFrames_ = spriteData["total_frames"].get<int>();
@@ -70,10 +71,15 @@ bool Sprite::load(const std::string &path) {
 void Sprite::update(unsigned long ticks) {
   if (ticks - lastTicks_ >= FRAME_TICKS_INTERVAL) {
     int limit = textures_.size();
-    if (!multiFile_) {
+    int frameIncrease;
+    if (multiFile_) {
+      limit = totalFrames_;
+      frameIncrease = 1;
+    } else {
       limit = totalFrames_ * frameSpacing_;
+      frameIncrease = frameSpacing_;
     }
-    frame_ = (frame_ + frameSpacing_) % limit;
+    frame_ = (frame_ + frameIncrease) % limit;
     lastTicks_ = ticks;
   }
 }
