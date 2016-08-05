@@ -32,7 +32,9 @@ function update()
 
   if math.fmod(ticks, UPDATE_INTERVAL) then
     helpers.npcs:forEach(function(npc)
-      npc:update(ticks)
+      if npc.updateMethod then
+        npc:update(ticks)
+      end
     end)
   end
 end

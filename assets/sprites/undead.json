@@ -4,6 +4,7 @@
     "scale": 1,
     "multi_file": true,
     "tile": 0,
+    "frame_spacing": 0,
     "frames": [
         "../img/dawnlike/Characters/Undead0.png",
         "../img/dawnlike/Characters/Undead1.png"
