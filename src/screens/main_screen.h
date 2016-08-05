@@ -60,6 +60,15 @@ class MainScreen : public Screen {
    */
   bool fixMovement(Rect &dim, Point moveDelta);
 
+  /**
+   * Takes a sprite and updates its gravity, also updates
+   * a previous move if necessary.
+   *
+   * @param sprite Sprite to update
+   * @param moveDelta Previous move amount
+   */
+  void updateGravity(Sprite *sprite, Point &moveDelta);
+
  public:
   MainScreen(int width, int height);
 

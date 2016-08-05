@@ -36,6 +36,31 @@ bool MainScreen::fixMovement(Rect &dim, Point moveDelta) {
   return dim != oldDim;
 }
 
+void MainScreen::updateGravity(Sprite *sprite, Point &moveDelta) {
+  Rect dim = sprite->getDimensions();
+  if (GameState::map()->isLadder(dim)) {
+    sprite->zeroVelocity(/*stopJump = */true);
+  } else {
+    // Falling
+    sprite->updateVelocity();
+    Point jumpDelta(0, sprite->velocity());
+    if (!fixMovement(dim, jumpDelta)) {
+      bool stopJump = true;
+      if (jumpDelta.y < 0) {
+        stopJump = false;
+      }
+      sprite->zeroVelocity(stopJump);
+
+      if (stopJump) {
+        dim = GameState::map()->snapRectToTileBelow(dim);
+      }
+    } else {
+      moveDelta.move(jumpDelta);
+    }
+  }
+  sprite->setDimensions(dim);
+}
+
 bool MainScreen::update(unsigned long ticks) {
   // Used for getting ticks in Lua
   ticks_ = ticks;
@@ -150,29 +175,10 @@ bool MainScreen::update(unsigned long ticks) {
   if (moveDelta.x != 0 || moveDelta.y != 0) {
     fixMovement(dim, moveDelta);
   }
+  GameState::hero()->setDimensions(dim);
+
   if (GameState::positionWalkable(dim)) {
-    if (GameState::map()->isLadder(dim)) {
-      GameState::hero()->zeroVelocity(/*stopJump = */true);
-    } else {
-      // Falling
-      GameState::hero()->updateVelocity();
-      Point jumpDelta(0, GameState::hero()->velocity());
-      if (!fixMovement(dim, jumpDelta)) {
-        bool stopJump = true;
-        if (jumpDelta.y < 0) {
-          stopJump = false;
-        }
-        GameState::hero()->zeroVelocity(stopJump);
-
-        if (stopJump) {
-          dim = GameState::map()->snapRectToTileBelow(dim);
-        }
-      } else {
-        moveDelta.move(jumpDelta);
-      }
-    }
-
-    GameState::hero()->setDimensions(dim);
+    updateGravity(GameState::hero(), moveDelta);
 
     GameState::runTileEvent();
 
