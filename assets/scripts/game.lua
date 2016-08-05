@@ -1,12 +1,12 @@
 local helpers = require("assets.scripts.helpers")
 
-SPRITE_PATH = "assets/sprites/oryx_sprite.json"
+SPRITE_PATH = "assets/sprites/hero.json"
 HERO_TILE = 21
 UPDATE_INTERVAL = 100
 TILE_DIM = 16
 
 function init()
-  gameLoadMap("assets/maps/metroidvania.json")
+  gameLoadMap("assets/maps/main.json")
   gameLoadCharacter(SPRITE_PATH, HERO_TILE, 1, 6)
   gameSetCharacterMoveSpeed(4)
   gameSetCharacterMaxHp(100)

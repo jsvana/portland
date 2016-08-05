@@ -17,7 +17,7 @@ MainScreen::MainScreen(int width, int height) : Screen(width, height) {
   ticks_ = 0;
 
   // Load the game script
-  GameState::lua().Load("assets/scripts/vania.lua");
+  GameState::lua().Load("assets/scripts/game.lua");
   GameState::lua()["init"]();
 }
 
