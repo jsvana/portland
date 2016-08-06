@@ -129,7 +129,7 @@ namespace GameState {
     clearTileEvent(tileNumber);
   }
 
-  bool positionWalkable(std::shared_ptr<Sprite> sprite, Rect dim) {
+  bool positionWalkable(std::shared_ptr<Sprite> sprite, sf::FloatRect dim) {
     if (!map()->positionWalkable(dim)) {
       return false;
     }
@@ -139,17 +139,21 @@ namespace GameState {
       if (s.first == sprite->id) {
         continue;
       }
-      Rect otherDim = s.second->getDimensions();
-      if (!(dim.x > otherDim.x + otherDim.w || dim.x + dim.w < otherDim.x ||
-            dim.y > otherDim.y + otherDim.h || dim.y + dim.h < otherDim.y)) {
+      auto otherDim = s.second->getDimensions();
+      if (!(dim.left > otherDim.left + otherDim.width ||
+            dim.left + dim.width < otherDim.left ||
+            dim.top > otherDim.top + otherDim.height ||
+            dim.top + dim.height < otherDim.top)) {
         return false;
       }
     }
 
     if (sprite != hero_) {
-      Rect otherDim = hero_->getDimensions();
-      if (!(dim.x > otherDim.x + otherDim.w || dim.x + dim.w < otherDim.x ||
-            dim.y > otherDim.y + otherDim.h || dim.y + dim.h < otherDim.y)) {
+      auto otherDim = hero_->getDimensions();
+      if (!(dim.left > otherDim.left + otherDim.width ||
+            dim.left + dim.width < otherDim.left ||
+            dim.top > otherDim.top + otherDim.height ||
+            dim.top + dim.height < otherDim.top)) {
         return false;
       }
     }
@@ -251,8 +255,8 @@ namespace GameState {
     }
     auto npc = iter->second;
     auto pos = npc->getDimensions();
-    pos.x += dx;
-    pos.y += dy;
+    pos.left += dx;
+    pos.top += dy;
     if (positionWalkable(npc, pos)) {
       npc->setDimensions(pos);
       return true;

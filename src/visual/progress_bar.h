@@ -11,8 +11,8 @@ class ProgressBar {
   float max_ = 0;
   float current_ = 0;
 
-  Rect dimensions_;
-  Rect fillDimensions_;
+  sf::FloatRect dimensions_;
+  sf::FloatRect fillDimensions_;
 
   /**
    * Gets the current progress bar fill percentage,
@@ -32,7 +32,7 @@ class ProgressBar {
    */
   void updateFillDimensions() {
     fillDimensions_ = dimensions_;
-    fillDimensions_.w *= fillPercentage();
+    fillDimensions_.width *= fillPercentage();
   }
 
  public:
@@ -72,14 +72,14 @@ class ProgressBar {
    *
    * @return dim Dimensions of progress bar
    */
-  Rect getDimensions() { return dimensions_; }
+  sf::FloatRect getDimensions() { return dimensions_; }
 
   /**
    * Sets the progress bar dimensions
    *
    * @param dim New dimensions of progress bar
    */
-  void setDimensions(Rect dim) {
+  void setDimensions(sf::FloatRect dim) {
     dimensions_ = dim;
     updateFillDimensions();
   }
@@ -93,7 +93,7 @@ class ProgressBar {
    * @param h New height of progress bar
    */
   void setDimensions(int x, int y, int w, int h) {
-    Rect dim(x + PADDING, y + PADDING, w - 2 * PADDING, h - 2 * PADDING);
+    sf::FloatRect dim(x + PADDING, y + PADDING, w - 2 * PADDING, h - 2 * PADDING);
     setDimensions(dim);
   }
 
@@ -103,7 +103,7 @@ class ProgressBar {
    * @return Progress bar position
    */
   Point getPosition() {
-    Point position(dimensions_.x - PADDING, dimensions_.y - PADDING);
+    Point position(dimensions_.left - PADDING, dimensions_.top - PADDING);
     return position;
   }
 
@@ -121,8 +121,8 @@ class ProgressBar {
    * @param y New y coordinate of progress bar
    */
   void setPosition(int x, int y) {
-    dimensions_.x = x + PADDING;
-    dimensions_.y = y + PADDING;
+    dimensions_.left = x + PADDING;
+    dimensions_.top = y + PADDING;
   }
 
   /**

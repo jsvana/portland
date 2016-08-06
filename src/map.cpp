@@ -94,9 +94,10 @@ std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
   return tiles;
 }
 
-Rect Map::snapRectToTileBelow(Rect dim) {
-  Point bottomLeft = pixelToMap(dim.x, dim.y + dim.h - 1);
-  Point bottomRight = pixelToMap(dim.x + dim.w - 1, dim.y + dim.h - 1);
+sf::FloatRect Map::snapRectToTileBelow(sf::FloatRect dim) {
+  Point bottomLeft = pixelToMap(dim.left, dim.top + dim.height - 1);
+  Point bottomRight =
+      pixelToMap(dim.left + dim.width - 1, dim.top + dim.height - 1);
 
   for (int i = bottomLeft.y; i < mapHeight_; i++) {
     for (int j = bottomLeft.x; j <= bottomRight.x; j++) {
@@ -106,8 +107,8 @@ Rect Map::snapRectToTileBelow(Rect dim) {
           continue;
         }
         Point newPos = mapToPixel(j, i);
-        newPos.y -= dim.h + 1;
-        dim.y = newPos.y;
+        newPos.y -= dim.height + 1;
+        dim.top = newPos.y;
         return dim;
       }
     }
@@ -116,8 +117,8 @@ Rect Map::snapRectToTileBelow(Rect dim) {
   return dim;
 }
 
-bool Map::isLadder(Rect dim) {
-  Point pos = pixelToMap(dim.x, dim.y);
+bool Map::isLadder(sf::FloatRect dim) {
+  Point pos = pixelToMap(dim.left, dim.top);
   for (int i = (int)layers_.size() - 1; i >= 0; i--) {
     unsigned int tile = layers_[i].tileAt(pos.x, pos.y);
     if (tile != 0 && ladder(tile)) {

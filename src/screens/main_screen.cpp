@@ -27,22 +27,24 @@ void MainScreen::handleEvent(sf::Event &event) {
 }
 
 bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
-  Rect dim = sprite->getDimensions();
-  Rect oldDim = dim;
-  dim.move(moveDelta.x, moveDelta.y);
+  auto dim = sprite->getDimensions();
+  auto oldDim = dim;
+  dim.left += moveDelta.x;
+  dim.top += moveDelta.y;
   if (!GameState::positionWalkable(sprite, dim)) {
-    dim.move(-moveDelta.x, 0);
+    dim.left -= moveDelta.x;
   }
   if (!GameState::positionWalkable(sprite, dim)) {
-    dim.move(moveDelta.x, -moveDelta.y);
+    dim.left += moveDelta.x;
+    dim.top -= moveDelta.y;
   }
   sprite->setDimensions(dim);
   return dim != oldDim;
 }
 
-Rect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite,
-                               Point &moveDelta) {
-  Rect dim = sprite->getDimensions();
+sf::FloatRect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite,
+                                        Point &moveDelta) {
+  auto dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);
   } else {
@@ -190,7 +192,7 @@ bool MainScreen::update(sf::Time &time) {
     fixMovement(GameState::hero(), moveDelta);
   }
 
-  Rect dim = updateGravity(GameState::hero(), moveDelta);
+  auto dim = updateGravity(GameState::hero(), moveDelta);
 
   if (GameState::positionWalkable(GameState::hero(), dim)) {
     GameState::hero()->setDimensions(dim);
@@ -199,7 +201,7 @@ bool MainScreen::update(sf::Time &time) {
   }
 
   for (auto &sprite : GameState::sprites()) {
-    Rect dim = updateGravity(sprite.second);
+    auto dim = updateGravity(sprite.second);
     if (GameState::positionWalkable(sprite.second, dim)) {
       // TODO(jsvana): figure out whether or not the sprite
       // collided with another sprite
@@ -219,22 +221,22 @@ void MainScreen::render(sf::RenderTarget &window) {
   auto windowSize = window.getSize();
   auto dim = GameState::hero()->getDimensions();
   int xDiff;
-  xDiff = (dim.x + dim.w - GameState::camera().x + cameraPad.x) -
+  xDiff = (dim.left + dim.width - GameState::camera().x + cameraPad.x) -
           (mapPos.x + windowSize.x);
   if (xDiff > 0) {
     GameState::camera().move(-xDiff, 0);
   }
-  xDiff = (dim.x - GameState::camera().x - cameraPad.x) + mapPos.x;
+  xDiff = (dim.left - GameState::camera().x - cameraPad.x) + mapPos.x;
   if (xDiff < 0) {
     GameState::camera().move(xDiff, 0);
   }
   int yDiff;
-  yDiff = (dim.y + dim.h - GameState::camera().y + cameraPad.y) -
+  yDiff = (dim.top + dim.height - GameState::camera().y + cameraPad.y) -
           (mapPos.y + windowSize.y);
   if (yDiff > 0) {
     GameState::camera().move(0, -yDiff);
   }
-  yDiff = (dim.y - GameState::camera().y - cameraPad.y) + mapPos.y;
+  yDiff = (dim.top - GameState::camera().y - cameraPad.y) + mapPos.y;
   if (yDiff < 0) {
     GameState::camera().move(0, yDiff);
   }

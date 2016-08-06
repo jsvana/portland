@@ -95,8 +95,8 @@ class Map {
    * @param rect Rectangle to check
    * @return Set of hit tiles
    */
-  std::set<unsigned int> hitTiles(Rect rect) {
-    return hitTiles(rect.x, rect.y, rect.w, rect.h);
+  std::set<unsigned int> hitTiles(sf::FloatRect rect) {
+    return hitTiles(rect.left, rect.top, rect.width, rect.height);
   }
 
   /**
@@ -152,7 +152,7 @@ class Map {
    * @param dim Rectangle to test
    * @return Adjusted position
    */
-  Rect snapRectToTileBelow(Rect dim);
+  sf::FloatRect snapRectToTileBelow(sf::FloatRect dim);
 
   /**
    * Gets map position
@@ -246,8 +246,8 @@ class Map {
    * @param rect Rectangle to check
    * @return Whether the rect is walkable
    */
-  bool positionWalkable(Rect rect) {
-    return positionWalkable(rect.x, rect.y, rect.w, rect.h);
+  bool positionWalkable(sf::FloatRect rect) {
+    return positionWalkable(rect.left, rect.top, rect.width, rect.height);
   }
 
   /**
@@ -257,7 +257,7 @@ class Map {
    * @param rect Rectangle to check
    * @return Whether the rect is a ladder
    */
-  bool isLadder(Rect rect);
+  bool isLadder(sf::FloatRect rect);
 
   /**
    * Gets width of map in pixels

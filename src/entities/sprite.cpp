@@ -26,8 +26,8 @@ bool Sprite::load(const std::string &path) {
 
   auto spriteData = nlohmann::json::parse(fileData.str());
 
-  dimensions_.w = spriteData["width"].get<int>();
-  dimensions_.h = spriteData["height"].get<int>();
+  dimensions_.width = spriteData["width"].get<int>();
+  dimensions_.height = spriteData["height"].get<int>();
   tile_ = spriteData["tile"].get<int>();
   multiFile_ = spriteData["multi_file"].get<bool>();
   scale_ = spriteData["scale"].get<float>();
@@ -96,9 +96,9 @@ void Sprite::render(sf::RenderTarget &window, Point cameraPos) {
   if (!multiFile_) {
     tile += frame_;
   }
-  sf::IntRect source((tile % columns_) * dimensions_.w,
-                     (tile / columns_) * dimensions_.h, dimensions_.w,
-                     dimensions_.h);
+  sf::IntRect source((tile % columns_) * dimensions_.width,
+                     (tile / columns_) * dimensions_.height, dimensions_.width,
+                     dimensions_.height);
 
   sf::Texture tex;
   if (multiFile_) {
@@ -108,10 +108,11 @@ void Sprite::render(sf::RenderTarget &window, Point cameraPos) {
   }
   sprite_.setTexture(tex);
   if (visualDirection_ == SPRITE_RIGHT) {
-    source.left += dimensions_.w;
-    source.width = -dimensions_.w;
+    source.left += dimensions_.width;
+    source.width = -dimensions_.width;
   }
   sprite_.setTextureRect(source);
-  sprite_.setPosition(dimensions_.x - cameraPos.x, dimensions_.y - cameraPos.y);
+  sprite_.setPosition(dimensions_.left - cameraPos.x,
+                      dimensions_.top - cameraPos.y);
   window.draw(sprite_);
 }

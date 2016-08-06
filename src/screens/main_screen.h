@@ -66,7 +66,7 @@ class MainScreen : public Screen {
    * @param moveDelta Previous move amount
    * @return Updated sprite dimensions
    */
-  Rect updateGravity(std::shared_ptr<Sprite> sprite, Point &moveDelta);
+  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite, Point &moveDelta);
 
   /**
    * Helper for updateGravity that passes an initial
@@ -75,7 +75,7 @@ class MainScreen : public Screen {
    * @param sprite Sprite to update
    * @return Updated sprite dimensions
    */
-  Rect updateGravity(std::shared_ptr<Sprite> sprite) {
+  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite) {
     Point moveDelta;
     return updateGravity(sprite, moveDelta);
   }

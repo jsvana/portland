@@ -134,7 +134,7 @@ namespace GameState {
    * @param dim Rectangle to check
    * @return Whether position is walkable
    */
-  bool positionWalkable(std::shared_ptr<Sprite> sprite, Rect dim);
+  bool positionWalkable(std::shared_ptr<Sprite> sprite, sf::FloatRect dim);
 
   /**
    * Checks for an event on the character's current tile, runs the event, and

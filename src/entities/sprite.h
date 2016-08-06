@@ -20,10 +20,10 @@ enum SpriteDirection {
  */
 class Sprite {
  private:
-  const int GRAVITY = 2;
-  const int STARTING_JUMP_VELOCITY = -15;
+  const float GRAVITY = .05;
+  const float STARTING_JUMP_VELOCITY = -15;
 
-  Rect dimensions_;
+  sf::FloatRect dimensions_;
   int totalFrames_ = 0;
   int tile_;
   float scale_;
@@ -37,7 +37,7 @@ class Sprite {
   int maxHp_;
 
   bool jumping_ = false;
-  int velocityY_ = 0;
+  float velocityY_ = 0;
 
   sf::Time time_;
 
@@ -46,7 +46,7 @@ class Sprite {
 
   const unsigned long FRAME_TICKS_INTERVAL = 24;
 
-  Rect textureDimensions_;
+  sf::FloatRect textureDimensions_;
   std::vector<sf::Texture> textures_;
   sf::Sprite sprite_;
 
@@ -74,10 +74,10 @@ class Sprite {
    *
    * @return Scaled sprite dimensions
    */
-  Rect getDimensions() {
-    Rect dim = dimensions_;
-    dim.w = (int)((float)dim.w * scale_);
-    dim.h = (int)((float)dim.h * scale_);
+  sf::FloatRect getDimensions() {
+    sf::FloatRect dim = dimensions_;
+    dim.width = dim.width * scale_;
+    dim.height = dim.height * scale_;
     return dim;
   }
 
@@ -86,9 +86,9 @@ class Sprite {
    *
    * @param dimensions New dimensions of sprite
    */
-  void setDimensions(Rect dimensions) {
-    dimensions.w = (int)((float)dimensions.w / scale_);
-    dimensions.h = (int)((float)dimensions.h / scale_);
+  void setDimensions(sf::FloatRect dimensions) {
+    dimensions.width = dimensions.width / scale_;
+    dimensions.height = dimensions.height / scale_;
     dimensions_ = dimensions;
   }
 
@@ -99,8 +99,8 @@ class Sprite {
    */
   Point getPosition() {
     Point position;
-    position.x = dimensions_.x;
-    position.y = dimensions_.y;
+    position.x = dimensions_.left;
+    position.y = dimensions_.top;
     return position;
   }
 
@@ -111,8 +111,8 @@ class Sprite {
    * @param y New y coordinate of sprite
    */
   void setPosition(int x, int y) {
-    dimensions_.x = x;
-    dimensions_.y = y;
+    dimensions_.left = x;
+    dimensions_.top = y;
   }
 
   /**
@@ -121,8 +121,8 @@ class Sprite {
    * @param position New position of sprite
    */
   void setPosition(Point position) {
-    dimensions_.x = position.x;
-    dimensions_.y = position.y;
+    dimensions_.left = position.x;
+    dimensions_.top = position.y;
   }
 
   /**
@@ -132,8 +132,8 @@ class Sprite {
    * @param dy Distance to move y coordinate
    */
   void move(int dx, int dy) {
-    dimensions_.x += dx;
-    dimensions_.y += dy;
+    dimensions_.left += dx;
+    dimensions_.top += dy;
   }
 
   /**
@@ -205,14 +205,14 @@ class Sprite {
    *
    * @return Scaled width of sprite
    */
-  int width() { return (int)((float)dimensions_.w * scale_); }
+  int width() { return dimensions_.width * scale_; }
 
   /**
    * Gets scaled height of sprite
    *
    * @return Scaled height of sprite
    */
-  int height() { return (int)((float)dimensions_.h * scale_); }
+  int height() { return dimensions_.height * scale_; }
 
   /**
    * Sets sprite's tile in spritesheet
@@ -226,7 +226,7 @@ class Sprite {
    *
    * @return Sprite's vertical velocity
    */
-  int velocity() { return velocityY_; }
+  float velocity() { return velocityY_; }
 
   /**
    * Updates the vertical velocity with the gravity constant
