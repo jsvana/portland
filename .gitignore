@@ -1,5 +1,3 @@
-cmake/
-
 # Built stuff
 bin/*
 build/*
