@@ -186,6 +186,10 @@ namespace Engine {
   }
 
   void cleanup() {
+    while (!screens.empty()) {
+      popScreen();
+    }
+
     AssetManager::destroy();
     if (backBuffer != nullptr) {
       SDL_DestroyTexture(backBuffer);
