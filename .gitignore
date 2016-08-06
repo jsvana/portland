@@ -3,6 +3,9 @@ cmake/
 # Built stuff
 bin/*
 build/*
+.vs/
+Win32/
+becoming_portland.dir/
 
 # Editor things
 compile_commands.json
