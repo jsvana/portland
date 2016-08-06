@@ -1,6 +1,5 @@
 #include "engine.h"
 
-#include "asset_manager.h"
 #include "constants.h"
 #include "state.h"
 #include "util.h"
@@ -19,7 +18,8 @@ namespace Engine {
   sf::RenderWindow window;
 
   bool init() {
-    window.create(sf::VideoMode(2 * SCREEN_WIDTH, 2 * SCREEN_HEIGHT), "Portland");
+    window.create(sf::VideoMode(2 * SCREEN_WIDTH, 2 * SCREEN_HEIGHT),
+                  "Portland");
 
     GameState::initLuaApi();
 
@@ -58,7 +58,9 @@ namespace Engine {
     }
   }
 
-  void pushScreen(Screen *screen) { pushScreen(std::shared_ptr<Screen>(screen)); }
+  void pushScreen(Screen *screen) {
+    pushScreen(std::shared_ptr<Screen>(screen));
+  }
 
   void pushScreen(std::shared_ptr<Screen> screen) { screens.push(screen); }
 

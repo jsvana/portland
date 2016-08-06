@@ -7,8 +7,6 @@
 
 #include <iostream>
 
-extern SDL_Renderer *renderer;
-
 OpeningScreen::OpeningScreen() {
   font.loadFromFile("assets/fonts/arcade.ttf");
 
@@ -31,7 +29,7 @@ void OpeningScreen::handleEvent(sf::Event &event) {
   }
 }
 
-bool OpeningScreen::update(sf::Time &time) {}
+bool OpeningScreen::update(sf::Time &) { return true; }
 
 void OpeningScreen::render(sf::RenderTarget &target) {
   auto windowSize = target.getSize();

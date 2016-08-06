@@ -1,7 +1,5 @@
 #include "dialog.h"
 
-extern SDL_Renderer *renderer;
-
 namespace visual {
 
   Dialog::Dialog(std::string message) : message_(message) {
@@ -120,45 +118,54 @@ namespace visual {
     }
   }
 
+  void Dialog::handleEvent(sf::Event &event) {
+    if (event.type == sf::Event::KeyPressed) {
+      switch (event.key.code) {
+        case sf::Keyboard::Left:
+        case sf::Keyboard::A:
+          if (choices_.empty()) {
+            break;
+          }
+          selectedChoice_ = (selectedChoice_ - 1) % choices_.size();
+          reflowText();
+          break;
+        case sf::Keyboard::Right:
+        case sf::Keyboard::D:
+          if (choices_.empty()) {
+            break;
+          }
+          selectedChoice_ = (selectedChoice_ + 1) % choices_.size();
+          reflowText();
+          break;
+        case sf::Keyboard::Return:
+          lineIndex_ += 1;
+          if (lines_.size() >= VISIBLE_LINES) {
+            lines_.pop_front();
+          } else {
+            completed_ = true;
+          }
+          reflowText();
+          break;
+        default:
+          break;
+      }
+    }
+  }
+
   bool Dialog::update(sf::Time &time) {
     if (selectFrames_ > 0) {
       selectFrames_ -= 1;
     }
 
-    if (ticks - lastTicks_ >= FRAME_TICKS_INTERVAL) {
+    time_ += time;
+    if (time_ >= sf::milliseconds(500)) {
       indicatorOffset_ = (indicatorOffset_ + 2) % BOUNCE_DISTANCE;
-      lastTicks_ = ticks;
+      time_ = sf::seconds(0);
 
       reflowText();
     }
 
-    auto state = SDL_GetKeyboardState(nullptr);
-    if (state[SDL_SCANCODE_RETURN] && selectFrames_ == 0) {
-      selectFrames_ = FRAME_DEBOUNCE_DELAY;
-
-      lineIndex_ += 1;
-      if (lines_.size() >= VISIBLE_LINES) {
-        lines_.pop_front();
-      } else {
-        return false;
-      }
-      reflowText();
-    }
-
-    if (!choices_.empty()) {
-      if (state[SDL_SCANCODE_LEFT] && selectFrames_ == 0) {
-        selectFrames_ = FRAME_DEBOUNCE_DELAY;
-        selectedChoice_ = (selectedChoice_ - 1) % choices_.size();
-        reflowText();
-      }
-      if (state[SDL_SCANCODE_RIGHT] && selectFrames_ == 0) {
-        selectFrames_ = FRAME_DEBOUNCE_DELAY;
-        selectedChoice_ = (selectedChoice_ + 1) % choices_.size();
-        reflowText();
-      }
-    }
-
-    return true;
+    return completed_;
   }
 
   void Dialog::render(sf::RenderTarget &window) {
@@ -231,14 +238,21 @@ namespace visual {
 
     int dialogChoice(unsigned int uid) { return choices[uid]; }
 
-    bool update(unsigned int ticks) {
+    void handleEvent(sf::Event &event) {
+      if (dialogs.empty()) {
+        return;
+      }
+      dialogs.front()->handleEvent(event);
+    }
+
+    bool update(sf::Time &time) {
       if (dialogs.empty()) {
         return false;
       }
 
       auto dialog = dialogs.front();
 
-      if (dialog->update(ticks)) {
+      if (dialog->update(time)) {
         return true;
       } else {
         int uid = uids.front();

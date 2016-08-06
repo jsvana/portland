@@ -11,8 +11,6 @@
 #include <iostream>
 #include <set>
 
-extern SDL_Renderer *renderer;
-
 MainScreen::MainScreen() {
   heroHealth_.setMax(100);
   heroHealth_.setValue(70);
@@ -24,7 +22,9 @@ MainScreen::MainScreen() {
   GameState::markInitialized();
 }
 
-void MainScreen::handleEvent(sf::Event &) {}
+void MainScreen::handleEvent(sf::Event &event) {
+  visual::DialogManager::handleEvent(event);
+}
 
 bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
   Rect dim = sprite->getDimensions();

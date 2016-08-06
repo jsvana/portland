@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../visual/text.h"
 #include "screen.h"
 
 #include <SFML/Graphics.hpp>

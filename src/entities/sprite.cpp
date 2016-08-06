@@ -1,15 +1,9 @@
 #include "sprite.h"
 
-#include "../asset_manager.h"
-
-#include <SDL.h>
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
-
-extern SDL_Renderer *renderer;
 
 Sprite::Sprite(const std::string &path) {
   load(path);
@@ -106,12 +100,6 @@ void Sprite::render(sf::RenderTarget &window, Point cameraPos) {
                      (tile / columns_) * dimensions_.h, dimensions_.w,
                      dimensions_.h);
 
-  SDL_Rect dest;
-  dest.x = dimensions_.x - cameraPos.x;
-  dest.y = dimensions_.y - cameraPos.y;
-  dest.w = (int)((float)dimensions_.w * scale_);
-  dest.h = (int)((float)dimensions_.h * scale_);
-
   sf::Texture tex;
   if (multiFile_) {
     tex = textures_[frame_];
@@ -124,5 +112,6 @@ void Sprite::render(sf::RenderTarget &window, Point cameraPos) {
     source.width = -dimensions_.w;
   }
   sprite_.setTextureRect(source);
+  sprite_.setPosition(dimensions_.x - cameraPos.x, dimensions_.y - cameraPos.y);
   window.draw(sprite_);
 }

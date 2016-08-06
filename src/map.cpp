@@ -8,8 +8,6 @@
 #include <string>
 #include <vector>
 
-extern SDL_Renderer *renderer;
-
 Map::Map(const std::string &path) : path_(path) { load(path); }
 
 bool Map::load(const std::string &path) {

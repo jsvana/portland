@@ -1,12 +1,9 @@
 #include "tileset.h"
 
-#include "asset_manager.h"
 #include "util.h"
 
 #include <iostream>
 #include <string>
-
-extern SDL_Renderer *renderer;
 
 Tileset::Tileset(const std::string &basePath,
                  const nlohmann::json &tilesetData) {

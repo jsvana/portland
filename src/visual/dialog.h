@@ -2,7 +2,6 @@
 
 #include "../map.h"
 #include "../util.h"
-#include "text.h"
 
 #include <SFML/Graphics.hpp>
 
@@ -51,7 +50,9 @@ namespace visual {
 
     int selectedChoice_;
 
-    unsigned int lastTicks_;
+    bool completed_ = false;
+
+    sf::Time time_;
     int indicatorOffset_;
 
     // Renderable textures for dialog indicators
@@ -147,6 +148,8 @@ namespace visual {
       }
     }
 
+    void handleEvent(sf::Event &event);
+
     /**
      * Handles key input and text reflow
      *
@@ -219,6 +222,8 @@ namespace visual {
      * @return Dialog's choice
      */
     int dialogChoice(unsigned int uid);
+
+    void handleEvent(sf::Event &event);
 
     /**
      * Update the first dialog in the queue
