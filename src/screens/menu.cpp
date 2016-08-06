@@ -55,9 +55,13 @@ void MenuScreen::handleEvent(sf::Event &event) {
 bool MenuScreen::update(sf::Time &) {return true;}
 
 void MenuScreen::render(sf::RenderTarget &target) {
+  auto targetSize = target.getSize();
+
   target.draw(titleText);
 
-  for (auto text : textItems) {
-    target.draw(*text);
+  for (unsigned int i = 0; i < textItems.size(); i++) {
+    auto itemSize = textItems[i]->getLocalBounds();
+    textItems[i]->setPosition(targetSize.x / 2, 100 + itemSize.height * i);
+    target.draw(*textItems[i]);
   }
 }
