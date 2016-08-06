@@ -34,7 +34,7 @@ namespace Engine {
     // Initialize
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
       err()->error("SDL_Init err->r: {}", SDL_GetError());
-      return 1;
+      return false;
     }
 
     SDL_ShowCursor(SDL_DISABLE);
@@ -42,22 +42,19 @@ namespace Engine {
     // Set the scaling quality to nearest pixel
     if (SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0") < 0) {
       err()->error("Failed to set render scale quality");
-      SDL_Quit();
-      return 1;
+      return false;
     }
 
     // load support for the JPG and PNG image formats
     int image_flags = IMG_INIT_JPG | IMG_INIT_PNG;
     if ((IMG_Init(image_flags) & image_flags) != image_flags) {
       err()->error("Failed to init image support: {}", IMG_GetError());
-      SDL_Quit();
-      return 1;
+      return false;
     }
 
     if (TTF_Init() < 0) {
       err()->error("Failed to init TTF support: {}", TTF_GetError());
-      IMG_Quit();
-      SDL_Quit();
+      return false;
     }
 
     // Create window
@@ -66,10 +63,7 @@ namespace Engine {
                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (window == nullptr) {
       err()->error("SDL_CreateWindow err->r: {}", SDL_GetError());
-      TTF_Quit();
-      IMG_Quit();
-      SDL_Quit();
-      return 1;
+      return false;
     }
 
     // Create renderer for window
@@ -78,14 +72,13 @@ namespace Engine {
                                   SDL_RENDERER_TARGETTEXTURE);
     if (renderer == nullptr) {
       err()->error("SDL_CreateRenderer err->r: {}", SDL_GetError());
-      SDL_DestroyWindow(window);
-
-      return 1;
+      return false;
     }
 
     backBuffer = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
                                    SDL_TEXTUREACCESS_TARGET, nativeSize.w, nativeSize.h);
     if (backBuffer == nullptr) {
+      err()->error("SDL_CreateTexture err->r: {}", SDL_GetError());
       return false;
     }
 
@@ -190,6 +183,9 @@ namespace Engine {
 
   void cleanup() {
     AssetManager::destroy();
+    if (backBuffer != nullptr) {
+      SDL_DestroyTexture(backBuffer);
+    }
     if (renderer != nullptr) {
       SDL_DestroyRenderer(renderer);
     }
