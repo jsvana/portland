@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 
+#include <memory>
 #include <queue>
 #include <string>
 #include <unordered_map>
@@ -175,7 +176,7 @@ namespace visual {
      * @param uid UID of dialog
      * @return Found dialog object or nullptr if not found
      */
-    Dialog *getDialogByUid(unsigned int uid);
+    std::shared_ptr<Dialog> getDialogByUid(unsigned int uid);
 
     /**
      * Wrapper to add a dialog option by UID
@@ -201,7 +202,7 @@ namespace visual {
      *
      * @return Most recently closed dialog
      */
-    Dialog *closedDialog();
+    std::shared_ptr<Dialog> closedDialog();
 
     /**
      * Clears the most recently closed dialog
