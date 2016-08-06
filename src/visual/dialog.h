@@ -1,8 +1,8 @@
 #pragma once
 
-#include "map.h"
+#include "../map.h"
 #include "text.h"
-#include "util.h"
+#include "../util.h"
 
 #include <SDL.h>
 
@@ -10,6 +10,8 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
+namespace visual {
 
 /**
  * Class to load, render, and handle input for in-game dialogs
@@ -225,3 +227,5 @@ bool update(unsigned int ticks);
  */
 void render();
 }
+
+} // namespace visual

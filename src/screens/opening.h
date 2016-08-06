@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../text.h"
+#include "../visual/text.h"
 #include "../util.h"
 #include "screen.h"
 
@@ -13,8 +13,8 @@
  */
 class OpeningScreen : public Screen {
  private:
-  Text *title_;
-  Text *pressEnter_;
+  visual::Text *title_;
+  visual::Text *pressEnter_;
 
  public:
   OpeningScreen(int width, int height);

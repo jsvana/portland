@@ -81,15 +81,15 @@ bool MainScreen::update(unsigned long ticks) {
 
   auto state = SDL_GetKeyboardState(nullptr);
 
-  if (DialogManager::update(ticks)) {
+  if (visual::DialogManager::update(ticks)) {
     return true;
   } else {
-    Dialog *dialog = DialogManager::closedDialog();
+    visual::Dialog *dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc != "") {
       int choice = dialog->getChoice();
       GameState::lua()[dialog->callbackFunc.c_str()](choice);
     }
-    DialogManager::clearClosedDialog();
+    visual::DialogManager::clearClosedDialog();
   }
 
   if (state[SDL_SCANCODE_T]) {
@@ -235,5 +235,5 @@ void MainScreen::render(float) {
     sprite.second->render(GameState::camera());
   }
   heroHealth_.render();
-  DialogManager::render();
+  visual::DialogManager::render();
 }

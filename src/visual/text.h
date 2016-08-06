@@ -5,6 +5,8 @@
 
 #include <string>
 
+namespace visual {
+
 /**
  * Class to load and render text on screen
  */
@@ -90,3 +92,5 @@ class Text {
    */
   void render();
 };
+
+} // namespace visual

@@ -2,6 +2,8 @@
 
 extern SDL_Renderer *renderer;
 
+namespace visual {
+
 Dialog::Dialog(std::string message) : message_(message) {
   map_ = new Map("assets/maps/dialog.json");
   map_->setPosition(position_.x, position_.y);
@@ -270,4 +272,6 @@ void render() {
   }
   dialogs.front()->render();
 }
-}
+}  // namespace DialogManager
+
+}  // namespace visual

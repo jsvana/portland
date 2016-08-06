@@ -1,11 +1,13 @@
 #include "text.h"
 
-#include "asset_manager.h"
-#include "util.h"
+#include "../asset_manager.h"
+#include "../util.h"
 
 #include <iostream>
 
 extern SDL_Renderer *renderer;
+
+namespace visual {
 
 Text::Text(const std::string &text, int size) : text_(text), size_(size) {
   // Load font texture
@@ -43,3 +45,4 @@ void Text::render() {
   }
   SDL_RenderCopy(renderer, texture_, nullptr, &position_);
 }
+}  // namespace visual
