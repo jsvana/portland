@@ -18,15 +18,15 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 endif()
 
 find_package(SDL2 REQUIRED sdl2)
-find_package(SDL2_IMAGE REQUIRED SDL2_image)
-find_package(SDL2_TTF REQUIRED SDL2_ttf)
-find_package(LUA REQUIRED lua52)
+find_package(SDL2_image REQUIRED SDL2_image)
+find_package(SDL2_ttf REQUIRED SDL2_ttf)
+find_package(Lua 5.2 REQUIRED lua52)
 
 include_directories(
-  ${SDL2_INCLUDE_DIRS}
-  ${SDL2_IMAGE_INCLUDE_DIRS}
-  ${SDL2_TTF_INCLUDE_DIRS}
-  ${LUA_INCLUDE_DIRS}
+  ${SDL2_INCLUDE_DIR}
+  ${SDL2_IMAGE_INCLUDE_DIR}
+  ${SDL2_TTF_INCLUDE_DIR}
+  ${LUA_INCLUDE_DIR}
   "vendor/spdlog/include"
   "vendor/selene/include"
   "vendor/json"
@@ -38,4 +38,11 @@ add_executable(
 
   ${portland_sources}
 )
-target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES} pthread)
+target_link_libraries(
+  becoming_portland
+  ${SDL2_LIBRARY}
+  ${SDL2_IMAGE_LIBRARY}
+  ${SDL2_TTF_LIBRARY}
+  ${LUA_LIBRARY}
+  pthread
+)
