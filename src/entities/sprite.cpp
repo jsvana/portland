@@ -42,7 +42,7 @@ bool Sprite::load(const std::string &path) {
   std::vector<std::string> texturePaths;
   if (multiFile_) {
     texturePaths = spriteData["frames"].get<std::vector<std::string>>();
-    totalFrames_ = (int) texturePaths.size();
+    totalFrames_ = (int)texturePaths.size();
   } else {
     texturePaths.push_back(spriteData["texture"].get<std::string>());
     totalFrames_ = spriteData["total_frames"].get<int>();

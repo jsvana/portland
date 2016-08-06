@@ -311,4 +311,12 @@ bool clearEvents() {
   clearTileEvents();
   return true;
 }
+
+///////////////////////
+// LUA API Callbacks //
+///////////////////////
+
+void collision(unsigned int spriteId1, unsigned int spriteId2) {
+  lua_["collision"](spriteId1, spriteId2);
 }
+}  // namespace GameState

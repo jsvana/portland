@@ -39,3 +39,7 @@ function update()
     end)
   end
 end
+
+function collision(id1, id2)
+  print("COLLISION, ID1", id1, "ID2", id2)
+end

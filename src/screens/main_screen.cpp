@@ -219,6 +219,8 @@ bool MainScreen::update(unsigned long ticks) {
   for (auto &sprite : GameState::sprites()) {
     Rect dim = updateGravity(sprite.second);
     if (GameState::positionWalkable(sprite.second, dim)) {
+      // TODO(jsvana): figure out whether or not the sprite
+      // collided with another sprite
       sprite.second->setDimensions(dim);
     }
   }

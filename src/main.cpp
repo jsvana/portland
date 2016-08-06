@@ -92,6 +92,9 @@ int main(int, char **) {
 
   GameState::initLuaApi();
 
+  // IDs will start at 1, the hero gets 0
+  GameState::hero()->id = 0;
+
   ScreenManager::push(new OpeningScreen(nativeSize.w, nativeSize.h));
 
   bool running = true;

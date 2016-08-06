@@ -141,6 +141,10 @@ bool positionWalkable(Sprite *sprite, Rect dim);
  */
 void runTileEvent();
 
+/////////////
+// LUA API //
+/////////////
+
 /**
  * Loads a new map and pushes it onto the stack
  *
@@ -316,4 +320,11 @@ bool registerTileEvent(int x, int y, std::string callback);
  * @return Whether the operation is successful
  */
 bool clearEvents();
+
+///////////////////////
+// LUA API Callbacks //
+///////////////////////
+
+void collision(unsigned int spriteId1, unsigned int spriteId2);
+
 }
