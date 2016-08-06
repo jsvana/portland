@@ -1,13 +1,15 @@
-cmake/
-
 # Built stuff
 bin/*
 build/*
+.vs/
+Win32/
+becoming_portland.dir/
 becoming_portland
 
 # Editor things
 compile_commands.json
 .vscode
+
 
 # Vendor stuff
 vendor/mingw-*/*
