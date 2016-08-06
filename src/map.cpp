@@ -181,7 +181,7 @@ bool Map::update(unsigned int ticks) {
   return true;
 }
 
-void Map::render(Point cameraPos) {
+void Map::render(sf::RenderTarget &window, Point cameraPos) {
   int xStart, xEnd;
   int yStart, yEnd;
   xStart = 0;
@@ -204,7 +204,7 @@ void Map::render(Point cameraPos) {
         if (!tileset) {
           continue;
         }
-        tileset->renderTile(tile, x + j * tileset->width(),
+        tileset->renderTile(window, tile, x + j * tileset->width(),
                             y + i * tileset->height());
       }
     }

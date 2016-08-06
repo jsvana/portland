@@ -5,7 +5,7 @@
 
 #include <json.hpp>
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <set>
 #include <string>
@@ -297,7 +297,8 @@ class Map {
   /**
    * Renders map relative to the given camera position
    *
+   * @param window Window to render to
    * @param cameraPos Position of camera to render map relative to
    */
-  void render(Point cameraPos);
+  void render(sf::RenderTarget &window, Point cameraPos);
 };

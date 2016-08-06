@@ -8,21 +8,8 @@ namespace visual {
     map_ = std::unique_ptr<Map>(new Map("assets/maps/dialog.json"));
     map_->setPosition(position_.x, position_.y);
 
-    // Default color is white
-    DEFAULT_COLOR.r = 255;
-    DEFAULT_COLOR.g = 255;
-    DEFAULT_COLOR.b = 255;
-
-    moreIndicator_ = std::unique_ptr<Text>(new Text("v", 15));
-    moreIndicator_->setColor(DEFAULT_COLOR);
-    moreIndicator_->hide();
     indicatorOffset_ = 0;
-
     lineIndex_ = 0;
-
-    choiceIndicator_ = std::unique_ptr<Text>(new Text(">", 15));
-    choiceIndicator_->setColor(DEFAULT_COLOR);
-    choiceIndicator_->hide();
     selectedChoice_ = -1;
 
     // Split the message into lines
@@ -44,10 +31,13 @@ namespace visual {
         line = tmp;
         tmp = "";
       }
-      auto text = std::unique_ptr<Text>(new Text(line, 15));
-      text->setColor(DEFAULT_COLOR);
+      sf::Text text;
+      text.setFont(*font_);
+      text.setString(line);
 
-      lines_.push_back(std::move(text));
+      text.setColor(sf::Color::White);
+
+      lines_.push_back(text);
     }
 
     reflowText();
@@ -59,10 +49,6 @@ namespace visual {
   void Dialog::addOptions(const std::vector<std::string> &choices) {
     for (auto &choice : choices) {
       choices_.push_back(choice);
-      auto choiceText = std::unique_ptr<Text>(new Text(choice, 15));
-      choiceText->setColor(DEFAULT_COLOR);
-      choiceText->hide();
-      choicesText_.push_back(std::move(choiceText));
     }
 
     selectedChoice_ = choices_.size() - 1;
@@ -82,22 +68,24 @@ namespace visual {
   void Dialog::reflowText() {
     int y = position_.y + TEXT_PADDING;
 
-    // Determine whether or not more indicator should be shown
-    moreIndicator_->setPosition(
-        position_.x + pixelWidth() - moreIndicator_->width() - TEXT_PADDING,
-        position_.y + pixelHeight() - moreIndicator_->height() +
-            indicatorOffset_);
-    if (lines_.size() < VISIBLE_LINES) {
-      moreIndicator_->hide();
+    if (lines_.size() <= VISIBLE_LINES) {
+      moreIndicator_.reset();
     } else {
-      moreIndicator_->show();
+      if (moreIndicator_ == nullptr) {
+        moreIndicator_ = std::make_shared<sf::Text>();
+        moreIndicator_->setFont(*font_);
+      }
+      auto dim = moreIndicator_->getGlobalBounds();
+      moreIndicator_->setPosition(
+          position_.x + pixelWidth() - dim.width - TEXT_PADDING,
+          position_.y + pixelHeight() - dim.height + indicatorOffset_);
     }
 
     // Reposition all visible lines
     unsigned int i = 0;
     for (auto &line : lines_) {
-      line->setPosition(TEXT_PADDING, y);
-      y += line->height();
+      line.setPosition(TEXT_PADDING, y);
+      y += line.getGlobalBounds().height;
       if (i == VISIBLE_LINES) {
         break;
       }
@@ -106,21 +94,28 @@ namespace visual {
 
     // Position and show choices and choice indicator
     if (lines_.size() == VISIBLE_LINES - 1) {
+      if (choiceIndicator_ == nullptr) {
+        choiceIndicator_ = std::make_shared<sf::Text>();
+        choiceIndicator_->setFont(*font_);
+      }
       int offset = 0;
       int padding = 10;
       for (unsigned int i = 0; i < choices_.size(); i++) {
-        offset += choicesText_[i]->width() + padding;
+        sf::Text choiceText;
+        choiceText.setFont(*font_);
+        choiceText.setString(choices_[i]);
+        choiceText.setColor(sf::Color::White);
+        auto dim = choiceText.getGlobalBounds();
+        offset += dim.width + padding;
         if (i == (unsigned int)selectedChoice_) {
           choiceIndicator_->setPosition(
-              position_.x + pixelWidth() - offset - choiceIndicator_->width() -
+              position_.x + pixelWidth() - offset - dim.width -
                   indicatorOffset_ + 2,
-              position_.y + pixelHeight() - choicesText_[i]->height());
-          choiceIndicator_->show();
+              position_.y + pixelHeight() - dim.height);
         }
-        choicesText_[i]->setPosition(
-            position_.x + pixelWidth() - offset,
-            position_.y + pixelHeight() - choicesText_[i]->height());
-        choicesText_[i]->show();
+        choiceText.setPosition(position_.x + pixelWidth() - offset,
+                               position_.y + pixelHeight() - dim.height);
+        choicesText_.push_back(choiceText);
       }
     }
   }
@@ -166,21 +161,25 @@ namespace visual {
     return true;
   }
 
-  void Dialog::render() {
-    map_->render(camera_);
+  void Dialog::render(sf::RenderTarget &window) {
+    map_->render(window, camera_);
     unsigned int i = 0;
     for (auto &line : lines_) {
-      line->render();
+      window.draw(line);
       i += 1;
       if (i == VISIBLE_LINES) {
         break;
       }
     }
     for (auto &choiceText : choicesText_) {
-      choiceText->render();
+      window.draw(choiceText);
     }
-    moreIndicator_->render();
-    choiceIndicator_->render();
+    if (moreIndicator_ != nullptr) {
+      window.draw(*moreIndicator_);
+    }
+    if (choiceIndicator_ != nullptr) {
+      window.draw(*choiceIndicator_);
+    }
   }
 
   namespace DialogManager {
@@ -259,11 +258,11 @@ namespace visual {
       return false;
     }
 
-    void render() {
+    void render(sf::RenderTarget &window) {
       if (dialogs.empty()) {
         return;
       }
-      dialogs.front()->render();
+      dialogs.front()->render(window);
     }
   }  // namespace DialogManager
 

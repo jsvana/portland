@@ -153,9 +153,10 @@ class Tileset {
   /**
    * Renders the given tile at the specified point
    *
+   * @param window Window to render to
    * @param tile Tile index to render
    * @param x X coordinate of render point
    * @param y Y coordinate of render point
    */
-  void renderTile(sf::RenderTarget &window, unsigned int tile, int x, int y) const;
+  void renderTile(sf::RenderTarget &window, unsigned int tile, int x, int y);
 };

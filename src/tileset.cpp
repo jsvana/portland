@@ -28,7 +28,7 @@ bool Tileset::load(const std::string &basePath,
 
   name_ = tilesetData["name"].get<std::string>();
 
-  texture_.load(basePath + "/" + texturePath);
+  texture_.loadFromFile(basePath + "/" + texturePath);
 
   auto properties = tilesetData.find("tileproperties");
   auto animationData = tilesetData.find("tiles");
@@ -107,7 +107,7 @@ bool Tileset::update(unsigned int ticks) {
 }
 
 void Tileset::renderTile(sf::RenderTarget &window, unsigned int tile, int x,
-                         int y) const {
+                         int y) {
   if (tile == 0) {
     return;
   }
@@ -116,7 +116,6 @@ void Tileset::renderTile(sf::RenderTarget &window, unsigned int tile, int x,
   bool flipVertical = tile & FLIPPED_VERTICALLY;
   bool flipDiagonal = tile & FLIPPED_DIAGONALLY;
 
-  unsigned int flags = 0;
   unsigned int angle = 0;
   if (flipDiagonal) {
     angle = 90;
@@ -141,9 +140,9 @@ void Tileset::renderTile(sf::RenderTarget &window, unsigned int tile, int x,
     source.height = -tileHeight_;
   }
 
-  sprite.setTextureRect(source);
-  sprite.setRotation(angle);
-  sprite.setPosition(x, y);
+  tile_.setTextureRect(source);
+  tile_.setRotation(angle);
+  tile_.setPosition(x, y);
 
-  window.draw(sprite);
+  window.draw(tile_);
 }

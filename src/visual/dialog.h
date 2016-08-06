@@ -32,8 +32,6 @@ namespace visual {
     const unsigned int FRAME_TICKS_INTERVAL = 24;
     const int BOUNCE_DISTANCE = 4;
 
-    SDL_Color DEFAULT_COLOR;
-
     // Kind of a hack. Contains the background of the dialog
     std::unique_ptr<Map> map_;
 
@@ -43,11 +41,13 @@ namespace visual {
     // Choices in dialog
     std::vector<std::string> choices_;
 
+    std::shared_ptr<sf::Font> font_;
+
     // Vector of renderable lines of text
-    std::deque<std::unique_ptr<Text>> lines_;
+    std::deque<sf::Text> lines_;
     // Vector of renderable choices for dialog with options (e.g., "Yes" and
     // "No")
-    std::vector<std::unique_ptr<Text>> choicesText_;
+    std::vector<sf::Text> choicesText_;
 
     int selectedChoice_;
 
@@ -55,8 +55,8 @@ namespace visual {
     int indicatorOffset_;
 
     // Renderable textures for dialog indicators
-    std::unique_ptr<Text> moreIndicator_;
-    std::unique_ptr<Text> choiceIndicator_;
+    std::shared_ptr<sf::Text> moreIndicator_;
+    std::shared_ptr<sf::Text> choiceIndicator_;
 
     int lineIndex_;
 
@@ -141,9 +141,9 @@ namespace visual {
      */
     // TODO(jsvana): Actually set all the colors
     // and the default color here
-    void setColor(SDL_Color color) {
+    void setColor(sf::Color color) {
       for (auto &line : lines_) {
-        line->setColor(color);
+        line.setColor(color);
       }
     }
 
@@ -157,8 +157,10 @@ namespace visual {
 
     /**
      * Renders the dialog
+     *
+     * @param window Window to render to
      */
-    void render();
+    void render(sf::RenderTarget &window);
   };
 
   namespace DialogManager {
@@ -228,8 +230,10 @@ namespace visual {
 
     /**
      * Renders the first dialog in the queue
+     *
+     * @param window Window to render to
      */
-    void render();
+    void render(sf::RenderTarget &window);
   }
 
 }  // namespace visual
