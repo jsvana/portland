@@ -1,4 +1,4 @@
-# Vania
+# Becoming Portland
 
 A basic sidescrolling platformer (metroidvania).
 
@@ -16,10 +16,7 @@ Packages: `cmake`, `sdl2`, `sdl2_gfx`, `sdl2_image`, `sdl2_mixer`, `sdl2_ttf`, `
 
 ## Build and run
 
-    $ cd build && cmake ..
-    $ make
-    $ cd ..
-    $ ./build/vania
+    $ ./scripts/run
 
 ## Credits
 
