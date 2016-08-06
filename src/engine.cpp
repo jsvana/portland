@@ -2,7 +2,6 @@
 
 #include "asset_manager.h"
 #include "constants.h"
-#include "screen_manager.h"
 #include "state.h"
 #include "util.h"
 
@@ -15,6 +14,8 @@
 SDL_Renderer *renderer = nullptr;
 
 namespace Engine {
+  std::stack<std::shared_ptr<Screen>> screens;
+
   SDL_Window *window = nullptr;
   SDL_Texture *backBuffer = nullptr;
   SDL_Rect nativeSize;
@@ -99,7 +100,7 @@ namespace Engine {
     int loops;
 
     while (true) {
-      auto screen = ScreenManager::top();
+      auto screen = screens.top();
 
       loops = 0;
 
@@ -198,5 +199,21 @@ namespace Engine {
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
+  }
+
+  void pushScreen(Screen *screen) { pushScreen(std::shared_ptr<Screen>(screen)); }
+
+  void pushScreen(std::shared_ptr<Screen> screen) { screens.push(screen); }
+
+  std::shared_ptr<Screen> popScreen() {
+    auto top = screens.top();
+    screens.pop();
+    return top;
+  }
+
+  std::shared_ptr<Screen> replaceScreen(Screen *screen) {
+    auto replaced = popScreen();
+    pushScreen(screen);
+    return replaced;
   }
 }

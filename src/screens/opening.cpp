@@ -1,6 +1,6 @@
 #include "opening.h"
 
-#include "../screen_manager.h"
+#include "../engine.h"
 #include "main_screen.h"
 
 #include <SDL.h>
@@ -28,7 +28,7 @@ bool OpeningScreen::update(unsigned long) {
   auto state = SDL_GetKeyboardState(nullptr);
 
   if (state[SDL_SCANCODE_RETURN]) {
-    ScreenManager::replace(new MainScreen(width_, height_));
+    Engine::replaceScreen(new MainScreen(width_, height_));
   }
 
   return true;

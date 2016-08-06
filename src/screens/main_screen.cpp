@@ -1,6 +1,6 @@
 #include "main_screen.h"
 
-#include "../screen_manager.h"
+#include "../engine.h"
 #include "../state.h"
 #include "../util.h"
 #include "pause_menu.h"
@@ -142,7 +142,7 @@ bool MainScreen::update(unsigned long ticks) {
   }
 
   if (state[SDL_SCANCODE_P] || state[SDL_SCANCODE_ESCAPE]) {
-    ScreenManager::push(new PauseMenuScreen(width_, height_));
+    Engine::pushScreen(new PauseMenuScreen(width_, height_));
   }
 
   // Change character direction
