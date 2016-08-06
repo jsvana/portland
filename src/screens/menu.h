@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../screen_manager.h"
-#include "../text.h"
+#include "../visual/text.h"
 #include "screen.h"
 
 #include <SDL.h>
@@ -23,8 +23,8 @@ class MenuScreen : public Screen {
   int selectedItem_;
   unsigned int selectFrames_;
 
-  Text *titleTexture_;
-  std::vector<Text *> itemTextures_;
+  visual::Text *titleTexture_;
+  std::vector<visual::Text *> itemTextures_;
 
  protected:
   std::string title_;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "constants.h"
-#include "dialog.h"
+#include "visual/dialog.h"
 #include "entities/npc.h"
 #include "entities/sprite.h"
 #include "map.h"

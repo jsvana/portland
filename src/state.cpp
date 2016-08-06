@@ -288,17 +288,17 @@ bool jumpNpc(unsigned int npcId, int magnitude) {
 }
 
 unsigned int showDialog(std::string message) {
-  Dialog *dialog = new Dialog(message);
+  auto dialog = new visual::Dialog(message);
   dialog->setPosition(0, SCREEN_HEIGHT - dialog->pixelHeight());
-  return DialogManager::queueDialog(dialog);
+  return visual::DialogManager::queueDialog(dialog);
 }
 
 bool addDialogOption(unsigned int uid, std::string option) {
-  return DialogManager::addDialogOption(uid, option);
+  return visual::DialogManager::addDialogOption(uid, option);
 }
 
 bool setDialogCallback(unsigned int uid, std::string callback) {
-  return DialogManager::setDialogCallback(uid, callback);
+  return visual::DialogManager::setDialogCallback(uid, callback);
 }
 
 bool registerTileEvent(int x, int y, std::string callback) {

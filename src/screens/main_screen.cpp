@@ -77,15 +77,15 @@ bool MainScreen::update(unsigned long ticks) {
 
   auto state = SDL_GetKeyboardState(nullptr);
 
-  if (DialogManager::update(ticks)) {
+  if (visual::DialogManager::update(ticks)) {
     return true;
   } else {
-    Dialog *dialog = DialogManager::closedDialog();
+    visual::Dialog *dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc != "") {
       int choice = dialog->getChoice();
       GameState::lua()[dialog->callbackFunc.c_str()](choice);
     }
-    DialogManager::clearClosedDialog();
+    visual::DialogManager::clearClosedDialog();
   }
 
   // Movement input
@@ -224,5 +224,5 @@ void MainScreen::render(float) {
   for (const auto &sprite : GameState::sprites()) {
     sprite.second->render(GameState::camera());
   }
-  DialogManager::render();
+  visual::DialogManager::render();
 }

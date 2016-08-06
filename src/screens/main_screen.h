@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../dialog.h"
 #include "../entities/sprite.h"
 #include "../entities/npc.h"
 #include "../map.h"
 #include "../state.h"
-#include "../text.h"
 #include "../util.h"
+#include "../visual/dialog.h"
+#include "../visual/text.h"
 #include "screen.h"
 
 #include "../lib/selene/include/selene.h"

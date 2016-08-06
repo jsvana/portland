@@ -35,7 +35,6 @@ add_executable(
 	becoming_portland
 
 	src/asset_manager.cpp
-	src/dialog.cpp
 	src/entities/npc.cpp
 	src/entities/sprite.cpp
 	src/map.cpp
@@ -45,9 +44,10 @@ add_executable(
 	src/screens/opening.cpp
 	src/screens/pause_menu.cpp
 	src/state.cpp
-	src/text.cpp
 	src/tileset.cpp
 	src/util.cpp
+	src/visual/text.cpp
+	src/visual/dialog.cpp
 
 	src/main.cpp
 )
