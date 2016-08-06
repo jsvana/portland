@@ -8,6 +8,7 @@
 
 #include <selene.h>
 
+#include <memory>
 #include <stack>
 #include <string>
 #include <unordered_map>
@@ -53,7 +54,7 @@ namespace GameState {
    *
    * @return Main character
    */
-  Sprite *hero();
+  std::shared_ptr<Sprite> hero();
 
   /**
    * Gets the hero's move speed
@@ -75,14 +76,14 @@ namespace GameState {
    *
    * @return Reference to topmost sprite map
    */
-  std::unordered_map<unsigned int, Sprite *> &sprites();
+  std::unordered_map<unsigned int, std::shared_ptr<Sprite>> &sprites();
 
   /**
    * Gets the topmost map
    *
    * @return Topmost map
    */
-  Map *map();
+  std::shared_ptr<Map> map();
 
   /**
    * Gets a reference to the Lua state
@@ -133,7 +134,7 @@ namespace GameState {
    * @param dim Rectangle to check
    * @return Whether position is walkable
    */
-  bool positionWalkable(Sprite *sprite, Rect dim);
+  bool positionWalkable(std::shared_ptr<Sprite> sprite, Rect dim);
 
   /**
    * Checks for an event on the character's current tile, runs the event, and
