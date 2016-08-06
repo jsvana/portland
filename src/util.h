@@ -1,8 +1,23 @@
 #pragma once
 
 #include <SDL.h>
+#include <spdlog/spdlog.h>
 
 #include <ostream>
+
+/**
+ * Gets a reference to the stdout logger
+ *
+ * @return Reference to stdout logger
+ */
+std::shared_ptr<spdlog::logger> out();
+
+/**
+ * Gets a reference to the stderr logger
+ *
+ * @return Reference to stderr logger
+ */
+std::shared_ptr<spdlog::logger> err();
 
 /**
  * Generic function to clamp a number inside the given min and max

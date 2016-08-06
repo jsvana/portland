@@ -48,6 +48,7 @@ add_executable(
 	src/state.cpp
 	src/text.cpp
 	src/tileset.cpp
+	src/util.cpp
 
 	src/main.cpp
 )

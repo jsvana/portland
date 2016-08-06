@@ -218,7 +218,7 @@ unsigned int addNpc(std::string path, int tile, int x, int y) {
 bool setNpcCallback(unsigned int npcId, std::string callback) {
   auto iter = sprites().find(npcId);
   if (iter == sprites().end()) {
-    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    err()->warn("Bad NPC ID: {}", npcId);
     return false;
   }
   iter->second->callbackFunc = callback;
@@ -228,7 +228,7 @@ bool setNpcCallback(unsigned int npcId, std::string callback) {
 bool moveNpc(unsigned int npcId, int dx, int dy) {
   auto iter = sprites().find(npcId);
   if (iter == sprites().end()) {
-    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    err()->warn("Bad NPC ID: {}", npcId);
     return false;
   }
   auto npc = iter->second;
@@ -246,7 +246,7 @@ bool moveNpc(unsigned int npcId, int dx, int dy) {
 bool setNpcMaxHp(unsigned int npcId, int hp) {
   auto iter = sprites().find(npcId);
   if (iter == sprites().end()) {
-    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    err()->warn("Bad NPC ID: {}", npcId);
     return false;
   }
   iter->second->setMaxHp(hp);
@@ -256,7 +256,7 @@ bool setNpcMaxHp(unsigned int npcId, int hp) {
 bool damageNpc(unsigned int npcId, int amount) {
   auto iter = sprites().find(npcId);
   if (iter == sprites().end()) {
-    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    err()->warn("Bad NPC ID: {}", npcId);
     return false;
   }
   iter->second->damage(amount);
@@ -266,7 +266,7 @@ bool damageNpc(unsigned int npcId, int amount) {
 bool healNpc(unsigned int npcId, int amount) {
   auto iter = sprites().find(npcId);
   if (iter == sprites().end()) {
-    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    err()->warn("Bad NPC ID: {}", npcId);
     return false;
   }
   iter->second->heal(amount);
@@ -275,13 +275,12 @@ bool healNpc(unsigned int npcId, int amount) {
 
 bool jumpNpc(unsigned int npcId, int magnitude) {
   if (magnitude < 0 || magnitude > 100) {
-    std::cerr << "Jump magnitude must be between 0 and 1, inclusive"
-              << std::endl;
+    err()->warn("Jump magnitude must be between 0 and 100, inclusive");
     return false;
   }
   auto iter = sprites().find(npcId);
   if (iter == sprites().end()) {
-    std::cerr << "Bad NPC ID: " << npcId << std::endl;
+    err()->warn("Bad NPC ID: {}", npcId);
     return false;
   }
   iter->second->startJump((float)magnitude / 100.0);
