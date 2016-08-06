@@ -2,7 +2,7 @@
 
 #include "../util.h"
 
-#include "../lib/json.hpp"
+#include <json.hpp>
 
 #include <SDL.h>
 

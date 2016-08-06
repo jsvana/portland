@@ -2,8 +2,6 @@
 
 #include "util.h"
 
-#include "lib/json.hpp"
-
 #include <fstream>
 #include <iostream>
 #include <sstream>

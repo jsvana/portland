@@ -6,7 +6,7 @@
 #include "map.h"
 #include "visual/dialog.h"
 
-#include "lib/selene/include/selene.h"
+#include <selene.h>
 
 #include <stack>
 #include <string>
