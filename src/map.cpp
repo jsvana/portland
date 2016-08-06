@@ -28,7 +28,7 @@ bool Map::load(const std::string &path) {
 
   auto tilesets = mapData["tilesets"].get<std::vector<nlohmann::json>>();
   for (auto &tileset : tilesets) {
-    tilesets_.push_back(std::make_unique<Tileset>(mapBasePath, tileset));
+    tilesets_.push_back(std::make_shared<Tileset>(mapBasePath, tileset));
   }
 
   mapWidth_ = mapData["width"].get<int>();
@@ -147,7 +147,7 @@ bool Map::positionWalkable(int x, int y, int w, int h) {
   return true;
 }
 
-Tileset *Map::tilesetForTile(unsigned int tile) {
+std::shared_ptr<Tileset> Map::tilesetForTile(unsigned int tile) {
   for (auto &tileset : tilesets_) {
     if (tileset->contains(tile)) {
       return tileset;
@@ -158,7 +158,7 @@ Tileset *Map::tilesetForTile(unsigned int tile) {
 }
 
 bool Map::ladder(unsigned int tile) {
-  Tileset *tileset = tilesetForTile(tile);
+  auto tileset = tilesetForTile(tile);
   if (!tileset) {
     return false;
   }
@@ -166,7 +166,7 @@ bool Map::ladder(unsigned int tile) {
 }
 
 bool Map::walkable(unsigned int tile) {
-  Tileset *tileset = tilesetForTile(tile);
+  auto tileset = tilesetForTile(tile);
   if (!tileset) {
     return false;
   }
@@ -200,7 +200,7 @@ void Map::render(Point cameraPos) {
         if (tile == 0) {
           continue;
         }
-        Tileset *tileset = tilesetForTile(tile);
+        auto tileset = tilesetForTile(tile);
         if (!tileset) {
           continue;
         }

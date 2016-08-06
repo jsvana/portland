@@ -5,7 +5,7 @@ extern SDL_Renderer *renderer;
 namespace visual {
 
   Dialog::Dialog(std::string message) : message_(message) {
-    map_ = std::make_unique<Map>("assets/maps/dialog.json");
+    map_ = std::unique_ptr<Map>(new Map("assets/maps/dialog.json"));
     map_->setPosition(position_.x, position_.y);
 
     // Default color is white
@@ -13,14 +13,14 @@ namespace visual {
     DEFAULT_COLOR.g = 255;
     DEFAULT_COLOR.b = 255;
 
-    moreIndicator_ = std::make_unique<Text>("v", 15);
+    moreIndicator_ = std::unique_ptr<Text>(new Text("v", 15));
     moreIndicator_->setColor(DEFAULT_COLOR);
     moreIndicator_->hide();
     indicatorOffset_ = 0;
 
     lineIndex_ = 0;
 
-    choiceIndicator_ = std::make_unique<Text>(">", 15);
+    choiceIndicator_ = std::unique_ptr<Text>(new Text(">", 15));
     choiceIndicator_->setColor(DEFAULT_COLOR);
     choiceIndicator_->hide();
     selectedChoice_ = -1;
@@ -44,10 +44,10 @@ namespace visual {
         line = tmp;
         tmp = "";
       }
-      auto text = std::make_unique<Text>(line, 15);
+      auto text = std::unique_ptr<Text>(new Text(line, 15));
       text->setColor(DEFAULT_COLOR);
 
-      lines_.push_back(text);
+      lines_.push_back(std::move(text));
     }
 
     reflowText();
@@ -59,10 +59,10 @@ namespace visual {
   void Dialog::addOptions(const std::vector<std::string> &choices) {
     for (auto &choice : choices) {
       choices_.push_back(choice);
-      auto choiceText = std::make_unique<Text>(choice, 15);
+      auto choiceText = std::unique_ptr<Text>(new Text(choice, 15));
       choiceText->setColor(DEFAULT_COLOR);
       choiceText->hide();
-      choicesText_.push_back(choiceText);
+      choicesText_.push_back(std::move(choiceText));
     }
 
     selectedChoice_ = choices_.size() - 1;
@@ -109,19 +109,18 @@ namespace visual {
       int offset = 0;
       int padding = 10;
       for (unsigned int i = 0; i < choices_.size(); i++) {
-        auto choiceText = choicesText_[i];
-        offset += choiceText->width() + padding;
+        offset += choicesText_[i]->width() + padding;
         if (i == (unsigned int)selectedChoice_) {
           choiceIndicator_->setPosition(
               position_.x + pixelWidth() - offset - choiceIndicator_->width() -
                   indicatorOffset_ + 2,
-              position_.y + pixelHeight() - choiceText->height());
+              position_.y + pixelHeight() - choicesText_[i]->height());
           choiceIndicator_->show();
         }
-        choiceText->setPosition(
+        choicesText_[i]->setPosition(
             position_.x + pixelWidth() - offset,
-            position_.y + pixelHeight() - choiceText->height());
-        choiceText->show();
+            position_.y + pixelHeight() - choicesText_[i]->height());
+        choicesText_[i]->show();
       }
     }
   }

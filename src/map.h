@@ -59,7 +59,7 @@ class Map {
   std::vector<MapLayer> layers_;
 
   // Vector of tilesets used in the map
-  std::vector<std::unique_ptr<Tileset>> tilesets_;
+  std::vector<std::shared_ptr<Tileset>> tilesets_;
 
   /**
    * Load a map from the given path
@@ -106,7 +106,7 @@ class Map {
    * @param tile Tile to get tileset for
    * @return Tileset for tile or nullptr if not found
    */
-  Tileset *tilesetForTile(unsigned int tile);
+  std::shared_ptr<Tileset> tilesetForTile(unsigned int tile);
 
   /**
    * Checks if tile is walkable
