@@ -2,6 +2,8 @@
 
 #include "screens/screen.h"
 
+#include <memory>
+
 namespace ScreenManager {
 
 /**
@@ -9,7 +11,7 @@ namespace ScreenManager {
  *
  * @return Topmost screen
  */
-Screen *top();
+std::shared_ptr<Screen> top();
 
 /**
  * Adds a new screen on top of the stack
@@ -19,11 +21,18 @@ Screen *top();
 void push(Screen *screen);
 
 /**
+ * Adds a new screen on top of the stack
+ *
+ * @param screen shared Screen pointer to push on the stack
+ */
+void push(std::shared_ptr<Screen>);
+
+/**
  * Removes the topmost screen from the stack
  *
  * @return Removed topmost screen
  */
-Screen *pop();
+std::shared_ptr<Screen> pop();
 
 /**
  * Removes the topmost screen, pushes the given screen, and
@@ -32,5 +41,14 @@ Screen *pop();
  * @param screen Screen to push on the stack
  * @return Removed topmost screen
  */
-Screen *replace(Screen *screen);
+std::shared_ptr<Screen> replace(Screen *screen);
+
+/**
+ * Removes the topmost screen, pushes the given screen, and
+ * returns the removed screen
+ *
+ * @param screen shared Screen pointer to push on the stack
+ * @return Removed topmost screen
+ */
+std::shared_ptr<Screen> replace(std::shared_ptr<Screen> screen);
 }

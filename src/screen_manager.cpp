@@ -3,20 +3,22 @@
 #include <stack>
 
 namespace ScreenManager {
-std::stack<Screen *> screens;
+std::stack<std::shared_ptr<Screen>> screens;
 
-Screen *top() { return screens.top(); }
+std::shared_ptr<Screen> top() { return screens.top(); }
 
-void push(Screen *screen) { screens.push(screen); }
+void push(Screen *screen) { push(std::shared_ptr<Screen>(screen)); }
 
-Screen *pop() {
-  Screen *top = screens.top();
+void push(std::shared_ptr<Screen> screen) { screens.push(screen); }
+
+std::shared_ptr<Screen> pop() {
+  auto top = screens.top();
   screens.pop();
   return top;
 }
 
-Screen *replace(Screen *screen) {
-  Screen *replaced = pop();
+std::shared_ptr<Screen> replace(Screen *screen) {
+  auto replaced = pop();
   push(screen);
   return replaced;
 }
