@@ -16,6 +16,10 @@ extern SDL_Renderer *renderer;
 MainScreen::MainScreen(int width, int height) : Screen(width, height) {
   ticks_ = 0;
 
+  heroHealth_.setMax(100);
+  heroHealth_.setValue(70);
+  heroHealth_.setDimensions(16, 16, 64, 16);
+
   // Load the game script
   GameState::lua().Load("assets/scripts/game.lua");
   GameState::lua()["init"]();
@@ -86,6 +90,10 @@ bool MainScreen::update(unsigned long ticks) {
       GameState::lua()[dialog->callbackFunc.c_str()](choice);
     }
     DialogManager::clearClosedDialog();
+  }
+
+  if (state[SDL_SCANCODE_T]) {
+    heroHealth_.shrink(1);
   }
 
   // Movement input
@@ -224,5 +232,6 @@ void MainScreen::render(float) {
   for (const auto &sprite : GameState::sprites()) {
     sprite.second->render(GameState::camera());
   }
+  heroHealth_.render();
   DialogManager::render();
 }

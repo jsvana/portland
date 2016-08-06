@@ -38,6 +38,7 @@ add_executable(
 	src/entities/npc.cpp
 	src/entities/sprite.cpp
 	src/map.cpp
+	src/progress_bar.cpp
 	src/screen_manager.cpp
 	src/screens/main_screen.cpp
 	src/screens/menu.cpp

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL.h>
+
 #include <ostream>
 
 /**
@@ -134,6 +136,15 @@ struct Rect {
   void move(int dx, int dy) {
     x += dx;
     y += dy;
+  }
+
+  SDL_Rect toSdlRect() {
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
+    r.w = w;
+    r.h = h;
+    return r;
   }
 
   bool operator==(Rect r) {

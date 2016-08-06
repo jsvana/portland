@@ -4,6 +4,7 @@
 #include "../entities/sprite.h"
 #include "../entities/npc.h"
 #include "../map.h"
+#include "../progress_bar.h"
 #include "../state.h"
 #include "../text.h"
 #include "../util.h"
@@ -33,6 +34,8 @@ class MainScreen : public Screen {
   const float JUMP_HOLD_INCREASE = 5;
   bool jumpHeld_ = false;
   float jumpHoldDuration_;
+
+  ProgressBar heroHealth_;
 
   // Camera to handle player movement
   BoundedPoint camera_;

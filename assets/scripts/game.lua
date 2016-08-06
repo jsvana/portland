@@ -1,7 +1,7 @@
 local helpers = require("assets.scripts.helpers")
 
 SPRITE_PATH = "assets/sprites/hero.json"
-HERO_TILE = 21
+HERO_TILE = 0
 UPDATE_INTERVAL = 100
 TILE_DIM = 16
 
