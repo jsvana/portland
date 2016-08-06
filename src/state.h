@@ -316,7 +316,7 @@ namespace GameState {
    * @return Whether the operation is successful
    */
   bool clearEvents();
-  //
+
   ///////////////////////
   // LUA API Callbacks //
   ///////////////////////
