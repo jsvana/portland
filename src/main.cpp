@@ -11,7 +11,7 @@ int main(int, char **) {
     return 1;
   }
 
-  Engine::pushScreen(new OpeningScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
+  Engine::pushScreen(new OpeningScreen());
 
   Engine::run();
 

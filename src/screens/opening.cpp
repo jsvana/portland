@@ -9,45 +9,36 @@
 
 extern SDL_Renderer *renderer;
 
-OpeningScreen::OpeningScreen(int width, int height) : Screen(width, height) {
-  SDL_Color white;
-  white.r = 255;
-  white.g = 255;
-  white.b = 255;
-  title_ = new visual::Text("Welcome to Vania", 15);
-  title_->setPositionCenter(width_ / 2, height_ / 4);
-  title_->setColor(white);
-  pressEnter_ = new visual::Text("Press Enter to continue", 15);
-  pressEnter_->setPositionCenter(width_ / 2, 3 * height_ / 4);
-  pressEnter_->setColor(white);
+OpeningScreen::OpeningScreen() {
+  font.loadFromFile("assets/fonts/arcade.ttf");
+
+  titleText.setFont(font);
+  titleText.setString("Welcome to Portland!");
+  auto titleSize = titleText.getLocalBounds();
+  titleText.setCharacterSize(30);
+  titleText.setOrigin(titleSize.width / 2, titleSize.height / 2);
+
+  enterText.setFont(font);
+  enterText.setString("Press Enter to continue");
+  enterText.setCharacterSize(15);
+  auto enterSize = enterText.getLocalBounds();
+  enterText.setOrigin(enterSize.width / 2, enterSize.height / 2);
 }
 
-void OpeningScreen::handleEvent(const SDL_Event &) {}
-
-bool OpeningScreen::update(unsigned long) {
-  auto state = SDL_GetKeyboardState(nullptr);
-
-  if (state[SDL_SCANCODE_RETURN]) {
-    Engine::replaceScreen(new MainScreen(width_, height_));
+void OpeningScreen::handleEvent(sf::Event &event) {
+  if (event.type == sf::Event::KeyPressed) {
+    Engine::replaceScreen(new MainScreen());
   }
-
-  return true;
 }
 
-void OpeningScreen::render(float) {
-  Uint8 r, g, b, a;
-  SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, a);
+bool OpeningScreen::update(sf::Time &time) {}
 
-  SDL_Rect rect;
-  rect.x = 0;
-  rect.y = 0;
-  rect.w = width_;
-  rect.h = height_;
-  SDL_RenderFillRect(renderer, &rect);
+void OpeningScreen::render(sf::RenderTarget &target) {
+  auto windowSize = target.getSize();
 
-  title_->render();
-  pressEnter_->render();
+  titleText.setPosition(windowSize.x / 2, windowSize.y / 4);
+  target.draw(titleText);
 
-  SDL_SetRenderDrawColor(renderer, r, g, b, a);
+  enterText.setPosition(windowSize.x / 2, windowSize.y / 5 * 3);
+  target.draw(enterText);
 }

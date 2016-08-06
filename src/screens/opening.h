@@ -4,7 +4,7 @@
 #include "../visual/text.h"
 #include "screen.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <string>
 
@@ -13,24 +13,26 @@
  */
 class OpeningScreen : public Screen {
  private:
-  visual::Text *title_;
-  visual::Text *pressEnter_;
+  sf::Font font;
+
+  sf::Text titleText;
+  sf::Text enterText;
 
  public:
-  OpeningScreen(int width, int height);
+  OpeningScreen();
 
   /**
    * @see Screen::handleEvent
    */
-  void handleEvent(const SDL_Event &event);
+  void handleEvent(sf::Event &event);
 
   /**
    * @see Screen::update
    */
-  bool update(unsigned long frames);
+  bool update(sf::Time &elapsed);
 
   /**
    * @see Screen::render
    */
-  void render(float interpolation);
+  void render(sf::RenderTarget &target);
 };

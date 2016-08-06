@@ -8,26 +8,8 @@
  * Class representing displayable, updatable game logic
  */
 class Screen {
- protected:
-  int width_;
-  int height_;
-
  public:
-  Screen(int width, int height) : width_(width), height_(height){};
-
-  /**
-   * Gets width of screen
-   *
-   * @return Width of screen
-   */
-  int width() { return width_; }
-
-  /**
-   * Gets height of screen
-   *
-   * @return Height of screen
-   */
-  int height() { return height_; }
+  virtual ~Screen() {}
 
   /**
    * SDL event handler, called by main game loop
