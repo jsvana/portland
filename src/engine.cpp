@@ -88,9 +88,6 @@ namespace Engine {
 
     GameState::initLuaApi();
 
-    // IDs will start at 1, the hero gets 0
-    GameState::hero()->id = 0;
-
     return true;
   }
 

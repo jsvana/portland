@@ -175,6 +175,10 @@ namespace GameState {
     hero_ = new Sprite(path);
     hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
     hero_->setTile(tile);
+
+    // IDs will start at 1, the hero gets 0
+    hero_->id = 0;
+
     return true;
   }
 
