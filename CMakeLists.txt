@@ -32,6 +32,11 @@ include_directories(
   "vendor/json"
 )
 
+set(PLATFORM_LIBARIES pthread)
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
+  set(PLATFORM_LIBARIES ${SDL2MAIN_LIBRARY})
+endif()
+
 file(GLOB_RECURSE portland_sources src/*.cpp)
 add_executable(
   becoming_portland
@@ -44,5 +49,5 @@ target_link_libraries(
   ${SDL2_IMAGE_LIBRARY}
   ${SDL2_TTF_LIBRARY}
   ${LUA_LIBRARY}
-  pthread
+  ${PLATFORM_LIBRARIES}
 )
