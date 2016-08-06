@@ -3,9 +3,10 @@
 #include "../visual/text.h"
 #include "screen.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <functional>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -14,21 +15,21 @@
  */
 class MenuScreen : public Screen {
  private:
-  const int FRAME_DEBOUNCE_DELAY = 5;
+  sf::Color SELECTED_COLOR = sf::Color(220, 220, 220);
+  sf::Color NORMAL_COLOR = sf::Color(144, 144, 144);
 
-  SDL_Color SELECTED_COLOR;
-  SDL_Color NORMAL_COLOR;
+  sf::Font font;
 
-  int selectedItem_;
-  unsigned int selectFrames_;
-
-  visual::Text *titleTexture_;
-  std::vector<visual::Text *> itemTextures_;
+  int selectedItem;
 
  protected:
-  std::string title_;
-  std::vector<std::string> items_;
-  std::vector<std::function<int(void)>> itemFunctions_;
+  std::string title;
+
+  std::vector<std::string> items;
+  std::vector<std::function<void(void)>> itemFunctions;
+
+  std::vector<std::shared_ptr<sf::Text>> textItems;
+  sf::Text titleText;
 
   /**
    * Loads menu contents and creates all texts
@@ -36,20 +37,20 @@ class MenuScreen : public Screen {
   void load();
 
  public:
-  MenuScreen(int width, int height);
+  MenuScreen();
 
   /**
    * @see Screen::handleEvent
    */
-  void handleEvent(const SDL_Event &event);
+  void handleEvent(sf::Event &event);
 
   /**
    * @see Screen::update
    */
-  bool update(unsigned long frames);
+  bool update(sf::Time &time);
 
   /**
    * @see Screen::render
    */
-  void render(float interpolation);
+  void render(sf::RenderTarget &target);
 };
