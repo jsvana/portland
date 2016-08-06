@@ -236,4 +236,5 @@ void MainScreen::render(float) {
   }
   heroHealth_.render();
   visual::DialogManager::render();
+  heroHealth_.render();
 }
