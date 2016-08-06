@@ -29,26 +29,16 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 include_directories(${SDL2_TTF_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIRS})
+include_directories("vendor/spdlog/include")
+include_directories("vendor/selene/include")
+include_directories("vendor/json")
 
+file(GLOB_RECURSE portland_sources src/*.cpp)
 add_executable(
 	becoming_portland
 
-	src/asset_manager.cpp
-	src/dialog.cpp
-	src/entities/npc.cpp
-	src/entities/sprite.cpp
-	src/map.cpp
-	src/screen_manager.cpp
-	src/screens/main_screen.cpp
-	src/screens/menu.cpp
-	src/screens/opening.cpp
-	src/screens/pause_menu.cpp
-	src/state.cpp
-	src/text.cpp
-	src/tileset.cpp
-
-	src/main.cpp
+  ${portland_sources}
 )
-target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES})
+target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES} pthread)
 install(TARGETS becoming_portland RUNTIME DESTINATION ${BIN_DIR})
 

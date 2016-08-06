@@ -1,6 +1,6 @@
 #include "opening.h"
 
-#include "../screen_manager.h"
+#include "../engine.h"
 #include "main_screen.h"
 
 #include <SDL.h>
@@ -14,10 +14,10 @@ OpeningScreen::OpeningScreen(int width, int height) : Screen(width, height) {
   white.r = 255;
   white.g = 255;
   white.b = 255;
-  title_ = new Text("Welcome to Vania", 15);
+  title_ = new visual::Text("Welcome to Vania", 15);
   title_->setPositionCenter(width_ / 2, height_ / 4);
   title_->setColor(white);
-  pressEnter_ = new Text("Press Enter to continue", 15);
+  pressEnter_ = new visual::Text("Press Enter to continue", 15);
   pressEnter_->setPositionCenter(width_ / 2, 3 * height_ / 4);
   pressEnter_->setColor(white);
 }
@@ -28,7 +28,7 @@ bool OpeningScreen::update(unsigned long) {
   auto state = SDL_GetKeyboardState(nullptr);
 
   if (state[SDL_SCANCODE_RETURN]) {
-    ScreenManager::replace(new MainScreen(width_, height_));
+    Engine::replaceScreen(new MainScreen(width_, height_));
   }
 
   return true;

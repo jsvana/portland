@@ -2,8 +2,6 @@
 
 #include "util.h"
 
-#include "lib/json.hpp"
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -17,7 +15,7 @@ Map::Map(const std::string &path) : path_(path) { load(path); }
 bool Map::load(const std::string &path) {
   std::ifstream mapfile(path, std::ios::in);
   if (!mapfile.is_open()) {
-    std::cerr << "Unable to open mapfile \"" << path << "\"" << std::endl;
+    err()->error("Unable to open mapfile \"{}\"", path);
     return false;
   }
 
@@ -155,7 +153,7 @@ Tileset *Map::tilesetForTile(unsigned int tile) {
       return tileset;
     }
   }
-  std::cout << "Could not find tileset for " << tile << std::endl;
+  err()->warn("Could not find tileset for {}", tile);
   return nullptr;
 }
 

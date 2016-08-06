@@ -1,6 +1,6 @@
 #pragma once
 
-#include "lib/json.hpp"
+#include <json.hpp>
 
 #include <SDL.h>
 

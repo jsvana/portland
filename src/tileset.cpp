@@ -1,6 +1,7 @@
 #include "tileset.h"
 
 #include "asset_manager.h"
+#include "util.h"
 
 #include <iostream>
 #include <string>
@@ -32,8 +33,7 @@ bool Tileset::load(const std::string &basePath,
 
   texture_ = AssetManager::getTexture(basePath + "/" + texturePath);
   if (texture_ == nullptr) {
-    std::cerr << "\"" << texturePath << "\" does not exist, skipping render"
-              << std::endl;
+    err()->error("\"{}\" does not exist, skipping render", texturePath);
     return false;
   }
 

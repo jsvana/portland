@@ -1,15 +1,10 @@
 #pragma once
 
-#include "../dialog.h"
-#include "../entities/sprite.h"
-#include "../entities/npc.h"
-#include "../map.h"
+#include "../progress_bar.h"
 #include "../state.h"
-#include "../text.h"
 #include "../util.h"
+#include "../visual/dialog.h"
 #include "screen.h"
-
-#include "../lib/selene/include/selene.h"
 
 #include <SDL.h>
 
@@ -34,6 +29,8 @@ class MainScreen : public Screen {
   bool jumpHeld_ = false;
   float jumpHoldDuration_;
 
+  ProgressBar heroHealth_;
+
   // Camera to handle player movement
   BoundedPoint camera_;
 
@@ -43,7 +40,8 @@ class MainScreen : public Screen {
    * @return Pixel dimensions of camera padding
    */
   Point cameraPadding() {
-    Point p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(), CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
+    Point p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(),
+            CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
     return p;
   }
 

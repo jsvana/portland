@@ -6,10 +6,18 @@ build/*
 .vs/
 Win32/
 becoming_portland.dir/
+becoming_portland
 
 # Editor things
 compile_commands.json
 .vscode
 
-# Vendor junk
-vendor/*/*
+
+# Vendor stuff
+vendor/mingw-*/*
+
+# CMake Things
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake

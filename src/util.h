@@ -1,6 +1,23 @@
 #pragma once
 
+#include <SDL.h>
+#include <spdlog/spdlog.h>
+
 #include <ostream>
+
+/**
+ * Gets a reference to the stdout logger
+ *
+ * @return Reference to stdout logger
+ */
+std::shared_ptr<spdlog::logger> out();
+
+/**
+ * Gets a reference to the stderr logger
+ *
+ * @return Reference to stderr logger
+ */
+std::shared_ptr<spdlog::logger> err();
 
 /**
  * Generic function to clamp a number inside the given min and max
@@ -134,6 +151,15 @@ struct Rect {
   void move(int dx, int dy) {
     x += dx;
     y += dy;
+  }
+
+  SDL_Rect toSdlRect() {
+    SDL_Rect r;
+    r.x = x;
+    r.y = y;
+    r.w = w;
+    r.h = h;
+    return r;
   }
 
   bool operator==(Rect r) {

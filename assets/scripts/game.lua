@@ -1,7 +1,7 @@
 local helpers = require("assets.scripts.helpers")
 
 SPRITE_PATH = "assets/sprites/hero.json"
-HERO_TILE = 21
+HERO_TILE = 0
 UPDATE_INTERVAL = 100
 TILE_DIM = 16
 
@@ -38,4 +38,8 @@ function update()
       npc:jump(100)
     end)
   end
+end
+
+function collision(id1, id2)
+  print("COLLISION, ID1", id1, "ID2", id2)
 end

@@ -3,6 +3,8 @@
 #include "tileset.h"
 #include "util.h"
 
+#include <json.hpp>
+
 #include <SDL.h>
 
 #include <set>

@@ -1,5 +1,7 @@
 #include "menu.h"
 
+#include "../util.h"
+
 #include <SDL.h>
 
 #include <iostream>
@@ -27,15 +29,14 @@ void MenuScreen::load() {
   titleColor.g = 255;
   titleColor.b = 255;
 
-  titleTexture_ = new Text(title_, 30);
+  titleTexture_ = new visual::Text(title_, 30);
   titleTexture_->setPositionCenter(width_ / 2, 20);
   titleTexture_->setColor(titleColor);
 
   for (unsigned int i = 0; i < items_.size(); i++) {
-    Text *itemTexture = new Text(items_[i], 10);
+    auto itemTexture = new visual::Text(items_[i], 10);
     if (itemTexture == nullptr) {
-      std::cerr << "Unable to load font for \"" << items_[i] << "\""
-                << std::endl;
+      err()->error("Unable to load font for \"{}\"", items_[i]);
       return;
     }
     itemTexture->setPositionCenter(width_ / 2,
