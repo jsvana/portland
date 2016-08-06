@@ -1,6 +1,6 @@
 #include "pause_menu.h"
 
-#include "../screen_manager.h"
+#include "../engine.h"
 
 #include <SDL.h>
 
@@ -24,7 +24,7 @@ PauseMenuScreen::PauseMenuScreen(int width, int height)
 }
 
 bool PauseMenuScreen::resume() {
-  ScreenManager::pop();
+  Engine::popScreen();
   return true;
 }
 

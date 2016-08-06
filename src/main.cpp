@@ -1,13 +1,8 @@
-#include "asset_manager.h"
 #include "constants.h"
-#include "screen_manager.h"
-#include "screens/opening.h"
-#include "state.h"
+#include "engine.h"
 #include "util.h"
 
-#include "engine.h"
-
-#include <iostream>
+#include "screens/opening.h"
 
 int main(int, char **) {
   if (!Engine::init()) {
@@ -16,7 +11,7 @@ int main(int, char **) {
     return 1;
   }
 
-  ScreenManager::push(new OpeningScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
+  Engine::pushScreen(new OpeningScreen(SCREEN_WIDTH, SCREEN_HEIGHT));
 
   Engine::run();
 

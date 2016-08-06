@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../screen_manager.h"
 #include "../visual/text.h"
 #include "screen.h"
 
