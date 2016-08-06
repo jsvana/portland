@@ -13,7 +13,3 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 popd
 
 msbuild ./build/becoming_portland.sln
-
-if exist ./compile_commands.json (
-  mlink ./build/compile_commands.json ./
-)
