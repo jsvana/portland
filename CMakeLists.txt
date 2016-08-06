@@ -18,12 +18,12 @@ elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 	endif()
 endif()
 
-find_package(PkgConfig REQUIRED)
+#find_package(PkgConfig REQUIRED)
 
-pkg_search_module(SDL2 REQUIRED sdl2)
-pkg_search_module(SDL2_IMAGE REQUIRED SDL2_image)
-pkg_search_module(SDL2_TTF REQUIRED SDL2_ttf)
-pkg_search_module(LUA REQUIRED lua52)
+find_package(SDL2 REQUIRED sdl2)
+find_package(SDL2_IMAGE REQUIRED SDL2_image)
+find_package(SDL2_TTF REQUIRED SDL2_ttf)
+find_package(LUA REQUIRED lua52)
 
 include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
