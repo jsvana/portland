@@ -12,4 +12,4 @@ cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 
 popd
 
-msbuild ./build/becoming_portland.sln
+msbuild ./build/becoming_portland.vcxproj
