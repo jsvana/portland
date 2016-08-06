@@ -16,7 +16,14 @@ Packages: `cmake`, `sdl2`, `sdl2_gfx`, `sdl2_image`, `sdl2_mixer`, `sdl2_ttf`, `
 
 ## Build and run
 
+# Linux/Mac
+
     $ ./scripts/run
+
+# Windows
+Ensure that run.bat is correctly pointing to all required libraries
+
+    $ ./scripts/run.bat
 
 ## Credits
 
