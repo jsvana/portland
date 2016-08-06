@@ -29,6 +29,7 @@ include_directories(${SDL2_INCLUDE_DIRS})
 include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 include_directories(${SDL2_TTF_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIRS})
+include_directories("vendor/spdlog/include")
 
 add_executable(
 	becoming_portland
@@ -49,6 +50,6 @@ add_executable(
 
 	src/main.cpp
 )
-target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES})
+target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES} pthread)
 install(TARGETS becoming_portland RUNTIME DESTINATION ${BIN_DIR})
 
