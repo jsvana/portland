@@ -3,6 +3,7 @@ cmake/
 # Built stuff
 bin/*
 build/*
+becoming_portland
 
 # Editor things
 compile_commands.json
@@ -10,3 +11,9 @@ compile_commands.json
 
 # Vendor junk
 vendor/*/*
+
+# CMake Things
+CMakeCache.txt
+CMakeFiles
+Makefile
+cmake_install.cmake
