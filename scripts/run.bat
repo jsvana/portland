@@ -8,8 +8,8 @@ setx VisualStudioVersion "14.0"
 
 pushd build
 
-cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
 
 popd
 
-msbuild ./build/becoming_portland.vcxproj
+msbuild ./build/becoming_portland.vcxproj /p:Platform=x64
