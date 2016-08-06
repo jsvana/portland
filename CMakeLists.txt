@@ -37,7 +37,7 @@ file(GLOB_RECURSE portland_sources src/*.cpp)
 add_executable(
 	becoming_portland
 
-    ${portland_sources}
+  ${portland_sources}
 )
 target_link_libraries(becoming_portland ${SDL2_LIBRARIES} ${SDL2_IMAGE_LIBRARIES} ${SDL2_TTF_LIBRARIES} ${LUA_LIBRARIES} pthread)
 install(TARGETS becoming_portland RUNTIME DESTINATION ${BIN_DIR})

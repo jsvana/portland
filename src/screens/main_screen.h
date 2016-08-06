@@ -1,5 +1,6 @@
 #pragma once
 
+#include "../progress_bar.h"
 #include "../state.h"
 #include "../util.h"
 #include "../visual/dialog.h"
@@ -27,6 +28,8 @@ class MainScreen : public Screen {
   const float JUMP_HOLD_INCREASE = 5;
   bool jumpHeld_ = false;
   float jumpHoldDuration_;
+
+  ProgressBar heroHealth_;
 
   // Camera to handle player movement
   BoundedPoint camera_;

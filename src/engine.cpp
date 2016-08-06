@@ -58,8 +58,9 @@ namespace Engine {
     }
 
     // Create window
-    window = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                              newWindowSize.w, newWindowSize.h,
+    window = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_UNDEFINED,
+                              SDL_WINDOWPOS_UNDEFINED, newWindowSize.w,
+                              newWindowSize.h,
                               SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
     if (window == nullptr) {
       err()->error("SDL_CreateWindow err->r: {}", SDL_GetError());
@@ -68,15 +69,16 @@ namespace Engine {
 
     // Create renderer for window
     renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED |
-                                  SDL_RENDERER_PRESENTVSYNC |
-                                  SDL_RENDERER_TARGETTEXTURE);
+                                                  SDL_RENDERER_PRESENTVSYNC |
+                                                  SDL_RENDERER_TARGETTEXTURE);
     if (renderer == nullptr) {
       err()->error("SDL_CreateRenderer err->r: {}", SDL_GetError());
       return false;
     }
 
-    backBuffer = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
-                                   SDL_TEXTUREACCESS_TARGET, nativeSize.w, nativeSize.h);
+    backBuffer =
+        SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
+                          SDL_TEXTUREACCESS_TARGET, nativeSize.w, nativeSize.h);
     if (backBuffer == nullptr) {
       err()->error("SDL_CreateTexture err->r: {}", SDL_GetError());
       return false;
@@ -133,8 +135,8 @@ namespace Engine {
 
       // Calculate interpolation
       float interpolation =
-        (float)(SDL_GetTicks() + MILLISECONDS_PER_FRAME - nextTick) /
-        (float)MILLISECONDS_PER_FRAME;
+          (float)(SDL_GetTicks() + MILLISECONDS_PER_FRAME - nextTick) /
+          (float)MILLISECONDS_PER_FRAME;
 
       // Render to backbuffer and copy to screen
       screen->render(interpolation);
@@ -154,15 +156,16 @@ namespace Engine {
           newWindowSize.h = w * 9 / 16;
         }
 
-        // Half of the difference between the native size and the window size will
+        // Half of the difference between the native size and the window size
+        // will
         // give us the size the black bars should be.
         newWindowSize.x = (w - newWindowSize.w) / 2;
         newWindowSize.y = (h - newWindowSize.h) / 2;
 
         SDL_DestroyTexture(backBuffer);
-        backBuffer = SDL_CreateTexture(renderer, SDL_GetWindowPixelFormat(window),
-                                       SDL_TEXTUREACCESS_TARGET, nativeSize.w,
-                                       nativeSize.h);
+        backBuffer = SDL_CreateTexture(
+            renderer, SDL_GetWindowPixelFormat(window),
+            SDL_TEXTUREACCESS_TARGET, nativeSize.w, nativeSize.h);
 
         resizeFlag = false;
       }

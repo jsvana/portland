@@ -316,4 +316,11 @@ namespace GameState {
    * @return Whether the operation is successful
    */
   bool clearEvents();
+
+  ///////////////////////
+  // LUA API Callbacks //
+  ///////////////////////
+
+  void collision(unsigned int spriteId1, unsigned int spriteId2);
+
 }
