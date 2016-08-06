@@ -4,12 +4,13 @@ namespace GameState {
 
   bool initialized_ = false;
 
-  BoundedPoint camera_;
+  sf::Vector2f camera_;
+  sf::FloatRect cameraBounds_;
 
   unsigned int ticks_ = 0;
 
   std::shared_ptr<Sprite> hero_;
-  int moveSpeed_;
+  float moveSpeed_;
 
   // Jumping stuff
   bool jumping_ = false;
@@ -56,14 +57,7 @@ namespace GameState {
     lua_["gameRegisterTileEvent"] = &GameState::registerTileEvent;
   }
 
-  void updateCamera() {
-    camera_.xMin = 0;
-    camera_.xMax = map()->pixelWidth() - SCREEN_WIDTH;
-    camera_.yMin = 0;
-    camera_.yMax = map()->pixelHeight() - SCREEN_HEIGHT;
-  }
-
-  BoundedPoint &camera() { return camera_; }
+  sf::Vector2f &camera() { return camera_; }
 
   void setTicks(unsigned int ticks) { ticks_ = ticks; }
 
@@ -73,7 +67,9 @@ namespace GameState {
 
   std::shared_ptr<Sprite> hero() { return hero_; }
 
-  void setHeroMoveSpeed(int speed) { moveSpeed_ = speed; }
+  void setHeroMoveSpeed(int amount, int total) {
+    moveSpeed_ = (float)amount / (float)total;
+  }
 
   int heroMoveSpeed() { return moveSpeed_; }
 
@@ -171,16 +167,12 @@ namespace GameState {
     std::unordered_map<unsigned int, std::shared_ptr<Sprite>> sprites;
     sprites_.push(sprites);
 
-    updateCamera();
-
     return true;
   }
 
   bool popMap() {
     maps_.pop();
     sprites_.pop();
-
-    updateCamera();
 
     return true;
   }
@@ -197,15 +189,16 @@ namespace GameState {
   }
 
   bool setCharacterPosition(int x, int y) {
-    Point p = map()->mapToPixel(x, y);
+    sf::Vector2f p = map()->mapToPixel(x, y);
 
     hero_->setPosition(p);
-    camera_.setPosition(p.x - SCREEN_WIDTH / 2, p.y - SCREEN_HEIGHT / 2);
+    camera_.x = p.x - SCREEN_WIDTH / 2;
+    camera_.y = p.y - SCREEN_HEIGHT / 2;
     return true;
   }
 
-  bool setCharacterMoveSpeed(int speed) {
-    moveSpeed_ = speed;
+  bool setCharacterMoveSpeed(int amount, int total) {
+    moveSpeed_ = (float)amount / (float)total;
     return true;
   }
 

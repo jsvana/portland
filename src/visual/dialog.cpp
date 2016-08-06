@@ -33,7 +33,7 @@ namespace visual {
       text.setFont(*font_);
       text.setString(line);
 
-      text.setColor(sf::Color::White);
+      text.setFillColor(sf::Color::White);
 
       lines_.push_back(text);
     }
@@ -102,7 +102,7 @@ namespace visual {
         sf::Text choiceText;
         choiceText.setFont(*font_);
         choiceText.setString(choices_[i]);
-        choiceText.setColor(sf::Color::White);
+        choiceText.setFillColor(sf::Color::White);
         auto dim = choiceText.getGlobalBounds();
         offset += dim.width + padding;
         if (i == (unsigned int)selectedChoice_) {

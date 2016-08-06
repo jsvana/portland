@@ -22,7 +22,11 @@ namespace Engine {
   bool init() {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Portland");
 
+    window.setFramerateLimit(60);
+
     GameState::initLuaApi();
+
+    out()->info("Game initialized");
 
     return true;
   }

@@ -45,7 +45,7 @@ bool Map::load(const std::string &path) {
   return true;
 }
 
-void Map::ensurePointInMap(Point &p) {
+void Map::ensurePointInMap(sf::Vector2f &p) {
   if (p.x < 0) {
     p.x = 0;
   } else if (p.x >= mapWidth_) {
@@ -58,16 +58,16 @@ void Map::ensurePointInMap(Point &p) {
   }
 }
 
-Point Map::mapToPixel(int x, int y) {
-  Point pixelPosition(x, y);
+sf::Vector2f Map::mapToPixel(int x, int y) {
+  sf::Vector2f pixelPosition(x, y);
   ensurePointInMap(pixelPosition);
   pixelPosition.x *= tileWidth_;
   pixelPosition.y *= tileHeight_;
   return pixelPosition;
 }
 
-Point Map::pixelToMap(int x, int y) {
-  Point mapPosition(x, y);
+sf::Vector2f Map::pixelToMap(int x, int y) {
+  sf::Vector2f mapPosition(x, y);
   mapPosition.x /= tileWidth_;
   mapPosition.y /= tileHeight_;
   ensurePointInMap(mapPosition);
@@ -75,8 +75,8 @@ Point Map::pixelToMap(int x, int y) {
 }
 
 std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
-  Point topLeft = pixelToMap(x, y);
-  Point bottomRight = pixelToMap(x + w - 1, y + h - 1);
+  auto topLeft = pixelToMap(x, y);
+  auto bottomRight = pixelToMap(x + w - 1, y + h - 1);
 
   // Only add the top nonzero tile
   std::set<unsigned int> tiles;
@@ -95,8 +95,8 @@ std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
 }
 
 sf::FloatRect Map::snapRectToTileBelow(sf::FloatRect dim) {
-  Point bottomLeft = pixelToMap(dim.left, dim.top + dim.height - 1);
-  Point bottomRight =
+  auto bottomLeft = pixelToMap(dim.left, dim.top + dim.height - 1);
+  auto bottomRight =
       pixelToMap(dim.left + dim.width - 1, dim.top + dim.height - 1);
 
   for (int i = bottomLeft.y; i < mapHeight_; i++) {
@@ -106,7 +106,7 @@ sf::FloatRect Map::snapRectToTileBelow(sf::FloatRect dim) {
         if (tile == 0 || walkable(tile)) {
           continue;
         }
-        Point newPos = mapToPixel(j, i);
+        auto newPos = mapToPixel(j, i);
         newPos.y -= dim.height + 1;
         dim.top = newPos.y;
         return dim;
@@ -118,7 +118,7 @@ sf::FloatRect Map::snapRectToTileBelow(sf::FloatRect dim) {
 }
 
 bool Map::isLadder(sf::FloatRect dim) {
-  Point pos = pixelToMap(dim.left, dim.top);
+  auto pos = pixelToMap(dim.left, dim.top);
   for (int i = (int)layers_.size() - 1; i >= 0; i--) {
     unsigned int tile = layers_[i].tileAt(pos.x, pos.y);
     if (tile != 0 && ladder(tile)) {
@@ -180,7 +180,7 @@ bool Map::update(sf::Time &time) {
   return true;
 }
 
-void Map::render(sf::RenderTarget &window, Point cameraPos) {
+void Map::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
   int xStart, xEnd;
   int yStart, yEnd;
   xStart = 0;

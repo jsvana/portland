@@ -62,10 +62,10 @@ namespace visual {
     int lineIndex_;
 
     // Position of dialog (almost always the bottom of the screen)
-    Point position_;
+    sf::Vector2f position_;
 
     // Always at (0, 0)
-    Point camera_;
+    sf::Vector2f camera_;
 
     // Used for debouncing input
     unsigned int selectFrames_;
@@ -115,11 +115,11 @@ namespace visual {
     void setPosition(int x, int y);
 
     /**
-     * Sets dialog position with a Point
+     * Sets dialog position with a sf::Vector2f
      *
      * @param position Point of new dialog position
      */
-    void setPosition(Point position);
+    void setPosition(sf::Vector2f position);
 
     /**
      * Gets dialog width in pixels
@@ -144,7 +144,7 @@ namespace visual {
     // and the default color here
     void setColor(sf::Color color) {
       for (auto &line : lines_) {
-        line.setColor(color);
+        line.setFillColor(color);
       }
     }
 

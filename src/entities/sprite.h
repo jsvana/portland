@@ -97,8 +97,8 @@ class Sprite {
    *
    * @return Position of sprite
    */
-  Point getPosition() {
-    Point position;
+  sf::Vector2f getPosition() {
+    sf::Vector2f position;
     position.x = dimensions_.left;
     position.y = dimensions_.top;
     return position;
@@ -120,7 +120,7 @@ class Sprite {
    *
    * @param position New position of sprite
    */
-  void setPosition(Point position) {
+  void setPosition(sf::Vector2f position) {
     dimensions_.left = position.x;
     dimensions_.top = position.y;
   }
@@ -268,5 +268,5 @@ class Sprite {
    * @param cameraPos Position of camera to render sprite
    * relative to
    */
-  void render(sf::RenderTarget &window, Point cameraPos);
+  void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
 };

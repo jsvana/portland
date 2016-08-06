@@ -22,21 +22,8 @@ MainScreen::MainScreen() {
   GameState::markInitialized();
 }
 
-void MainScreen::handleEvent(sf::Event &event) {
-  visual::DialogManager::handleEvent(event);
-
-  if (event.type == sf::Event::KeyPressed) {
-    switch (event.key.code) {
-      case sf::Keyboard::P:
-        Engine::pushScreen(new PauseMenuScreen());
-        break;
-      default:
-        break;
-    }
-  }
-}
-
-bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
+bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite,
+                             sf::Vector2f moveDelta) {
   auto dim = sprite->getDimensions();
   auto oldDim = dim;
   dim.left += moveDelta.x;
@@ -53,14 +40,14 @@ bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
 }
 
 sf::FloatRect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite,
-                                        Point &moveDelta) {
+                                        sf::Vector2f &moveDelta) {
   auto dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);
   } else {
     // Falling
     sprite->updateVelocity();
-    Point jumpDelta(0, sprite->velocity());
+    sf::Vector2f jumpDelta(0, sprite->velocity());
     bool moved = fixMovement(sprite, jumpDelta);
     dim = sprite->getDimensions();
     if (!moved) {
@@ -74,10 +61,24 @@ sf::FloatRect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite,
         dim = GameState::map()->snapRectToTileBelow(dim);
       }
     } else {
-      moveDelta.move(jumpDelta);
+      moveDelta += jumpDelta;
     }
   }
   return dim;
+}
+
+void MainScreen::handleEvent(sf::Event &event) {
+  visual::DialogManager::handleEvent(event);
+
+  if (event.type != sf::Event::KeyPressed) {
+    return;
+  }
+
+  if (event.key.code == sf::Keyboard::P) {
+    Engine::pushScreen(new PauseMenuScreen());
+  } else if (event.key.code == sf::Keyboard::T) {
+    heroHealth_.shrink(5);
+  }
 }
 
 bool MainScreen::update(sf::Time &time) {
@@ -104,18 +105,16 @@ bool MainScreen::update(sf::Time &time) {
     visual::DialogManager::clearClosedDialog();
   }
 
-  if (state[SDL_SCANCODE_T]) {
-    heroHealth_.shrink(1);
-  }
-
-  // Movement input
-  Point moveDelta;
-  if (state[SDL_SCANCODE_A] || state[SDL_SCANCODE_LEFT]) {
+  sf::Vector2f moveDelta;
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
+      sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
     moveDelta.x -= GameState::heroMoveSpeed();
   }
-  if (state[SDL_SCANCODE_D] || state[SDL_SCANCODE_RIGHT]) {
+  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
+      sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
     moveDelta.x += GameState::heroMoveSpeed();
   }
+  fixMovement(GameState::hero(), moveDelta);
 
   bool shouldJump = false;
   if (state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP] ||
@@ -169,7 +168,7 @@ bool MainScreen::update(sf::Time &time) {
 
   // Check for interactions
   if (state[SDL_SCANCODE_SPACE]) {
-    Point interactionPoint =
+    sf::Vector2f interactionPoint =
         GameState::map()->pixelToMap(GameState::hero()->getPosition());
     SpriteDirection dir = GameState::hero()->getDirection();
     if (dir == SPRITE_LEFT) {
@@ -230,21 +229,21 @@ void MainScreen::render(sf::RenderTarget &window) {
   xDiff = (dim.left + dim.width - GameState::camera().x + cameraPad.x) -
           (mapPos.x + windowSize.x);
   if (xDiff > 0) {
-    GameState::camera().move(-xDiff, 0);
+    GameState::camera().x -= xDiff;
   }
   xDiff = (dim.left - GameState::camera().x - cameraPad.x) + mapPos.x;
   if (xDiff < 0) {
-    GameState::camera().move(xDiff, 0);
+    GameState::camera().x += xDiff;
   }
   int yDiff;
   yDiff = (dim.top + dim.height - GameState::camera().y + cameraPad.y) -
           (mapPos.y + windowSize.y);
   if (yDiff > 0) {
-    GameState::camera().move(0, -yDiff);
+    GameState::camera().y -= yDiff;
   }
   yDiff = (dim.top - GameState::camera().y - cameraPad.y) + mapPos.y;
   if (yDiff < 0) {
-    GameState::camera().move(0, yDiff);
+    GameState::camera().y += yDiff;
   }
 
   for (const auto &sprite : GameState::sprites()) {

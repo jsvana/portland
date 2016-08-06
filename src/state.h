@@ -33,7 +33,7 @@ namespace GameState {
   /**
    * Gets game camera
    */
-  BoundedPoint &camera();
+  sf::Vector2f &camera();
 
   /**
    * Sets the current game ticks
@@ -195,7 +195,7 @@ namespace GameState {
    * @param speed New move speed
    * @return Whether the operation is successful
    */
-  bool setCharacterMoveSpeed(int speed);
+  bool setCharacterMoveSpeed(int amount, int total);
 
   /**
    * Sets the character's max HP

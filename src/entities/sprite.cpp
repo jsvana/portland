@@ -91,7 +91,7 @@ void Sprite::update(sf::Time &time) {
   }
 }
 
-void Sprite::render(sf::RenderTarget &window, Point cameraPos) {
+void Sprite::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
   int tile = tile_;
   if (!multiFile_) {
     tile += frame_;

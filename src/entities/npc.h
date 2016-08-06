@@ -14,5 +14,5 @@ class Npc : public Sprite {
  public:
   Npc(const std::string &path) : Sprite(path) {}
 
-  void render(sf::RenderTarget &window, Point cameraPos);
+  void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
 };

@@ -56,7 +56,7 @@ class MainScreen : public Screen {
    * @param moveDelta Distance to try to move the sprite
    * @return Whether the sprite was moved
    */
-  bool fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta);
+  bool fixMovement(std::shared_ptr<Sprite> sprite, sf::Vector2f moveDelta);
 
   /**
    * Takes a sprite and updates its gravity, also updates
@@ -66,7 +66,7 @@ class MainScreen : public Screen {
    * @param moveDelta Previous move amount
    * @return Updated sprite dimensions
    */
-  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite, Point &moveDelta);
+  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite, sf::Vector2f &moveDelta);
 
   /**
    * Helper for updateGravity that passes an initial
@@ -76,7 +76,7 @@ class MainScreen : public Screen {
    * @return Updated sprite dimensions
    */
   sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite) {
-    Point moveDelta;
+    sf::Vector2f moveDelta;
     return updateGravity(sprite, moveDelta);
   }
 
