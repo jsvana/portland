@@ -2,6 +2,8 @@
 
 #include "../asset_manager.h"
 
+#include "spdlog/spdlog.h"
+
 #include <SDL.h>
 
 #include <fstream>
@@ -22,7 +24,7 @@ bool Sprite::load(const std::string &path) {
   std::ifstream spritefile(path);
 
   if (!spritefile.is_open()) {
-    std::cout << "Unable to open spritefile \"" << path << "\"" << std::endl;
+    err()->error("Unable to load spritefile \"{}\": {}", path);
     return false;
   }
 
@@ -42,7 +44,7 @@ bool Sprite::load(const std::string &path) {
   std::vector<std::string> texturePaths;
   if (multiFile_) {
     texturePaths = spriteData["frames"].get<std::vector<std::string>>();
-    totalFrames_ = (int) texturePaths.size();
+    totalFrames_ = (int)texturePaths.size();
   } else {
     texturePaths.push_back(spriteData["texture"].get<std::string>());
     totalFrames_ = spriteData["total_frames"].get<int>();
@@ -53,8 +55,7 @@ bool Sprite::load(const std::string &path) {
     std::string fullPath = basePath + "/" + path;
     auto texture = AssetManager::getTexture(fullPath);
     if (texture == nullptr) {
-      std::cout << "\"" << fullPath << "\" does not exist, skipping render"
-                << std::endl;
+      err()->warn("\"{}\" does not exist, skipping render", fullPath);
       return false;
     }
 

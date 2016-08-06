@@ -1,5 +1,7 @@
 #include "menu.h"
 
+#include "../util.h"
+
 #include <SDL.h>
 
 #include <iostream>
@@ -34,8 +36,7 @@ void MenuScreen::load() {
   for (unsigned int i = 0; i < items_.size(); i++) {
     Text *itemTexture = new Text(items_[i], 10);
     if (itemTexture == nullptr) {
-      std::cerr << "Unable to load font for \"" << items_[i] << "\""
-                << std::endl;
+      err()->error("Unable to load font for \"{}\"", items_[i]);
       return;
     }
     itemTexture->setPositionCenter(width_ / 2,

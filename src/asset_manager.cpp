@@ -1,5 +1,7 @@
 #include "asset_manager.h"
 
+#include "util.h"
+
 #include <iostream>
 #include <map>
 
@@ -16,8 +18,7 @@ TTF_Font *getFont(const std::string &path, int size) {
   }
   TTF_Font *font = TTF_OpenFont(path.c_str(), size);
   if (font == nullptr) {
-    std::cout << "Error loading \"" << path << "\"" << std::endl;
-    std::cout << TTF_GetError() << std::endl;
+    err()->error("Error loading \"{}\": {}", path, TTF_GetError());
     return nullptr;
   }
   fonts_[path] = font;
@@ -31,8 +32,7 @@ SDL_Texture *getTexture(const std::string &path) {
   }
   SDL_Texture *texture = IMG_LoadTexture(renderer, path.c_str());
   if (texture == nullptr) {
-    std::cout << "Error loading \"" << path << "\"" << std::endl;
-    std::cout << IMG_GetError() << std::endl;
+    err()->error("Error loading \"{}\": {}", path, IMG_GetError());
     return nullptr;
   }
   textures_[path] = texture;
