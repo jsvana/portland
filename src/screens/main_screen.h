@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../progress_bar.h"
 #include "../state.h"
 #include "../util.h"
 #include "../visual/dialog.h"
+#include "../visual/progress_bar.h"
 #include "screen.h"
 
 #include <SFML/Graphics.hpp>
@@ -21,7 +21,7 @@ class MainScreen : public Screen {
   // Once character hits these points screen will move instead of character
   const Point CAMERA_PADDING_TILES{6, 2};
 
-  unsigned long ticks_;
+  sf::Time time_;
 
   const float MAX_JUMP_HOLD_DURATION = 20;
   const float MIN_JUMP_HOLD_DURATION = 10;
@@ -81,7 +81,7 @@ class MainScreen : public Screen {
   }
 
  public:
-  MainScreen(int width, int height);
+  MainScreen();
 
   /**
    * @see Screen::handleEvent
@@ -91,10 +91,10 @@ class MainScreen : public Screen {
   /**
    * @see Screen::update
    */
-  bool update(unsigned long frames);
+  bool update(sf::Time &time);
 
   /**
    * @see Screen::render
    */
-  void render(float interpolation);
+  void render(sf::RenderTarget &window);
 };

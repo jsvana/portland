@@ -28,10 +28,10 @@ class PauseMenuScreen : public MenuScreen {
   bool quit();
 
  public:
-  PauseMenuScreen(int width, int height);
+  PauseMenuScreen();
 
   /**
    * @see Screen::render
    */
-  void render(float interpolation);
+  void render(sf::RenderTarget &window);
 };

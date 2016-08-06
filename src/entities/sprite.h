@@ -4,7 +4,7 @@
 
 #include <json.hpp>
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <string>
 
@@ -29,6 +29,7 @@ class Sprite {
   float scale_;
   bool multiFile_;
   int frameSpacing_;
+  int columns_;
 
   int frame_ = 0;
 
@@ -38,13 +39,16 @@ class Sprite {
   bool jumping_ = false;
   int velocityY_ = 0;
 
+  sf::Time time_;
+
   // Ticks at last frame transition
   unsigned long lastTicks_ = 0;
 
   const unsigned long FRAME_TICKS_INTERVAL = 24;
 
   Rect textureDimensions_;
-  std::vector<SDL_Texture *> textures_;
+  std::vector<sf::Texture> textures_;
+  sf::Sprite sprite_;
 
   SpriteDirection direction_;
   SpriteDirection visualDirection_;
@@ -253,15 +257,16 @@ class Sprite {
   /**
    * Animates sprite
    *
-   * @param ticks Number of ticks from start
+   * @param time Amount of time since last update
    */
-  void update(unsigned long ticks);
+  void update(sf::Time &time);
 
   /**
    * Renders sprite relative to cameraPos
    *
+   * @param window Window to render to
    * @param cameraPos Position of camera to render sprite
    * relative to
    */
-  void render(Point cameraPos) const;
+  void render(sf::RenderTarget &window, Point cameraPos);
 };

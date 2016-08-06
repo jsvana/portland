@@ -1,9 +1,8 @@
 #pragma once
 
-#include "util.h"
+#include "../util.h"
 
-#include <SDL.h>
-#include <SDL_ttf.h>
+#include <SFML/Graphics.hpp>
 
 class ProgressBar {
  private:
@@ -128,6 +127,8 @@ class ProgressBar {
 
   /**
    * Renders the progress bar
+   *
+   * @param window Window to render to
    */
-  void render();
+  void render(sf::RenderTarget &window);
 };

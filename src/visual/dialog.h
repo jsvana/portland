@@ -150,10 +150,10 @@ namespace visual {
     /**
      * Handles key input and text reflow
      *
-     * @param ticks Number of ticks since start
+     * @param time Amount of time since last update
      * @return Whether dialog is still open or not
      */
-    bool update(unsigned long ticks);
+    bool update(sf::Time &time);
 
     /**
      * Renders the dialog
@@ -223,10 +223,10 @@ namespace visual {
     /**
      * Update the first dialog in the queue
      *
-     * @param ticks Number of ticks since start
+     * @param time Amount of time since last update
      * @return Whether dialogs are cleared
      */
-    bool update(unsigned int ticks);
+    bool update(sf::Time &time);
 
     /**
      * Renders the first dialog in the queue

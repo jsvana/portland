@@ -13,9 +13,7 @@
 
 extern SDL_Renderer *renderer;
 
-MainScreen::MainScreen(int width, int height) : Screen(width, height) {
-  ticks_ = 0;
-
+MainScreen::MainScreen() {
   heroHealth_.setMax(100);
   heroHealth_.setValue(70);
   heroHealth_.setDimensions(16, 16, 64, 16);
@@ -26,7 +24,7 @@ MainScreen::MainScreen(int width, int height) : Screen(width, height) {
   GameState::markInitialized();
 }
 
-void MainScreen::handleEvent(sf::Event &event) {}
+void MainScreen::handleEvent(sf::Event &) {}
 
 bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
   Rect dim = sprite->getDimensions();
@@ -70,20 +68,20 @@ Rect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite,
   return dim;
 }
 
-bool MainScreen::update(unsigned long ticks) {
+bool MainScreen::update(sf::Time &time) {
   // Used for getting ticks in Lua
-  ticks_ = ticks;
+  time_ = time;
 
-  GameState::map()->update(ticks);
-  GameState::hero()->update(ticks);
+  GameState::map()->update(time_);
+  GameState::hero()->update(time_);
   for (auto &sprite : GameState::sprites()) {
-    sprite.second->update(ticks);
+    sprite.second->update(time_);
   }
   GameState::lua()["update"]();
 
   auto state = SDL_GetKeyboardState(nullptr);
 
-  if (visual::DialogManager::update(ticks)) {
+  if (visual::DialogManager::update(time_)) {
     return true;
   } else {
     auto dialog = visual::DialogManager::closedDialog();
@@ -144,7 +142,7 @@ bool MainScreen::update(unsigned long ticks) {
   }
 
   if (state[SDL_SCANCODE_P] || state[SDL_SCANCODE_ESCAPE]) {
-    Engine::pushScreen(new PauseMenuScreen(width_, height_));
+    Engine::pushScreen(new PauseMenuScreen());
   }
 
   // Change character direction
@@ -198,24 +196,6 @@ bool MainScreen::update(unsigned long ticks) {
     GameState::hero()->setDimensions(dim);
 
     GameState::runTileEvent();
-
-    // Scrolling
-    Point mapPos = GameState::map()->getPosition();
-    Point cameraPad = cameraPadding();
-    if ((moveDelta.x > 0 &&
-         dim.x + dim.w - GameState::camera().x + cameraPad.x >=
-             mapPos.x + width_) ||
-        (moveDelta.x < 0 &&
-         dim.x - GameState::camera().x - cameraPad.x < mapPos.x)) {
-      GameState::camera().move(moveDelta.x, 0);
-    }
-    if ((moveDelta.y > 0 &&
-         dim.y + dim.h - GameState::camera().y + cameraPad.y >=
-             mapPos.y + height_) ||
-        (moveDelta.y < 0 &&
-         dim.y - GameState::camera().y - cameraPad.y < mapPos.y)) {
-      GameState::camera().move(0, moveDelta.y);
-    }
   }
 
   for (auto &sprite : GameState::sprites()) {
@@ -230,12 +210,40 @@ bool MainScreen::update(unsigned long ticks) {
   return true;
 }
 
-void MainScreen::render(float) {
-  GameState::map()->render(GameState::camera());
-  GameState::hero()->render(GameState::camera());
-  for (const auto &sprite : GameState::sprites()) {
-    sprite.second->render(GameState::camera());
+void MainScreen::render(sf::RenderTarget &window) {
+  GameState::map()->render(window, GameState::camera());
+
+  GameState::hero()->render(window, GameState::camera());
+  auto mapPos = GameState::map()->getPosition();
+  auto cameraPad = cameraPadding();
+  auto windowSize = window.getSize();
+  auto dim = GameState::hero()->getDimensions();
+  int xDiff;
+  xDiff = (dim.x + dim.w - GameState::camera().x + cameraPad.x) -
+          (mapPos.x + windowSize.x);
+  if (xDiff > 0) {
+    GameState::camera().move(-xDiff, 0);
   }
-  heroHealth_.render();
-  visual::DialogManager::render();
+  xDiff = (dim.x - GameState::camera().x - cameraPad.x) + mapPos.x;
+  if (xDiff < 0) {
+    GameState::camera().move(xDiff, 0);
+  }
+  int yDiff;
+  yDiff = (dim.y + dim.h - GameState::camera().y + cameraPad.y) -
+          (mapPos.y + windowSize.y);
+  if (yDiff > 0) {
+    GameState::camera().move(0, -yDiff);
+  }
+  yDiff = (dim.y - GameState::camera().y - cameraPad.y) + mapPos.y;
+  if (yDiff < 0) {
+    GameState::camera().move(0, yDiff);
+  }
+
+  for (const auto &sprite : GameState::sprites()) {
+    sprite.second->render(window, GameState::camera());
+  }
+
+  heroHealth_.render(window);
+
+  visual::DialogManager::render(window);
 }

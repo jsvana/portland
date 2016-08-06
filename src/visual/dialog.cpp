@@ -120,7 +120,7 @@ namespace visual {
     }
   }
 
-  bool Dialog::update(unsigned long ticks) {
+  bool Dialog::update(sf::Time &time) {
     if (selectFrames_ > 0) {
       selectFrames_ -= 1;
     }

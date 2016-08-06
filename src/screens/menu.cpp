@@ -34,25 +34,25 @@ void MenuScreen::handleEvent(sf::Event &event) {
   if (event.type == sf::Event::KeyPressed) {
     textItems[selectedItem]->setColor(NORMAL_COLOR);
     switch (event.key.code) {
-    case sf::Keyboard::Up:
-    case sf::Keyboard::W:
-      selectedItem = (selectedItem + 1) % items.size();
-      break;
-    case sf::Keyboard::Down:
-    case sf::Keyboard::S:
-      selectedItem = (selectedItem > 0) ? selectedItem - 1 : items.size() - 1;
-      break;
-    case sf::Keyboard::Return:
-      itemFunctions[selectedItem]();
-      break;
-    default:
-      break;
+      case sf::Keyboard::Up:
+      case sf::Keyboard::W:
+        selectedItem = (selectedItem + 1) % items.size();
+        break;
+      case sf::Keyboard::Down:
+      case sf::Keyboard::S:
+        selectedItem = (selectedItem > 0) ? selectedItem - 1 : items.size() - 1;
+        break;
+      case sf::Keyboard::Return:
+        itemFunctions[selectedItem]();
+        break;
+      default:
+        break;
     }
     textItems[selectedItem]->setColor(SELECTED_COLOR);
   }
 }
 
-bool MenuScreen::update(sf::Time &) {return true;}
+bool MenuScreen::update(sf::Time &) { return true; }
 
 void MenuScreen::render(sf::RenderTarget &target) {
   auto targetSize = target.getSize();

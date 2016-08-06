@@ -290,9 +290,9 @@ class Map {
   /**
    * Updates each tileset
    *
-   * @param ticks Number of ticks since start
+   * @param time Time since last update
    */
-  bool update(unsigned int ticks);
+  bool update(sf::Time &time);
 
   /**
    * Renders map relative to the given camera position

@@ -173,9 +173,9 @@ bool Map::walkable(unsigned int tile) {
   return tileset->walkable(tile);
 }
 
-bool Map::update(unsigned int ticks) {
+bool Map::update(sf::Time &time) {
   for (auto &tileset : tilesets_) {
-    tileset->update(ticks);
+    tileset->update(time);
   }
 
   return true;

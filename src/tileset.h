@@ -33,6 +33,8 @@ class Tileset {
   // Update interval for the tileset
   const unsigned int FRAME_TICKS_INTERVAL = 24;
 
+  sf::Time time_;
+
   // Updated and returned when a tile is not found
   TileProperties defaultTile_;
 
@@ -145,10 +147,10 @@ class Tileset {
   /**
    * Animate tiles in the tileset
    *
-   * @param ticks Number of ticks from start
+   * @param time Time since last update
    * @return Always returns true
    */
-  bool update(unsigned int ticks);
+  bool update(sf::Time &time);
 
   /**
    * Renders the given tile at the specified point

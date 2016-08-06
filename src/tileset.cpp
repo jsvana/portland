@@ -29,6 +29,7 @@ bool Tileset::load(const std::string &basePath,
   name_ = tilesetData["name"].get<std::string>();
 
   texture_.loadFromFile(basePath + "/" + texturePath);
+  tile_.setTexture(texture_);
 
   auto properties = tilesetData.find("tileproperties");
   auto animationData = tilesetData.find("tiles");
@@ -95,13 +96,14 @@ bool Tileset::ladder(unsigned int tile) {
   return tiles_[tile - firstGid_].ladder;
 }
 
-bool Tileset::update(unsigned int ticks) {
-  if (ticks - lastTicks_ >= FRAME_TICKS_INTERVAL) {
+bool Tileset::update(sf::Time &time) {
+  time_ += time;
+  if (time_ >= sf::milliseconds(500)) {
     for (auto &tile : tiles_) {
       tile.second.frame =
           (tile.second.frame + 1) % tile.second.animationTiles.size();
-      lastTicks_ = ticks;
     }
+    time_ = sf::seconds(0);
   }
   return true;
 }

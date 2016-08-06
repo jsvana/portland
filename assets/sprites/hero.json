@@ -1,6 +1,7 @@
 {
     "width": 16,
     "height": 16,
+    "columns": 8,
     "scale": 1,
     "multi_file": true,
     "tile": 0,
