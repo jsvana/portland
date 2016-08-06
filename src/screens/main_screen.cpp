@@ -23,6 +23,7 @@ MainScreen::MainScreen(int width, int height) : Screen(width, height) {
   // Load the game script
   GameState::lua().Load("assets/scripts/game.lua");
   GameState::lua()["init"]();
+  GameState::markInitialized();
 }
 
 void MainScreen::handleEvent(const SDL_Event &) {}

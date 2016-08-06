@@ -44,12 +44,8 @@ namespace visual {
         line = tmp;
         tmp = "";
       }
-      Text *text = new Text(line, 15);
+      auto text = new Text(line, 15);
       text->setColor(DEFAULT_COLOR);
-
-      if (lines_.size() >= VISIBLE_LINES) {
-        text->hide();
-      }
 
       lines_.push_back(text);
     }
@@ -63,7 +59,7 @@ namespace visual {
   void Dialog::addOptions(const std::vector<std::string> &choices) {
     for (auto &choice : choices) {
       choices_.push_back(choice);
-      Text *choiceText = new Text(choice, 15);
+      auto choiceText = new Text(choice, 15);
       choiceText->setColor(DEFAULT_COLOR);
       choiceText->hide();
       choicesText_.push_back(choiceText);
@@ -86,39 +82,30 @@ namespace visual {
   void Dialog::reflowText() {
     int y = position_.y + TEXT_PADDING;
 
-    // Hide all lines before the first visible line
-    for (int i = 0; i < lineIndex_; i++) {
-      lines_[i]->hide();
-    }
-
-    // Show all lines that should be visible
-    unsigned int upperBound =
-        std::min<int>(lines_.size() - lineIndex_, lineIndex_ + VISIBLE_LINES);
-    for (unsigned int i = lineIndex_; i < upperBound; i++) {
-      lines_[i]->show();
-    }
-
     // Determine whether or not more indicator should be shown
     moreIndicator_->setPosition(
         position_.x + pixelWidth() - moreIndicator_->width() - TEXT_PADDING,
         position_.y + pixelHeight() - moreIndicator_->height() +
             indicatorOffset_);
-    if (lineIndex_ + VISIBLE_LINES >= lines_.size()) {
+    if (lines_.size() < VISIBLE_LINES) {
       moreIndicator_->hide();
     } else {
       moreIndicator_->show();
     }
 
     // Reposition all visible lines
+    unsigned int i = 0;
     for (auto &line : lines_) {
-      if (line->visible()) {
-        line->setPosition(TEXT_PADDING, y);
-        y += line->height();
+      line->setPosition(TEXT_PADDING, y);
+      y += line->height();
+      if (i == VISIBLE_LINES) {
+        break;
       }
+      i += 1;
     }
 
     // Position and show choices and choice indicator
-    if (lines_.back()->visible()) {
+    if (lines_.size() == VISIBLE_LINES - 1) {
       int offset = 0;
       int padding = 10;
       for (unsigned int i = 0; i < choices_.size(); i++) {
@@ -156,7 +143,9 @@ namespace visual {
       selectFrames_ = FRAME_DEBOUNCE_DELAY;
 
       lineIndex_ += 1;
-      if (lineIndex_ + VISIBLE_LINES > lines_.size()) {
+      if (lines_.size() >= VISIBLE_LINES) {
+        lines_.pop_front();
+      } else {
         return false;
       }
       reflowText();
@@ -180,8 +169,13 @@ namespace visual {
 
   void Dialog::render() {
     map_->render(camera_);
-    for (const auto &line : lines_) {
+    unsigned int i = 0;
+    for (auto &line : lines_) {
       line->render();
+      i += 1;
+      if (i == VISIBLE_LINES) {
+        break;
+      }
     }
     for (auto &choiceText : choicesText_) {
       choiceText->render();

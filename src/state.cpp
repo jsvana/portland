@@ -2,6 +2,8 @@
 
 namespace GameState {
 
+  bool initialized_ = false;
+
   BoundedPoint camera_;
 
   unsigned int ticks_ = 0;
@@ -25,7 +27,9 @@ namespace GameState {
   sel::State lua_{true};
 
   void initLuaApi() {
+    lua_["gameInitialized"] = &GameState::initialized;
     lua_["gameTicks"] = &GameState::ticks;
+
     lua_["gameLoadMap"] = &GameState::loadMap;
     lua_["gamePopMap"] = &GameState::popMap;
     lua_["gameLoadCharacter"] = &GameState::loadCharacter;
@@ -150,6 +154,10 @@ namespace GameState {
 
     return true;
   }
+
+  void markInitialized() { initialized_ = true; }
+
+  bool initialized() { return initialized_; }
 
   bool loadMap(std::string path) {
     Map *map = new Map(path);

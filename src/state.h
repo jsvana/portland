@@ -142,6 +142,18 @@ namespace GameState {
   void runTileEvent();
 
   /**
+   * Marks the game as initialized
+   */
+  void markInitialized();
+
+  /**
+   * Gets whether or not game has been initialized
+   *
+   * @return Whether or not game has been initialized
+   */
+  bool initialized();
+
+  /**
    * Loads a new map and pushes it onto the stack
    *
    * @param path Path of new map to load

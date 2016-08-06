@@ -6,6 +6,9 @@ UPDATE_INTERVAL = 100
 TILE_DIM = 16
 
 function init()
+  if gameInitialized() then
+    return
+  end
   gameLoadMap("assets/maps/main.json")
   gameLoadCharacter(SPRITE_PATH, HERO_TILE, 1, 6)
   gameSetCharacterMoveSpeed(4)
@@ -15,6 +18,9 @@ function init()
 
   local npc = helpers.Npc("assets/sprites/undead.json", 0, 3, 1)
   helpers.npcs:append(npc)
+
+  d = helpers.Dialog("Here's a really really really long message that will scroll yay messages wooo so this one time at band camp this really cool thing happened and then the story ended")
+  d:addOptions({"No", "Yes"})
 end
 
 readSign = false

@@ -6,6 +6,7 @@
 
 #include <SDL.h>
 
+#include <deque>
 #include <memory>
 #include <queue>
 #include <string>
@@ -43,7 +44,7 @@ namespace visual {
     std::vector<std::string> choices_;
 
     // Vector of renderable lines of text
-    std::vector<Text *> lines_;
+    std::deque<Text *> lines_;
     // Vector of renderable choices for dialog with options (e.g., "Yes" and
     // "No")
     std::vector<Text *> choicesText_;
