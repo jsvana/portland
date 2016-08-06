@@ -2,8 +2,6 @@
 
 #include "../asset_manager.h"
 
-#include "spdlog/spdlog.h"
-
 #include <SDL.h>
 
 #include <fstream>

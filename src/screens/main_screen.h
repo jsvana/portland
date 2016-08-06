@@ -1,16 +1,10 @@
 #pragma once
 
-#include "../entities/npc.h"
-#include "../entities/sprite.h"
-#include "../map.h"
 #include "../progress_bar.h"
 #include "../state.h"
 #include "../util.h"
 #include "../visual/dialog.h"
-#include "../visual/text.h"
 #include "screen.h"
-
-#include "../lib/selene/include/selene.h"
 
 #include <SDL.h>
 

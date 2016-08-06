@@ -30,6 +30,8 @@ include_directories(${SDL2_IMAGE_INCLUDE_DIRS})
 include_directories(${SDL2_TTF_INCLUDE_DIRS})
 include_directories(${LUA_INCLUDE_DIRS})
 include_directories("vendor/spdlog/include")
+include_directories("vendor/selene/include")
+include_directories("vendor/json")
 
 add_executable(
 	becoming_portland

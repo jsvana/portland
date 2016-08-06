@@ -9,8 +9,8 @@ becoming_portland
 compile_commands.json
 .vscode
 
-# Vendor junk
-vendor/*/*
+# Vendor stuff
+vendor/mingw-*/*
 
 # CMake Things
 CMakeCache.txt
