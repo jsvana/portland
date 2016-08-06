@@ -28,7 +28,7 @@ MainScreen::MainScreen(int width, int height) : Screen(width, height) {
 
 void MainScreen::handleEvent(const SDL_Event &) {}
 
-bool MainScreen::fixMovement(Sprite *sprite, Point moveDelta) {
+bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
   Rect dim = sprite->getDimensions();
   Rect oldDim = dim;
   dim.move(moveDelta.x, moveDelta.y);
@@ -42,7 +42,8 @@ bool MainScreen::fixMovement(Sprite *sprite, Point moveDelta) {
   return dim != oldDim;
 }
 
-Rect MainScreen::updateGravity(Sprite *sprite, Point &moveDelta) {
+Rect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite,
+                               Point &moveDelta) {
   Rect dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);

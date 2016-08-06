@@ -8,7 +8,7 @@ namespace GameState {
 
   unsigned int ticks_ = 0;
 
-  Sprite *hero_;
+  std::shared_ptr<Sprite> hero_;
   int moveSpeed_;
 
   // Jumping stuff
@@ -17,9 +17,10 @@ namespace GameState {
 
   // Stack is used to mimick maps_
   unsigned int nextSpriteId_ = 1;
-  std::stack<std::unordered_map<unsigned int, Sprite *>> sprites_;
+  std::stack<std::unordered_map<unsigned int, std::shared_ptr<Sprite>>>
+      sprites_;
 
-  std::stack<Map *> maps_;
+  std::stack<std::shared_ptr<Map>> maps_;
 
   std::unordered_map<int, std::string> tileEvents_;
 
@@ -68,9 +69,9 @@ namespace GameState {
 
   int ticks() { return (int)(ticks_ % INT_MAX); }
 
-  void setHero(Sprite *hero) { hero_ = hero; }
+  void setHero(std::shared_ptr<Sprite> hero) { hero_ = hero; }
 
-  Sprite *hero() { return hero_; }
+  std::shared_ptr<Sprite> hero() { return hero_; }
 
   void setHeroMoveSpeed(int speed) { moveSpeed_ = speed; }
 
@@ -82,19 +83,20 @@ namespace GameState {
     return spriteId;
   }
 
-  void pushSprites(std::unordered_map<unsigned int, Sprite *> sprites) {
+  void pushSprites(
+      std::unordered_map<unsigned int, std::shared_ptr<Sprite>> sprites) {
     sprites_.push(sprites);
   }
 
-  std::unordered_map<unsigned int, Sprite *> &sprites() {
+  std::unordered_map<unsigned int, std::shared_ptr<Sprite>> &sprites() {
     return sprites_.top();
   }
 
   void popSprites() { sprites_.pop(); }
 
-  void pushMap(Map *map) { maps_.push(map); }
+  void pushMap(std::shared_ptr<Map> map) { maps_.push(map); }
 
-  Map *map() { return maps_.top(); }
+  std::shared_ptr<Map> map() { return maps_.top(); }
 
   sel::State &lua() { return lua_; }
 
@@ -127,7 +129,7 @@ namespace GameState {
     clearTileEvent(tileNumber);
   }
 
-  bool positionWalkable(Sprite *sprite, Rect dim) {
+  bool positionWalkable(std::shared_ptr<Sprite> sprite, Rect dim) {
     if (!map()->positionWalkable(dim)) {
       return false;
     }
@@ -160,9 +162,9 @@ namespace GameState {
   bool initialized() { return initialized_; }
 
   bool loadMap(std::string path) {
-    Map *map = new Map(path);
+    auto map = std::make_shared<Map>(path);
     maps_.push(map);
-    std::unordered_map<unsigned int, Sprite *> sprites;
+    std::unordered_map<unsigned int, std::shared_ptr<Sprite>> sprites;
     sprites_.push(sprites);
 
     updateCamera();
@@ -180,7 +182,7 @@ namespace GameState {
   }
 
   bool loadCharacter(std::string path, int tile, int initX, int initY) {
-    hero_ = new Sprite(path);
+    hero_ = std::make_shared<Sprite>(path);
     hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
     hero_->setTile(tile);
 
@@ -219,7 +221,7 @@ namespace GameState {
   }
 
   unsigned int addNpc(std::string path, int tile, int x, int y) {
-    Npc *npc = new Npc(path);
+    auto npc = std::make_shared<Npc>(path);
     npc->setPosition(x * GameState::map()->tileWidth(),
                      y * GameState::map()->tileHeight());
     npc->setTile(tile);
