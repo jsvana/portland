@@ -3,6 +3,7 @@
 #include "screen_manager.h"
 #include "screens/opening.h"
 #include "state.h"
+#include "util.h"
 
 #include "spdlog/spdlog.h"
 
@@ -27,12 +28,9 @@ int main(int, char **) {
   newWindowSize.w = 2 * nativeSize.w;
   newWindowSize.h = 2 * nativeSize.h;
 
-  auto err = spdlog::stderr_logger_mt("error", true);
-  auto out = spdlog::stdout_logger_mt("out", true);
-
   // Initialize
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-    err->error("SDL_Init err->r: {}", SDL_GetError());
+    err()->error("SDL_Init err->r: {}", SDL_GetError());
     return 1;
   }
 
@@ -40,7 +38,7 @@ int main(int, char **) {
 
   // Set the scaling quality to nearest pixel
   if (SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "0") < 0) {
-    err->error("Failed to set render scale quality");
+    err()->error("Failed to set render scale quality");
     SDL_Quit();
     return 1;
   }
@@ -48,13 +46,13 @@ int main(int, char **) {
   // load support for the JPG and PNG image formats
   int image_flags = IMG_INIT_JPG | IMG_INIT_PNG;
   if ((IMG_Init(image_flags) & image_flags) != image_flags) {
-    err->error("Failed to init image support: {}", IMG_GetError());
+    err()->error("Failed to init image support: {}", IMG_GetError());
     SDL_Quit();
     return 1;
   }
 
   if (TTF_Init() < 0) {
-    err->error("Failed to init TTF support: {}", TTF_GetError());
+    err()->error("Failed to init TTF support: {}", TTF_GetError());
     IMG_Quit();
     SDL_Quit();
   }
@@ -65,7 +63,7 @@ int main(int, char **) {
       newWindowSize.w, newWindowSize.h,
       SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
   if (window == nullptr) {
-    err->error("SDL_CreateWindow err->r: {}", SDL_GetError());
+    err()->error("SDL_CreateWindow err->r: {}", SDL_GetError());
     TTF_Quit();
     IMG_Quit();
     SDL_Quit();
@@ -77,7 +75,7 @@ int main(int, char **) {
                                                 SDL_RENDERER_PRESENTVSYNC |
                                                 SDL_RENDERER_TARGETTEXTURE);
   if (renderer == nullptr) {
-    err->error("SDL_CreateRenderer err->r: {}", SDL_GetError());
+    err()->error("SDL_CreateRenderer err->r: {}", SDL_GetError());
     SDL_DestroyWindow(window);
     TTF_Quit();
     IMG_Quit();
@@ -191,7 +189,7 @@ int main(int, char **) {
   }
 
 exit:
-  out->info("Thanks for playing!");
+  out()->info("Thanks for playing!");
 
   AssetManager::destroy();
   SDL_DestroyRenderer(renderer);
