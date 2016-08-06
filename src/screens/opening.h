@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../visual/text.h"
 #include "../util.h"
+#include "../visual/text.h"
 #include "screen.h"
 
 #include <SDL.h>
