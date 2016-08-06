@@ -24,6 +24,16 @@ MainScreen::MainScreen() {
 
 void MainScreen::handleEvent(sf::Event &event) {
   visual::DialogManager::handleEvent(event);
+
+  if (event.type == sf::Event::KeyPressed) {
+    switch (event.key.code) {
+      case sf::Keyboard::P:
+        Engine::pushScreen(new PauseMenuScreen());
+        break;
+      default:
+        break;
+    }
+  }
 }
 
 bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
@@ -141,10 +151,6 @@ bool MainScreen::update(sf::Time &time) {
     if (GameState::map()->isLadder(GameState::hero()->getDimensions())) {
       moveDelta.y += GameState::heroMoveSpeed();
     }
-  }
-
-  if (state[SDL_SCANCODE_P] || state[SDL_SCANCODE_ESCAPE]) {
-    Engine::pushScreen(new PauseMenuScreen());
   }
 
   // Change character direction

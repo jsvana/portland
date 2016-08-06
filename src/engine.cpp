@@ -17,9 +17,10 @@ namespace Engine {
 
   sf::RenderWindow window;
 
+  bool running_ = true;
+
   bool init() {
-    window.create(sf::VideoMode(2 * SCREEN_WIDTH, 2 * SCREEN_HEIGHT),
-                  "Portland");
+    window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Portland");
 
     GameState::initLuaApi();
 
@@ -29,7 +30,7 @@ namespace Engine {
   void run() {
     sf::Clock clock;
 
-    while (window.isOpen()) {
+    while (window.isOpen() && running_) {
       sf::Time elapsed = clock.restart();
 
       auto screen = screens.top();
@@ -44,7 +45,7 @@ namespace Engine {
         screen->handleEvent(event);
       }
 
-      screen->update(elapsed);
+      running_ = screen->update(elapsed);
 
       window.clear(sf::Color::Black);
       screen->render(window);

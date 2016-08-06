@@ -8,11 +8,11 @@
 #include <iostream>
 
 PauseMenuScreen::PauseMenuScreen() : MenuScreen() {
-  title = "PAUSED";
-  items = {
+  title_ = "PAUSED";
+  items_ = {
       "Resume", "Quit",
   };
-  itemFunctions = {
+  itemFunctions_ = {
       std::bind(&PauseMenuScreen::resume, this),
       std::bind(&PauseMenuScreen::quit, this),
   };
@@ -25,7 +25,10 @@ bool PauseMenuScreen::resume() {
   return true;
 }
 
-bool PauseMenuScreen::quit() { return false; }
+bool PauseMenuScreen::quit() {
+  running_ = false;
+  return running_;
+}
 
 void PauseMenuScreen::render(sf::RenderTarget &target) {
   MenuScreen::render(target);

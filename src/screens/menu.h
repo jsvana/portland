@@ -17,18 +17,21 @@ class MenuScreen : public Screen {
   sf::Color SELECTED_COLOR = sf::Color(220, 220, 220);
   sf::Color NORMAL_COLOR = sf::Color(144, 144, 144);
 
-  sf::Font font;
+  sf::Font font_;
 
-  int selectedItem;
+  int selectedItem_ = 0;
 
  protected:
-  std::string title;
+  std::string title_;
 
-  std::vector<std::string> items;
-  std::vector<std::function<void(void)>> itemFunctions;
+  std::vector<std::string> items_;
+  std::vector<std::function<void(void)>> itemFunctions_;
 
-  std::vector<std::shared_ptr<sf::Text>> textItems;
-  sf::Text titleText;
+  std::vector<sf::Text> textItems_;
+  sf::Text titleText_;
+
+  // Can be used by child menus to close the game
+  bool running_ = true;
 
   /**
    * Loads menu contents and creates all texts
