@@ -28,14 +28,7 @@ bool Tileset::load(const std::string &basePath,
 
   name_ = tilesetData["name"].get<std::string>();
 
-  dimensions_.w = tilesetData["imagewidth"].get<int>();
-  dimensions_.h = tilesetData["imageheight"].get<int>();
-
-  texture_ = AssetManager::getTexture(basePath + "/" + texturePath);
-  if (texture_ == nullptr) {
-    err()->error("\"{}\" does not exist, skipping render", texturePath);
-    return false;
-  }
+  texture_.load(basePath + "/" + texturePath);
 
   auto properties = tilesetData.find("tileproperties");
   auto animationData = tilesetData.find("tiles");
@@ -113,7 +106,8 @@ bool Tileset::update(unsigned int ticks) {
   return true;
 }
 
-void Tileset::renderTile(unsigned int tile, int x, int y) const {
+void Tileset::renderTile(sf::RenderTarget &window, unsigned int tile, int x,
+                         int y) const {
   if (tile == 0) {
     return;
   }
@@ -129,30 +123,27 @@ void Tileset::renderTile(unsigned int tile, int x, int y) const {
     flipVertical = !(tile & FLIPPED_HORIZONTALLY);
     flipHorizontal = tile & FLIPPED_VERTICALLY;
   }
-  if (flipHorizontal) {
-    flags |= SDL_FLIP_HORIZONTAL;
-  }
-  if (flipVertical) {
-    flags |= SDL_FLIP_VERTICAL;
-  }
 
   tile &= ~(FLIPPED_HORIZONTALLY | FLIPPED_VERTICALLY | FLIPPED_DIAGONALLY);
 
   tile -= firstGid_;
   tile = tileFor(tile);
 
-  SDL_Rect source;
-  source.x = tileWidth_ * (tile % columns_);
-  source.y = tileHeight_ * (tile / columns_);
-  source.w = tileWidth_;
-  source.h = tileHeight_;
+  sf::IntRect source(tileWidth_ * (tile % columns_),
+                     tileHeight_ * (tile / columns_), tileWidth_, tileHeight_);
 
-  SDL_Rect dest;
-  dest.x = x;
-  dest.y = y;
-  dest.w = tileWidth_;
-  dest.h = tileHeight_;
+  if (flipHorizontal) {
+    source.left += tileWidth_;
+    source.width = -tileWidth_;
+  }
+  if (flipVertical) {
+    source.top += tileHeight_;
+    source.height = -tileHeight_;
+  }
 
-  SDL_RenderCopyEx(renderer, texture_, &source, &dest, angle, NULL,
-                   (SDL_RendererFlip)flags);
+  sprite.setTextureRect(source);
+  sprite.setRotation(angle);
+  sprite.setPosition(x, y);
+
+  window.draw(sprite);
 }
