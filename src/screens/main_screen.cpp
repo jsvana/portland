@@ -26,7 +26,7 @@ MainScreen::MainScreen(int width, int height) : Screen(width, height) {
   GameState::markInitialized();
 }
 
-void MainScreen::handleEvent(const SDL_Event &) {}
+void MainScreen::handleEvent(sf::Event &event) {}
 
 bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta) {
   Rect dim = sprite->getDimensions();

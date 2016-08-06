@@ -6,7 +6,7 @@
 #include "../visual/dialog.h"
 #include "screen.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <functional>
 #include <stack>
@@ -86,7 +86,7 @@ class MainScreen : public Screen {
   /**
    * @see Screen::handleEvent
    */
-  void handleEvent(const SDL_Event &event);
+  void handleEvent(sf::Event &event);
 
   /**
    * @see Screen::update

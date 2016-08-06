@@ -4,7 +4,7 @@
 #include "../util.h"
 #include "text.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <deque>
 #include <memory>
