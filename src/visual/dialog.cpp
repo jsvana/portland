@@ -192,20 +192,20 @@ namespace visual {
 
   namespace DialogManager {
 
-    std::deque<Dialog *> dialogs;
+    std::deque<std::shared_ptr<Dialog>> dialogs;
     std::deque<unsigned int> uids;
     std::unordered_map<unsigned int, int> choices;
-    Dialog *closedDialog_ = nullptr;
+    std::shared_ptr<Dialog> closedDialog_ = nullptr;
     unsigned int nextUid = 0;
 
     unsigned int queueDialog(Dialog *dialog) {
       nextUid += 1;
-      dialogs.push_back(dialog);
+      dialogs.push_back(std::shared_ptr<Dialog>(dialog));
       uids.push_back(nextUid);
       return nextUid;
     }
 
-    Dialog *getDialogByUid(unsigned int uid) {
+    std::shared_ptr<Dialog> getDialogByUid(unsigned int uid) {
       for (unsigned int i = 0; i < dialogs.size(); i++) {
         if (uids[i] == uid) {
           return dialogs[i];
@@ -216,7 +216,7 @@ namespace visual {
     }
 
     bool addDialogOption(unsigned int uid, std::string option) {
-      Dialog *dialog = getDialogByUid(uid);
+      auto dialog = getDialogByUid(uid);
       if (dialog == nullptr) {
         return false;
       }
@@ -225,7 +225,7 @@ namespace visual {
     }
 
     bool setDialogCallback(unsigned int uid, std::string callback) {
-      Dialog *dialog = getDialogByUid(uid);
+      auto dialog = getDialogByUid(uid);
       if (dialog == nullptr) {
         return false;
       }
@@ -233,7 +233,7 @@ namespace visual {
       return true;
     }
 
-    Dialog *closedDialog() { return closedDialog_; }
+    std::shared_ptr<Dialog> closedDialog() { return closedDialog_; }
 
     void clearClosedDialog() { closedDialog_ = nullptr; }
 
@@ -244,7 +244,7 @@ namespace visual {
         return false;
       }
 
-      Dialog *dialog = dialogs.front();
+      auto dialog = dialogs.front();
 
       if (dialog->update(ticks)) {
         return true;

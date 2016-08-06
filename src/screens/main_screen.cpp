@@ -80,7 +80,7 @@ bool MainScreen::update(unsigned long ticks) {
   if (visual::DialogManager::update(ticks)) {
     return true;
   } else {
-    visual::Dialog *dialog = visual::DialogManager::closedDialog();
+    auto dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc != "") {
       int choice = dialog->getChoice();
       GameState::lua()[dialog->callbackFunc.c_str()](choice);
