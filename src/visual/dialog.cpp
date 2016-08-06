@@ -5,7 +5,7 @@ extern SDL_Renderer *renderer;
 namespace visual {
 
   Dialog::Dialog(std::string message) : message_(message) {
-    map_ = new Map("assets/maps/dialog.json");
+    map_ = std::make_unique<Map>("assets/maps/dialog.json");
     map_->setPosition(position_.x, position_.y);
 
     // Default color is white
@@ -13,14 +13,14 @@ namespace visual {
     DEFAULT_COLOR.g = 255;
     DEFAULT_COLOR.b = 255;
 
-    moreIndicator_ = new Text("v", 15);
+    moreIndicator_ = std::make_unique<Text>("v", 15);
     moreIndicator_->setColor(DEFAULT_COLOR);
     moreIndicator_->hide();
     indicatorOffset_ = 0;
 
     lineIndex_ = 0;
 
-    choiceIndicator_ = new Text(">", 15);
+    choiceIndicator_ = std::make_unique<Text>(">", 15);
     choiceIndicator_->setColor(DEFAULT_COLOR);
     choiceIndicator_->hide();
     selectedChoice_ = -1;
@@ -44,7 +44,7 @@ namespace visual {
         line = tmp;
         tmp = "";
       }
-      auto text = new Text(line, 15);
+      auto text = std::make_unique<Text>(line, 15);
       text->setColor(DEFAULT_COLOR);
 
       lines_.push_back(text);
@@ -59,7 +59,7 @@ namespace visual {
   void Dialog::addOptions(const std::vector<std::string> &choices) {
     for (auto &choice : choices) {
       choices_.push_back(choice);
-      auto choiceText = new Text(choice, 15);
+      auto choiceText = std::make_unique<Text>(choice, 15);
       choiceText->setColor(DEFAULT_COLOR);
       choiceText->hide();
       choicesText_.push_back(choiceText);
@@ -109,7 +109,7 @@ namespace visual {
       int offset = 0;
       int padding = 10;
       for (unsigned int i = 0; i < choices_.size(); i++) {
-        Text *choiceText = choicesText_[i];
+        auto choiceText = choicesText_[i];
         offset += choiceText->width() + padding;
         if (i == (unsigned int)selectedChoice_) {
           choiceIndicator_->setPosition(

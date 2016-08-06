@@ -35,7 +35,7 @@ namespace visual {
     SDL_Color DEFAULT_COLOR;
 
     // Kind of a hack. Contains the background of the dialog
-    Map *map_;
+    std::unique_ptr<Map> map_;
 
     // Dialog message to display
     std::string message_;
@@ -44,10 +44,10 @@ namespace visual {
     std::vector<std::string> choices_;
 
     // Vector of renderable lines of text
-    std::deque<Text *> lines_;
+    std::deque<std::unique_ptr<Text>> lines_;
     // Vector of renderable choices for dialog with options (e.g., "Yes" and
     // "No")
-    std::vector<Text *> choicesText_;
+    std::vector<std::unique_ptr<Text>> choicesText_;
 
     int selectedChoice_;
 
@@ -55,8 +55,8 @@ namespace visual {
     int indicatorOffset_;
 
     // Renderable textures for dialog indicators
-    Text *moreIndicator_;
-    Text *choiceIndicator_;
+    std::unique_ptr<Text> moreIndicator_;
+    std::unique_ptr<Text> choiceIndicator_;
 
     int lineIndex_;
 

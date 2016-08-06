@@ -28,7 +28,7 @@ bool Map::load(const std::string &path) {
 
   auto tilesets = mapData["tilesets"].get<std::vector<nlohmann::json>>();
   for (auto &tileset : tilesets) {
-    tilesets_.push_back(new Tileset(mapBasePath, tileset));
+    tilesets_.push_back(std::make_unique<Tileset>(mapBasePath, tileset));
   }
 
   mapWidth_ = mapData["width"].get<int>();

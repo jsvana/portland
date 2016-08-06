@@ -59,7 +59,7 @@ class Map {
   std::vector<MapLayer> layers_;
 
   // Vector of tilesets used in the map
-  std::vector<Tileset *> tilesets_;
+  std::vector<std::unique_ptr<Tileset>> tilesets_;
 
   /**
    * Load a map from the given path
