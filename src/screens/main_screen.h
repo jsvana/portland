@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../entities/sprite.h"
 #include "../entities/npc.h"
+#include "../entities/sprite.h"
 #include "../map.h"
 #include "../progress_bar.h"
 #include "../state.h"
@@ -46,7 +46,8 @@ class MainScreen : public Screen {
    * @return Pixel dimensions of camera padding
    */
   Point cameraPadding() {
-    Point p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(), CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
+    Point p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(),
+            CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
     return p;
   }
 

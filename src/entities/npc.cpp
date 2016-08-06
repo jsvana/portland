@@ -6,6 +6,4 @@
 
 extern SDL_Renderer *renderer;
 
-void Npc::render(Point cameraPos) const {
-  Sprite::render(cameraPos);
-}
+void Npc::render(Point cameraPos) const { Sprite::render(cameraPos); }

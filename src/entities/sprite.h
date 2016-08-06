@@ -157,9 +157,7 @@ class Sprite {
   /**
    * Sets HP to max HP
    */
-  void fullHeal() {
-    hp_ = maxHp_;
-  }
+  void fullHeal() { hp_ = maxHp_; }
 
   /**
    * Increases HP by the given amount and clamp to max HP

@@ -9,8 +9,8 @@
  * Class representing non-player characters in game
  */
 class Npc : public Sprite {
-  public:
-    Npc(const std::string &path) : Sprite(path) {}
+ public:
+  Npc(const std::string &path) : Sprite(path) {}
 
-    void render(Point cameraPos) const;
+  void render(Point cameraPos) const;
 };

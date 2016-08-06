@@ -9,7 +9,8 @@
 
 extern SDL_Renderer *renderer;
 
-PauseMenuScreen::PauseMenuScreen(int width, int height) : MenuScreen(width, height) {
+PauseMenuScreen::PauseMenuScreen(int width, int height)
+    : MenuScreen(width, height) {
   title_ = "PAUSED";
   items_ = {
       "Resume", "Quit",
