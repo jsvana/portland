@@ -17,6 +17,8 @@ class MenuScreen : public Screen {
   sf::Color SELECTED_COLOR = sf::Color(220, 220, 220);
   sf::Color NORMAL_COLOR = sf::Color(144, 144, 144);
 
+  float PADDING = 10;
+
   sf::Font font_;
 
   int selectedItem_ = 0;

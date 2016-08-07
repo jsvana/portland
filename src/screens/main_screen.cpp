@@ -3,6 +3,7 @@
 #include "../engine.h"
 #include "../state.h"
 #include "../util.h"
+#include "../visual/console.h"
 #include "pause_menu.h"
 
 #include <functional>
@@ -18,6 +19,8 @@ MainScreen::MainScreen() {
   GameState::lua().Load("assets/scripts/game.lua");
   GameState::lua()["init"]();
   GameState::markInitialized();
+
+  visual::Console::initialize();
 }
 
 bool MainScreen::fixMovement(const std::unique_ptr<Sprite> &sprite,
@@ -66,6 +69,11 @@ sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite> &sprite) {
 }
 
 void MainScreen::handleEvent(sf::Event &event) {
+  if (visual::Console::visible()) {
+    visual::Console::handleEvent(event);
+    return;
+  }
+
   visual::DialogManager::handleEvent(event);
 
   if (event.type == sf::Event::KeyPressed) {
@@ -73,6 +81,10 @@ void MainScreen::handleEvent(sf::Event &event) {
       Engine::pushScreen(new PauseMenuScreen());
     } else if (event.key.code == sf::Keyboard::T) {
       heroHealth_.shrink(5);
+    } else if (event.key.code == sf::Keyboard::C) {
+      if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
+        visual::Console::show();
+      }
     }
   }
 }
@@ -87,6 +99,11 @@ bool MainScreen::update(sf::Time &time) {
     sprite.second->update(time_);
   }
   GameState::lua()["update"]();
+
+  if (visual::Console::visible()) {
+    visual::Console::update(time);
+    return true;
+  }
 
   if (visual::DialogManager::update(time_)) {
     return true;
@@ -194,14 +211,15 @@ bool MainScreen::update(sf::Time &time) {
 
 void MainScreen::render(sf::RenderTarget &window) {
   GameState::map()->render(window, GameState::camera());
-
   GameState::hero()->render(window, GameState::camera());
-
   for (const auto &sprite : GameState::sprites()) {
     sprite.second->render(window, GameState::camera());
   }
-
   heroHealth_.render(window);
 
   visual::DialogManager::render(window);
+
+  if (visual::Console::visible()) {
+    visual::Console::render(window);
+  }
 }

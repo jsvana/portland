@@ -1,4 +1,4 @@
-local helpers = require("assets.scripts.helpers")
+helpers = require("assets.scripts.helpers")
 
 SPRITE_PATH = "assets/sprites/hero.json"
 HERO_TILE = 0
@@ -24,6 +24,10 @@ function init()
 end
 
 readSign = false
+
+function resetSign()
+  readSign = false
+end
 
 function showSign()
   if readSign then

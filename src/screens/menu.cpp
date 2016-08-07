@@ -1,5 +1,6 @@
 #include "menu.h"
 
+#include "../constants.h"
 #include "../util.h"
 
 #include <SFML/Graphics.hpp>
@@ -15,15 +16,16 @@ void MenuScreen::load() {
   titleText_.setFont(font_);
   titleText_.setCharacterSize(30);
   titleText_.setColor(titleColor);
-  auto titleSize = titleText_.getLocalBounds();
+  auto titleSize = titleText_.getGlobalBounds();
   titleText_.setOrigin(titleSize.width / 2, titleSize.height / 2);
+  titleText_.setPosition(SCREEN_WIDTH / 2, 10);
 
   for (auto item : items_) {
     sf::Text textItem;
     textItem.setString(item);
     textItem.setFont(font_);
     textItem.setCharacterSize(20);
-    auto itemSize = textItem.getLocalBounds();
+    auto itemSize = textItem.getGlobalBounds();
     textItem.setOrigin(itemSize.width / 2, itemSize.height / 2);
     textItem.setColor(NORMAL_COLOR);
     textItems_.push_back(textItem);
@@ -64,7 +66,8 @@ void MenuScreen::render(sf::RenderTarget &target) {
 
   for (unsigned int i = 0; i < textItems_.size(); i++) {
     auto itemSize = textItems_[i].getLocalBounds();
-    textItems_[i].setPosition(targetSize.x / 2, 100 + itemSize.height * i);
+    textItems_[i].setPosition(targetSize.x / 2,
+                              100 + (itemSize.height + PADDING) * i);
     target.draw(textItems_[i]);
   }
 }
