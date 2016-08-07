@@ -12,23 +12,49 @@ namespace visual {
   namespace Console {
     const unsigned int MAX_SIZE = 3;
 
-    void runCommand(std::string command);
+    /**
+     * Runs the given command string against Lua and returns
+     * the result
+     *
+     * @param command Command to run
+     * @return Output of command
+     */
+    std::string runCommand(std::string command);
 
+    /**
+     * Initializes all console assets
+     */
     void initialize();
 
+    /**
+     * Shows the console
+     */
     void show();
 
+    /**
+     * Hides the console
+     */
     void hide();
 
+    /**
+     * Gets whether or not console is visible
+     *
+     * @return Whether or not console is visible
+     */
     bool visible();
 
+    /**
+     * Handles key input
+     *
+     * @param event Event to handle
+     */
     void handleEvent(sf::Event &event);
 
     /**
-     * Handles key input and text reflow
+     * Animates the cursor
      *
      * @param time Amount of time since last update
-     * @return Whether dialog is still open or not
+     * @return Always returns true
      */
     bool update(sf::Time &time);
 

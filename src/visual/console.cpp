@@ -18,7 +18,8 @@ namespace visual {
 
     sf::Time time_;
 
-    std::deque<sf::Text> commands_;
+    std::deque<std::string> commands_;
+    std::deque<sf::Text> outputs_;
 
     sf::FloatRect dimensions_;
 
@@ -29,9 +30,19 @@ namespace visual {
 
     int selectedCommand_ = -1;
 
-    void runCommand(std::string command) {
-      util::out()->info("Running Lua string: \"{}\"", command);
-      GameState::lua()(command.c_str());
+    std::string runCommand(std::string command) {
+      if (command.find("run ") == 0) {
+        command = command.substr(4);
+        util::out()->info("Running Lua string: \"{}\"", command);
+        GameState::lua()(command.c_str());
+        return "Done";
+      } else if (command.find("get ") == 0) {
+        command = command.substr(4);
+        return "-> " +
+               static_cast<std::string>(GameState::lua()[command.c_str()]);
+      } else {
+        return "Malformed command";
+      }
     }
 
     void initialize() {
@@ -74,22 +85,27 @@ namespace visual {
           }
         } else if (event.key.code == sf::Keyboard::Return) {
           auto str = command_.getString().toAnsiString();
-          runCommand(str);
+          if (str == "") {
+            return;
+          }
+          commands_.push_front(str);
+
+          auto output = runCommand(str);
 
           sf::Text line;
           line.setFont(font_);
           line.setCharacterSize(15);
           line.setColor(sf::Color::White);
-          line.setString(str);
-          commands_.push_front(line);
+          line.setString(output);
+          outputs_.push_front(line);
+
+          selectedCommand_ = -1;
 
           command_.setString("");
         } else if (event.key.code == sf::Keyboard::Up) {
-          util::out()->info("idx {} size {}", selectedCommand_,
-                            commands_.size());
           if (selectedCommand_ < (int)commands_.size() - 1) {
             selectedCommand_ += 1;
-            command_.setString(commands_[selectedCommand_].getString());
+            command_.setString(commands_[selectedCommand_]);
           }
         } else if (event.key.code == sf::Keyboard::Down) {
           if (selectedCommand_ >= 0) {
@@ -97,7 +113,7 @@ namespace visual {
             if (selectedCommand_ == -1) {
               command_.setString("");
             } else {
-              command_.setString(commands_[selectedCommand_].getString());
+              command_.setString(commands_[selectedCommand_]);
             }
           }
         }
@@ -139,9 +155,9 @@ namespace visual {
       }
 
       float y = 15;
-      for (unsigned int i = 0; i < commands_.size(); i++) {
-        commands_[i].setPosition(2, y);
-        window.draw(commands_[i]);
+      for (unsigned int i = 0; i < outputs_.size(); i++) {
+        outputs_[i].setPosition(2, y);
+        window.draw(outputs_[i]);
         y += 15;
         if (i + 1 == MAX_SIZE) {
           break;
