@@ -144,7 +144,7 @@ namespace visual {
     // and the default color here
     void setColor(sf::Color color) {
       for (auto &line : lines_) {
-        line.setFillColor(color);
+        line.setColor(color);
       }
     }
 
