@@ -2,6 +2,37 @@
 
 A basic sidescrolling platformer (metroidvania).
 
+## Scripting
+
+This game has a Lua API. You can see how it works by looking in [assets/scripts/game.lua].
+
+    TODO(jsvana): fill out Lua API docs
+
+### Lua Console
+
+The game also supports mutating game state from an in-game console. To use the console, open it with Ctrl-C.
+
+To run a Lua statement:
+
+    > run x = "foo"
+
+To get a top-level Lua value as a string:
+
+    > get x
+    -> foo
+
+To get an integer or boolean you must use:
+
+    > run x = 5
+    > geti x
+    -> 5
+
+    > run x = true
+    > getb x
+    -> 5
+
+These are necessary because we cannot peak at the type of the Lua value in C++.
+
 ## Dependencies
 
 ### OSX

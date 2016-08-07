@@ -1,7 +1,6 @@
 #include "console.h"
 
 #include "../constants.h"
-#include "../state.h"
 
 #include <deque>
 
@@ -31,32 +30,51 @@ namespace visual {
     int selectedCommand_ = -1;
 
     std::string runCommand(std::string command) {
-      if (command.find("run ") == 0) {
+      if (command == "exit") {
+        hide();
+        return "Done";
+      } else if (command.find("run ") == 0) {
         command = command.substr(4);
         util::out()->info("Running Lua string: \"{}\"", command);
         GameState::lua()(command.c_str());
         return "Done";
-      } else if (command.find("get ") == 0) {
-        command = command.substr(4);
-        return "-> " +
-               static_cast<std::string>(GameState::lua()[command.c_str()]);
+      } else if (command.find("get") == 0) {
+        command = command.substr(3);
+        if (command.length() == 0) {
+          return "Malformed command";
+        }
+        std::string val;
+        if (command.find("s ") == 0 || command.find(" ") == 0) {
+          val = getValue<std::string>(command.substr(2));
+        } else if (command.find("b ") == 0) {
+          bool x = getValue<bool>(command.substr(2));
+          if (x) {
+            val = "true";
+          } else {
+            val = "false";
+          }
+        } else if (command.find("i ") == 0) {
+          val = std::to_string(getValue<int>(command.substr(2)));
+        }
+        return "-> " + val;
       } else {
         return "Malformed command";
       }
     }
 
     void initialize() {
-      font_.loadFromFile("assets/fonts/arcade.ttf");
+      font_.loadFromFile("assets/fonts/Anonymous.ttf");
 
       prompt_.setFont(font_);
-      prompt_.setCharacterSize(15);
-      prompt_.setPosition(2, 0);
+      prompt_.setCharacterSize(FONT_SIZE);
+      prompt_.setPosition(MARGIN, MARGIN);
       prompt_.setString(">");
       prompt_.setColor(sf::Color::White);
 
+      auto size = prompt_.getGlobalBounds();
       command_.setFont(font_);
-      command_.setCharacterSize(15);
-      command_.setPosition(10, 0);
+      command_.setCharacterSize(FONT_SIZE);
+      command_.setPosition(MARGIN + 2 * size.width, MARGIN);
       command_.setColor(sf::Color::White);
     }
 
@@ -66,7 +84,7 @@ namespace visual {
 
     bool visible() { return visible_; }
 
-    void handleEvent(sf::Event &event) {
+    void handleEvent(sf::Event& event) {
       if (event.type == sf::Event::TextEntered) {
         if (event.text.unicode > 31 && event.text.unicode < 127) {
           command_.setString(command_.getString() +
@@ -94,7 +112,7 @@ namespace visual {
 
           sf::Text line;
           line.setFont(font_);
-          line.setCharacterSize(15);
+          line.setCharacterSize(FONT_SIZE);
           line.setColor(sf::Color::White);
           line.setString(output);
           outputs_.push_front(line);
@@ -120,7 +138,7 @@ namespace visual {
       }
     }
 
-    bool update(sf::Time &time) {
+    bool update(sf::Time& time) {
       time_ += time;
       if (time_ >= sf::milliseconds(500)) {
         cursor_ = !cursor_;
@@ -129,16 +147,16 @@ namespace visual {
       return true;
     }
 
-    void render(sf::RenderTarget &window) {
+    void render(sf::RenderTarget& window) {
+      auto promptSize = prompt_.getGlobalBounds();
+
       sf::RectangleShape background;
       background.setPosition(0, 0);
-      background.setSize(sf::Vector2f(SCREEN_WIDTH, TOTAL_HEIGHT));
-      background.setFillColor(sf::Color(42, 42, 42, 42));
-      window.draw(background);
-
-      background.setPosition(dimensions_.left, dimensions_.top);
-      background.setSize(sf::Vector2f(dimensions_.width, INPUT_HEIGHT));
-      background.setFillColor(sf::Color(150, 150, 150, 255));
+      background.setSize(sf::Vector2f(
+          SCREEN_WIDTH,
+          (2 * promptSize.height + 2 * PADDING) * (MAX_HISTORY + 1) +
+              2 * MARGIN));
+      background.setFillColor(sf::Color(42, 42, 42, 142));
       window.draw(background);
 
       window.draw(prompt_);
@@ -148,18 +166,18 @@ namespace visual {
 
       if (cursor_) {
         sf::RectangleShape cursor;
-        cursor.setPosition(size.width + 14, 2);
-        cursor.setSize(sf::Vector2f(5, 10));
+        cursor.setPosition(size.left + size.width + 1, MARGIN);
+        cursor.setSize(sf::Vector2f(promptSize.width, 2 * promptSize.height));
         cursor.setFillColor(sf::Color::White);
         window.draw(cursor);
       }
 
-      float y = 15;
+      float y = MARGIN + 2 * promptSize.height + PADDING;
       for (unsigned int i = 0; i < outputs_.size(); i++) {
-        outputs_[i].setPosition(2, y);
+        outputs_[i].setPosition(MARGIN, y);
         window.draw(outputs_[i]);
-        y += 15;
-        if (i + 1 == MAX_SIZE) {
+        y += 2 * outputs_[i].getGlobalBounds().height + PADDING;
+        if (i + 1 == MAX_HISTORY) {
           break;
         }
       }

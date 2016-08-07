@@ -1,16 +1,31 @@
 #pragma once
 
+#include "../state.h"
 #include "../util.h"
 
 #include <SFML/Graphics.hpp>
 
-#include <queue>
 #include <string>
 
 namespace visual {
 
   namespace Console {
-    const unsigned int MAX_SIZE = 3;
+    const unsigned int MAX_HISTORY = 3;
+    const float MARGIN = 2;
+    const float PADDING = 2;
+    const int FONT_SIZE = 8;
+
+    /**
+     * Gets the specified value from Lua
+     *
+     * @template T Type to fetch
+     * @param value Name of value to fetch
+     * @return Fetched value
+     */
+    template<typename T>
+    T getValue(std::string value) {
+      return static_cast<T>(GameState::lua()[value.c_str()]);
+    }
 
     /**
      * Runs the given command string against Lua and returns
