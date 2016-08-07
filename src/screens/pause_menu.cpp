@@ -2,8 +2,6 @@
 
 #include "../engine.h"
 
-#include <SDL.h>
-
 #include <functional>
 #include <iostream>
 

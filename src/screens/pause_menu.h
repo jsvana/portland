@@ -4,8 +4,6 @@
 #include "menu.h"
 #include "screen.h"
 
-#include <SDL.h>
-
 /**
  * Game pause screen, supports resuming and quitting
  */

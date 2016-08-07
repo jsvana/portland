@@ -8,10 +8,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <SDL.h>
-#include <SDL_image.h>
-#include <SDL_ttf.h>
-
 namespace Engine {
   std::stack<std::unique_ptr<Screen>> screens;
 

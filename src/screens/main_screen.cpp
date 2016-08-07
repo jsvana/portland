@@ -5,8 +5,6 @@
 #include "../util.h"
 #include "pause_menu.h"
 
-#include <SDL.h>
-
 #include <functional>
 #include <iostream>
 #include <set>

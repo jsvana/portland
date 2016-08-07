@@ -3,8 +3,6 @@
 #include "../engine.h"
 #include "main_screen.h"
 
-#include <SDL.h>
-
 #include <iostream>
 
 OpeningScreen::OpeningScreen() {

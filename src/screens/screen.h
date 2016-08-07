@@ -12,7 +12,7 @@ class Screen {
   virtual ~Screen() {}
 
   /**
-   * SDL event handler, called by main game loop
+   * sfml event handler, called by main game loop
    *
    * @param event Event to handle
    */
