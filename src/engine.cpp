@@ -13,7 +13,7 @@
 #include <SDL_ttf.h>
 
 namespace Engine {
-  std::stack<std::shared_ptr<Screen>> screens;
+  std::stack<std::unique_ptr<Screen>> screens;
 
   sf::RenderWindow window;
 
@@ -40,8 +40,6 @@ namespace Engine {
     while (window.isOpen() && running_) {
       sf::Time elapsed = clock.restart();
 
-      auto screen = screens.top();
-
       sf::Event event;
       while (window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
@@ -49,18 +47,19 @@ namespace Engine {
           return;
         } else if (event.type == sf::Event::Resized) {
           auto windowSize = window.getSize();
-          window.setView(sf::View(sf::FloatRect(0.f, 0.f, windowSize.x, windowSize.y)));
+          window.setView(
+              sf::View(sf::FloatRect(0.f, 0.f, windowSize.x, windowSize.y)));
         }
 
-        screen->handleEvent(event);
+        screens.top()->handleEvent(event);
       }
 
-      running_ = screen->update(elapsed);
+      running_ = screens.top()->update(elapsed);
 
       auto windowSize = window.getSize();
 
       target.clear(sf::Color::Black);
-      screen->render(target);
+      screens.top()->render(target);
       target.display();
 
       sf::Sprite rendered(target.getTexture());
@@ -88,18 +87,20 @@ namespace Engine {
   }
 
   void pushScreen(Screen *screen) {
-    pushScreen(std::shared_ptr<Screen>(screen));
+    pushScreen(std::unique_ptr<Screen>(screen));
   }
 
-  void pushScreen(std::shared_ptr<Screen> screen) { screens.push(screen); }
+  void pushScreen(std::unique_ptr<Screen> screen) {
+    screens.push(std::move(screen));
+  }
 
-  std::shared_ptr<Screen> popScreen() {
-    auto top = screens.top();
+  std::unique_ptr<Screen> popScreen() {
+    auto top = std::move(screens.top());
     screens.pop();
     return top;
   }
 
-  std::shared_ptr<Screen> replaceScreen(Screen *screen) {
+  std::unique_ptr<Screen> replaceScreen(Screen *screen) {
     auto replaced = popScreen();
     pushScreen(screen);
     return replaced;

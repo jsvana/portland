@@ -19,8 +19,8 @@ function init()
   local npc = helpers.Npc("assets/sprites/undead.json", 0, 3, 1)
   helpers.npcs:append(npc)
 
-  d = helpers.Dialog("Here's a really really really long message that will scroll yay messages wooo so this one time at band camp this really cool thing happened and then the story ended")
-  d:addOptions({"No", "Yes"})
+  --d = helpers.Dialog("Here's a really really really long message that will scroll yay messages wooo so this one time at band camp this really cool thing happened and then the story ended")
+  --d:addOptions({"No", "Yes"})
 end
 
 readSign = false
