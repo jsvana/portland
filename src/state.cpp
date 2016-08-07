@@ -77,6 +77,12 @@ namespace GameState {
     return 0;
   }
 
+  float densePositionAbove(const std::unique_ptr<Sprite> &sprite) {
+    float spriteAbove = positionOfSpriteAbove(sprite);
+    float tileAbove = map()->positionOfTileAbove(sprite->getDimensions());
+    return std::max<float>(spriteAbove, tileAbove);
+  }
+
   float positionOfSpriteBelow(const std::unique_ptr<Sprite> &sprite) {
     auto dim = sprite->getDimensions();
     sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
@@ -92,6 +98,12 @@ namespace GameState {
       }
     }
     return std::numeric_limits<float>::max();
+  }
+
+  float densePositionBelow(const std::unique_ptr<Sprite> &sprite) {
+    float spriteBelow = positionOfSpriteBelow(sprite);
+    float tileBelow = map()->positionOfTileBelow(sprite->getDimensions());
+    return std::min<float>(spriteBelow, tileBelow);
   }
 
   void setTicks(unsigned int ticks) { ticks_ = ticks; }

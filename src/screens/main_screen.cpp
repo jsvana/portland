@@ -46,22 +46,18 @@ sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite> &sprite) {
     sprite->zeroVelocity(/*stopJump = */ true);
   } else {
     sprite->updateVelocity();
-    float positionOfBelow =
-        std::min<float>(GameState::map()->positionOfTileBelow(dim),
-                        GameState::positionOfSpriteBelow(sprite));
-    float positionOfAbove =
-        std::max<float>(GameState::map()->positionOfTileAbove(dim),
-                        GameState::positionOfSpriteAbove(sprite));
+    float below = GameState::densePositionBelow(sprite);
+    float above = GameState::densePositionAbove(sprite);
 
     sf::Vector2f jumpDelta(0, sprite->velocity());
     dim = sprite->getDimensions();
     float top = dim.top;
     top += jumpDelta.y;
-    bool clamped = util::clamp<float>(top, positionOfAbove, positionOfBelow);
+    bool clamped = util::clamp<float>(top, above, below);
     if (clamped) {
       sprite->zeroVelocity(true);
     }
-    if ((int)top == (int)positionOfBelow) {
+    if ((int)top == (int)below) {
       sprite->allowJump();
     } else {
       sprite->forbidJump();

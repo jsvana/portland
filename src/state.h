@@ -44,12 +44,28 @@ namespace GameState {
   float positionOfSpriteAbove(const std::unique_ptr<Sprite> &sprite);
 
   /**
+   * Finds position of the next dense object above the sprite
+   *
+   * @param sprite Sprite to check
+   * @return Position of next dense object
+   */
+  float densePositionAbove(const std::unique_ptr<Sprite> &sprite);
+
+  /**
    * Finds position of the next sprite below the sprite
    *
    * @param sprite Sprite to check
    * @return Position of next sprite
    */
   float positionOfSpriteBelow(const std::unique_ptr<Sprite> &sprite);
+
+  /**
+   * Finds position of the next dense object below the sprite
+   *
+   * @param sprite Sprite to check
+   * @return Position of next dense object
+   */
+  float densePositionBelow(const std::unique_ptr<Sprite> &sprite);
 
   /**
    * Sets the current game ticks
