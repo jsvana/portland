@@ -45,10 +45,13 @@ sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite> &sprite) {
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);
   } else {
-    // Falling
     sprite->updateVelocity();
-    float positionOfBelow = GameState::map()->positionOfTileBelow(dim);
-    float positionOfAbove = GameState::map()->positionOfTileAbove(dim);
+    float positionOfBelow =
+        std::min<float>(GameState::map()->positionOfTileBelow(dim),
+                        GameState::positionOfSpriteBelow(sprite));
+    float positionOfAbove =
+        std::max<float>(GameState::map()->positionOfTileAbove(dim),
+                        GameState::positionOfSpriteAbove(sprite));
 
     sf::Vector2f jumpDelta(0, sprite->velocity());
     dim = sprite->getDimensions();

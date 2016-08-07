@@ -36,6 +36,22 @@ namespace GameState {
   sf::Vector2f &camera();
 
   /**
+   * Finds position of the next sprite above the sprite
+   *
+   * @param sprite Sprite to check
+   * @return Position of next sprite
+   */
+  float positionOfSpriteAbove(const std::unique_ptr<Sprite> &sprite);
+
+  /**
+   * Finds position of the next sprite below the sprite
+   *
+   * @param sprite Sprite to check
+   * @return Position of next sprite
+   */
+  float positionOfSpriteBelow(const std::unique_ptr<Sprite> &sprite);
+
+  /**
    * Sets the current game ticks
    *
    * @param ticks Current game ticks

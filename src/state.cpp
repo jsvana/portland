@@ -1,5 +1,7 @@
 #include "state.h"
 
+#include <limits.h>
+
 namespace GameState {
 
   bool initialized_ = false;
@@ -58,6 +60,39 @@ namespace GameState {
   }
 
   sf::Vector2f &camera() { return camera_; }
+
+  float positionOfSpriteAbove(const std::unique_ptr<Sprite> &sprite) {
+    auto dim = sprite->getDimensions();
+    sf::FloatRect collisionRect(dim.left, 0, dim.width, dim.top);
+    for (const auto &s : sprites()) {
+      if (s.first == sprite->id) {
+        continue;
+      }
+
+      auto sDim = s.second->getDimensions();
+      if (collisionRect.intersects(sDim)) {
+        return sDim.top + sDim.height;
+      }
+    }
+    return 0;
+  }
+
+  float positionOfSpriteBelow(const std::unique_ptr<Sprite> &sprite) {
+    auto dim = sprite->getDimensions();
+    sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
+                                map()->pixelHeight());
+    for (const auto &s : sprites()) {
+      if (s.first == sprite->id) {
+        continue;
+      }
+
+      auto sDim = s.second->getDimensions();
+      if (collisionRect.intersects(sDim)) {
+        return sDim.top - dim.height;
+      }
+    }
+    return std::numeric_limits<float>::max();
+  }
 
   void setTicks(unsigned int ticks) { ticks_ = ticks; }
 
