@@ -99,6 +99,8 @@ bool MainScreen::update(sf::Time &time) {
     visual::DialogManager::clearClosedDialog();
   }
 
+  auto startDim = GameState::hero()->getDimensions();
+
   sf::Vector2f moveDelta;
   if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
       sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
@@ -152,6 +154,28 @@ bool MainScreen::update(sf::Time &time) {
     GameState::runTileEvent();
   }
 
+  auto currentDim = GameState::hero()->getDimensions();
+  moveDelta.x = currentDim.left - startDim.left;
+  moveDelta.y = currentDim.top - startDim.top;
+
+  // Scrolling
+  auto mapPos = GameState::map()->getPosition();
+  auto cameraPad = cameraPadding();
+  if ((moveDelta.x > 0 &&
+       dim.left + dim.width - GameState::camera().x + cameraPad.x >=
+           mapPos.x + SCREEN_WIDTH) ||
+      (moveDelta.x < 0 &&
+       dim.left - GameState::camera().x - cameraPad.x < mapPos.x)) {
+    GameState::camera().x += moveDelta.x;
+  }
+  if ((moveDelta.y > 0 &&
+       dim.top + dim.height - GameState::camera().y + cameraPad.y >=
+           mapPos.y + SCREEN_HEIGHT) ||
+      (moveDelta.y < 0 &&
+       dim.top - GameState::camera().y - cameraPad.y < mapPos.y)) {
+    GameState::camera().y += moveDelta.y;
+  }
+
   for (const auto &sprite : GameState::sprites()) {
     auto dim = updateGravity(sprite.second);
     if (GameState::positionWalkable(sprite.second, dim)) {
@@ -168,30 +192,6 @@ void MainScreen::render(sf::RenderTarget &window) {
   GameState::map()->render(window, GameState::camera());
 
   GameState::hero()->render(window, GameState::camera());
-  auto mapPos = GameState::map()->getPosition();
-  auto cameraPad = cameraPadding();
-  auto windowSize = window.getSize();
-  auto dim = GameState::hero()->getDimensions();
-  int xDiff;
-  xDiff = (dim.left + dim.width - GameState::camera().x + cameraPad.x) -
-          (mapPos.x + windowSize.x);
-  if (xDiff > 0) {
-    GameState::camera().x -= xDiff;
-  }
-  xDiff = (dim.left - GameState::camera().x - cameraPad.x) + mapPos.x;
-  if (xDiff < 0) {
-    GameState::camera().x += xDiff;
-  }
-  int yDiff;
-  yDiff = (dim.top + dim.height - GameState::camera().y + cameraPad.y) -
-          (mapPos.y + windowSize.y);
-  if (yDiff > 0) {
-    GameState::camera().y -= yDiff;
-  }
-  yDiff = (dim.top - GameState::camera().y - cameraPad.y) + mapPos.y;
-  if (yDiff < 0) {
-    GameState::camera().y += yDiff;
-  }
 
   for (const auto &sprite : GameState::sprites()) {
     sprite.second->render(window, GameState::camera());

@@ -19,6 +19,7 @@ namespace Engine {
     window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Portland");
 
     window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
 
     GameState::initLuaApi();
 
