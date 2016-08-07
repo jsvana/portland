@@ -166,14 +166,18 @@ bool MainScreen::update(sf::Time &time) {
            mapPos.x + SCREEN_WIDTH) ||
       (moveDelta.x < 0 &&
        dim.left - GameState::camera().x - cameraPad.x < mapPos.x)) {
-    GameState::camera().x += moveDelta.x;
+    float x = GameState::camera().x + moveDelta.x;
+    util::clamp<float>(x, 0, GameState::map()->pixelWidth() - SCREEN_WIDTH);
+    GameState::camera().x = x;
   }
   if ((moveDelta.y > 0 &&
        dim.top + dim.height - GameState::camera().y + cameraPad.y >=
            mapPos.y + SCREEN_HEIGHT) ||
       (moveDelta.y < 0 &&
        dim.top - GameState::camera().y - cameraPad.y < mapPos.y)) {
-    GameState::camera().y += moveDelta.y;
+    float y = GameState::camera().y + moveDelta.y;
+    util::clamp<float>(y, 0, GameState::map()->pixelHeight() - SCREEN_HEIGHT);
+    GameState::camera().y = y;
   }
 
   for (const auto &sprite : GameState::sprites()) {
