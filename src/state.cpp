@@ -9,7 +9,7 @@ namespace GameState {
 
   unsigned int ticks_ = 0;
 
-  std::shared_ptr<Sprite> hero_;
+  std::unique_ptr<Sprite> hero_;
   float moveSpeed_;
 
   // Jumping stuff
@@ -18,10 +18,10 @@ namespace GameState {
 
   // Stack is used to mimick maps_
   unsigned int nextSpriteId_ = 1;
-  std::stack<std::unordered_map<unsigned int, std::shared_ptr<Sprite>>>
+  std::stack<std::unordered_map<unsigned int, std::unique_ptr<Sprite>>>
       sprites_;
 
-  std::stack<std::shared_ptr<Map>> maps_;
+  std::stack<std::unique_ptr<Map>> maps_;
 
   std::unordered_map<int, std::string> tileEvents_;
 
@@ -63,9 +63,9 @@ namespace GameState {
 
   int ticks() { return (int)(ticks_ % INT_MAX); }
 
-  void setHero(std::shared_ptr<Sprite> hero) { hero_ = hero; }
+  void setHero(std::unique_ptr<Sprite> hero) { hero_ = std::move(hero); }
 
-  std::shared_ptr<Sprite> hero() { return hero_; }
+  const std::unique_ptr<Sprite> &hero() { return hero_; }
 
   void setHeroMoveSpeed(int amount, int total) {
     moveSpeed_ = (float)amount / (float)total;
@@ -80,19 +80,17 @@ namespace GameState {
   }
 
   void pushSprites(
-      std::unordered_map<unsigned int, std::shared_ptr<Sprite>> sprites) {
-    sprites_.push(sprites);
+      std::unordered_map<unsigned int, std::unique_ptr<Sprite>> sprites) {
+    sprites_.push(std::move(sprites));
   }
 
-  std::unordered_map<unsigned int, std::shared_ptr<Sprite>> &sprites() {
+  std::unordered_map<unsigned int, std::unique_ptr<Sprite>> &sprites() {
     return sprites_.top();
   }
 
   void popSprites() { sprites_.pop(); }
 
-  void pushMap(std::shared_ptr<Map> map) { maps_.push(map); }
-
-  std::shared_ptr<Map> map() { return maps_.top(); }
+  const std::unique_ptr<Map> &map() { return maps_.top(); }
 
   sel::State &lua() { return lua_; }
 
@@ -125,7 +123,8 @@ namespace GameState {
     clearTileEvent(tileNumber);
   }
 
-  bool positionWalkable(std::shared_ptr<Sprite> sprite, sf::FloatRect dim) {
+  bool positionWalkable(const std::unique_ptr<Sprite> &sprite,
+                        sf::FloatRect dim) {
     if (!map()->positionWalkable(dim)) {
       return false;
     }
@@ -162,10 +161,8 @@ namespace GameState {
   bool initialized() { return initialized_; }
 
   bool loadMap(std::string path) {
-    auto map = std::make_shared<Map>(path);
-    maps_.push(map);
-    std::unordered_map<unsigned int, std::shared_ptr<Sprite>> sprites;
-    sprites_.push(sprites);
+    maps_.push(util::make_unique<Map>(path));
+    sprites_.emplace();
 
     return true;
   }
@@ -178,7 +175,7 @@ namespace GameState {
   }
 
   bool loadCharacter(std::string path, int tile, int initX, int initY) {
-    hero_ = std::make_shared<Sprite>(path);
+    hero_ = util::make_unique<Sprite>(path);
     hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
     hero_->setTile(tile);
 
@@ -218,14 +215,14 @@ namespace GameState {
   }
 
   unsigned int addNpc(std::string path, int tile, int x, int y) {
-    auto npc = std::make_shared<Npc>(path);
+    auto npc = util::make_unique<Npc>(path);
     npc->setPosition(x * GameState::map()->tileWidth(),
                      y * GameState::map()->tileHeight());
     npc->setTile(tile);
 
     unsigned int spriteId = GameState::allocateSpriteId();
     npc->id = spriteId;
-    sprites()[spriteId] = npc;
+    sprites()[spriteId] = std::move(npc);
     return spriteId;
   }
 
@@ -233,7 +230,7 @@ namespace GameState {
   bool setNpcCallback(unsigned int npcId, std::string callback) {
     auto iter = sprites().find(npcId);
     if (iter == sprites().end()) {
-      err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad NPC ID: {}", npcId);
       return false;
     }
     iter->second->callbackFunc = callback;
@@ -243,15 +240,14 @@ namespace GameState {
   bool moveNpc(unsigned int npcId, int dx, int dy) {
     auto iter = sprites().find(npcId);
     if (iter == sprites().end()) {
-      err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad NPC ID: {}", npcId);
       return false;
     }
-    auto npc = iter->second;
-    auto pos = npc->getDimensions();
+    auto pos = iter->second->getDimensions();
     pos.left += dx;
     pos.top += dy;
-    if (positionWalkable(npc, pos)) {
-      npc->setDimensions(pos);
+    if (positionWalkable(iter->second, pos)) {
+      iter->second->setDimensions(pos);
       return true;
     } else {
       return false;
@@ -261,7 +257,7 @@ namespace GameState {
   bool setNpcMaxHp(unsigned int npcId, int hp) {
     auto iter = sprites().find(npcId);
     if (iter == sprites().end()) {
-      err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad NPC ID: {}", npcId);
       return false;
     }
     iter->second->setMaxHp(hp);
@@ -271,7 +267,7 @@ namespace GameState {
   bool damageNpc(unsigned int npcId, int amount) {
     auto iter = sprites().find(npcId);
     if (iter == sprites().end()) {
-      err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad NPC ID: {}", npcId);
       return false;
     }
     iter->second->damage(amount);
@@ -281,7 +277,7 @@ namespace GameState {
   bool healNpc(unsigned int npcId, int amount) {
     auto iter = sprites().find(npcId);
     if (iter == sprites().end()) {
-      err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad NPC ID: {}", npcId);
       return false;
     }
     iter->second->heal(amount);
@@ -290,12 +286,12 @@ namespace GameState {
 
   bool jumpNpc(unsigned int npcId, int magnitude) {
     if (magnitude < 0 || magnitude > 100) {
-      err()->warn("Jump magnitude must be between 0 and 100, inclusive");
+      util::err()->warn("Jump magnitude must be between 0 and 100, inclusive");
       return false;
     }
     auto iter = sprites().find(npcId);
     if (iter == sprites().end()) {
-      err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad NPC ID: {}", npcId);
       return false;
     }
     iter->second->startJump((float)magnitude / 100.0);

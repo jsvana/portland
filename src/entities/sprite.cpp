@@ -16,7 +16,7 @@ bool Sprite::load(const std::string &path) {
   std::ifstream spritefile(path);
 
   if (!spritefile.is_open()) {
-    err()->error("Unable to load spritefile \"{}\": {}", path);
+    util::err()->error("Unable to load spritefile \"{}\": {}", path);
     return false;
   }
 

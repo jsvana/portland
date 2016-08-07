@@ -26,7 +26,7 @@ namespace Engine {
 
     GameState::initLuaApi();
 
-    out()->info("Game initialized");
+    util::out()->info("Game initialized");
 
     return true;
   }

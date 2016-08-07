@@ -22,7 +22,7 @@ class ProgressBar {
    */
   float fillPercentage() {
     float pct = current_ / max_;
-    clamp<float>(pct, 0, 1);
+    util::clamp<float>(pct, 0, 1);
     return pct;
   }
 
@@ -50,7 +50,7 @@ class ProgressBar {
    * @param value New progress bar value
    */
   void setValue(float value) {
-    clamp<float>(value, 0, max_);
+    util::clamp<float>(value, 0, max_);
     updateFillDimensions();
   }
 
@@ -61,7 +61,7 @@ class ProgressBar {
    */
   void shrink(float value) {
     current_ -= value;
-    clamp<float>(value, 0, max_);
+    util::clamp<float>(value, 0, max_);
     updateFillDimensions();
   }
 
@@ -102,8 +102,8 @@ class ProgressBar {
    *
    * @return Progress bar position
    */
-  Point getPosition() {
-    Point position(dimensions_.left - PADDING, dimensions_.top - PADDING);
+  sf::Vector2f getPosition() {
+    sf::Vector2f position(dimensions_.left - PADDING, dimensions_.top - PADDING);
     return position;
   }
 
@@ -112,7 +112,7 @@ class ProgressBar {
    *
    * @param p New position of progress bar
    */
-  void setPosition(Point p) { setPosition(p.x, p.y); }
+  void setPosition(sf::Vector2f p) { setPosition(p.x, p.y); }
 
   /**
    * Sets position of the progress bar from the top left corner

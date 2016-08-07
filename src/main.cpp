@@ -6,7 +6,7 @@
 
 int main(int, char **) {
   if (!Engine::init()) {
-    err()->error("Error loading engine");
+    util::err()->error("Error loading engine");
     Engine::cleanup();
     return 1;
   }
@@ -15,7 +15,7 @@ int main(int, char **) {
 
   Engine::run();
 
-  out()->info("Thanks for playing!");
+  util::out()->info("Thanks for playing!");
 
   Engine::cleanup();
 

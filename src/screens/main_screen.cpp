@@ -22,7 +22,7 @@ MainScreen::MainScreen() {
   GameState::markInitialized();
 }
 
-bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite,
+bool MainScreen::fixMovement(const std::unique_ptr<Sprite> &sprite,
                              sf::Vector2f moveDelta) {
   auto dim = sprite->getDimensions();
   auto oldDim = dim;
@@ -39,7 +39,7 @@ bool MainScreen::fixMovement(std::shared_ptr<Sprite> sprite,
   return dim != oldDim;
 }
 
-sf::FloatRect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite) {
+sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite> &sprite) {
   auto dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);
@@ -53,7 +53,7 @@ sf::FloatRect MainScreen::updateGravity(std::shared_ptr<Sprite> sprite) {
     dim = sprite->getDimensions();
     float top = dim.top;
     top += jumpDelta.y;
-    bool clamped = clamp<float>(top, positionOfAbove, positionOfBelow);
+    bool clamped = util::clamp<float>(top, positionOfAbove, positionOfBelow);
     if (clamped) {
       sprite->zeroVelocity(true);
     }
@@ -85,7 +85,7 @@ bool MainScreen::update(sf::Time &time) {
 
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
-  for (auto &sprite : GameState::sprites()) {
+  for (const auto &sprite : GameState::sprites()) {
     sprite.second->update(time_);
   }
   GameState::lua()["update"]();
@@ -154,7 +154,7 @@ bool MainScreen::update(sf::Time &time) {
     GameState::runTileEvent();
   }
 
-  for (auto &sprite : GameState::sprites()) {
+  for (const auto &sprite : GameState::sprites()) {
     auto dim = updateGravity(sprite.second);
     if (GameState::positionWalkable(sprite.second, dim)) {
       // TODO(jsvana): figure out whether or not the sprite

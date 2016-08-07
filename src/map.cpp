@@ -14,7 +14,7 @@ Map::Map(const std::string &path) : path_(path) { load(path); }
 bool Map::load(const std::string &path) {
   std::ifstream mapfile(path, std::ios::in);
   if (!mapfile.is_open()) {
-    err()->error("Unable to open mapfile \"{}\"", path);
+    util::err()->error("Unable to open mapfile \"{}\"", path);
     return false;
   }
 
@@ -171,7 +171,7 @@ std::shared_ptr<Tileset> Map::tilesetForTile(unsigned int tile) {
       return tileset;
     }
   }
-  err()->warn("Could not find tileset for {}", tile);
+  util::err()->warn("Could not find tileset for {}", tile);
   return nullptr;
 }
 

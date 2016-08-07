@@ -54,7 +54,7 @@ namespace GameState {
    *
    * @return Main character
    */
-  std::shared_ptr<Sprite> hero();
+  const std::unique_ptr<Sprite> &hero();
 
   /**
    * Gets the hero's move speed
@@ -76,14 +76,14 @@ namespace GameState {
    *
    * @return Reference to topmost sprite map
    */
-  std::unordered_map<unsigned int, std::shared_ptr<Sprite>> &sprites();
+  std::unordered_map<unsigned int, std::unique_ptr<Sprite>> &sprites();
 
   /**
    * Gets the topmost map
    *
    * @return Topmost map
    */
-  std::shared_ptr<Map> map();
+  const std::unique_ptr<Map> &map();
 
   /**
    * Gets a reference to the Lua state
@@ -134,7 +134,7 @@ namespace GameState {
    * @param dim Rectangle to check
    * @return Whether position is walkable
    */
-  bool positionWalkable(std::shared_ptr<Sprite> sprite, sf::FloatRect dim);
+  bool positionWalkable(const std::unique_ptr<Sprite> &sprite, sf::FloatRect dim);
 
   /**
    * Checks for an event on the character's current tile, runs the event, and

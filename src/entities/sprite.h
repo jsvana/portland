@@ -172,7 +172,7 @@ class Sprite {
    */
   void heal(int amount) {
     hp_ += amount;
-    clamp<int>(hp_, 0, maxHp_);
+    util::clamp<int>(hp_, 0, maxHp_);
   }
 
   /**
@@ -192,7 +192,7 @@ class Sprite {
    */
   void damage(int amount) {
     hp_ -= amount;
-    clamp<int>(hp_, 0, maxHp_);
+    util::clamp<int>(hp_, 0, maxHp_);
   }
 
   /**

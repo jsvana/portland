@@ -11,8 +11,6 @@
  */
 class PauseMenuScreen : public MenuScreen {
  private:
-  Point camera_;
-
   /**
    * Closes menu. Runs on selection of "Resume"
    *

@@ -19,7 +19,7 @@
 class MainScreen : public Screen {
  private:
   // Once character hits these points screen will move instead of character
-  const Point CAMERA_PADDING_TILES{6, 2};
+  const sf::Vector2f CAMERA_PADDING_TILES{6, 2};
 
   sf::Time time_;
 
@@ -30,15 +30,15 @@ class MainScreen : public Screen {
   ProgressBar heroHealth_;
 
   // Camera to handle player movement
-  BoundedPoint camera_;
+  sf::Vector2f camera_;
 
   /**
    * Gets the dimensions in pixels of the camera padding
    *
    * @return Pixel dimensions of camera padding
    */
-  Point cameraPadding() {
-    Point p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(),
+  sf::Vector2f cameraPadding() {
+    sf::Vector2f p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(),
             CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
     return p;
   }
@@ -54,7 +54,7 @@ class MainScreen : public Screen {
    * @param moveDelta Distance to try to move the sprite
    * @return Whether the sprite was moved
    */
-  bool fixMovement(std::shared_ptr<Sprite> sprite, sf::Vector2f moveDelta);
+  bool fixMovement(const std::unique_ptr<Sprite> &sprite, sf::Vector2f moveDelta);
 
   /**
    * Takes a sprite and updates its gravity
@@ -62,7 +62,7 @@ class MainScreen : public Screen {
    * @param sprite Sprite to update
    * @return Updated sprite dimensions
    */
-  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite);
+  sf::FloatRect updateGravity(const std::unique_ptr<Sprite> &sprite);
 
  public:
   MainScreen();
