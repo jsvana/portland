@@ -56,8 +56,8 @@ namespace visual {
     int indicatorOffset_;
 
     // Renderable textures for dialog indicators
-    std::shared_ptr<sf::Text> moreIndicator_;
-    std::shared_ptr<sf::Text> choiceIndicator_;
+    std::unique_ptr<sf::Text> moreIndicator_;
+    std::unique_ptr<sf::Text> choiceIndicator_;
 
     int lineIndex_;
 
@@ -182,7 +182,7 @@ namespace visual {
      * @param uid UID of dialog
      * @return Found dialog object or nullptr if not found
      */
-    std::shared_ptr<Dialog> getDialogByUid(unsigned int uid);
+    Dialog *getDialogByUid(unsigned int uid);
 
     /**
      * Wrapper to add a dialog option by UID
@@ -208,7 +208,7 @@ namespace visual {
      *
      * @return Most recently closed dialog
      */
-    std::shared_ptr<Dialog> closedDialog();
+    const std::unique_ptr<Dialog> &closedDialog();
 
     /**
      * Clears the most recently closed dialog

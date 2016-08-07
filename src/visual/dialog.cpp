@@ -70,8 +70,8 @@ namespace visual {
     if (lines_.size() <= VISIBLE_LINES) {
       moreIndicator_.reset();
     } else {
-      if (moreIndicator_ == nullptr) {
-        moreIndicator_ = std::make_shared<sf::Text>();
+      if (!moreIndicator_) {
+        moreIndicator_ = util::make_unique<sf::Text>();
         moreIndicator_->setFont(font_);
       }
       auto dim = moreIndicator_->getGlobalBounds();
@@ -93,8 +93,8 @@ namespace visual {
 
     // Position and show choices and choice indicator
     if (lines_.size() == VISIBLE_LINES - 1) {
-      if (choiceIndicator_ == nullptr) {
-        choiceIndicator_ = std::make_shared<sf::Text>();
+      if (!choiceIndicator_) {
+        choiceIndicator_ = util::make_unique<sf::Text>();
         choiceIndicator_->setFont(font_);
       }
       int offset = 0;
@@ -192,23 +192,23 @@ namespace visual {
 
   namespace DialogManager {
 
-    std::deque<std::shared_ptr<Dialog>> dialogs;
+    std::deque<std::unique_ptr<Dialog>> dialogs;
     std::deque<unsigned int> uids;
     std::unordered_map<unsigned int, int> choices;
-    std::shared_ptr<Dialog> closedDialog_ = nullptr;
+    std::unique_ptr<Dialog> closedDialog_;
     unsigned int nextUid = 0;
 
     unsigned int queueDialog(Dialog *dialog) {
       nextUid += 1;
-      dialogs.push_back(std::shared_ptr<Dialog>(dialog));
+      dialogs.push_back(std::unique_ptr<Dialog>(dialog));
       uids.push_back(nextUid);
       return nextUid;
     }
 
-    std::shared_ptr<Dialog> getDialogByUid(unsigned int uid) {
+    Dialog *getDialogByUid(unsigned int uid) {
       for (unsigned int i = 0; i < dialogs.size(); i++) {
         if (uids[i] == uid) {
-          return dialogs[i];
+          return dialogs[i].get();
           ;
         }
       }
@@ -216,8 +216,8 @@ namespace visual {
     }
 
     bool addDialogOption(unsigned int uid, std::string option) {
-      auto dialog = getDialogByUid(uid);
-      if (dialog == nullptr) {
+      const auto &dialog = getDialogByUid(uid);
+      if (!dialog) {
         return false;
       }
       dialog->addOptions({option});
@@ -225,17 +225,17 @@ namespace visual {
     }
 
     bool setDialogCallback(unsigned int uid, std::string callback) {
-      auto dialog = getDialogByUid(uid);
-      if (dialog == nullptr) {
+      const auto &dialog = getDialogByUid(uid);
+      if (!dialog) {
         return false;
       }
       dialog->callbackFunc = callback;
       return true;
     }
 
-    std::shared_ptr<Dialog> closedDialog() { return closedDialog_; }
+    const std::unique_ptr<Dialog> &closedDialog() { return closedDialog_; }
 
-    void clearClosedDialog() { closedDialog_ = nullptr; }
+    void clearClosedDialog() { closedDialog_.release(); }
 
     int dialogChoice(unsigned int uid) { return choices[uid]; }
 
@@ -251,17 +251,17 @@ namespace visual {
         return false;
       }
 
-      auto dialog = dialogs.front();
+      dialogs.front();
 
-      if (dialog->update(time)) {
+      if (dialogs.front()->update(time)) {
         return true;
       } else {
         int uid = uids.front();
 
-        closedDialog_ = dialog;
+        closedDialog_ = std::move(dialogs.front());
 
-        if (dialog->hasChoices()) {
-          choices[uid] = dialog->getChoice();
+        if (closedDialog_->hasChoices()) {
+          choices[uid] = closedDialog_->getChoice();
         } else {
           choices[uid] = -1;
         }

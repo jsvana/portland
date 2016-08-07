@@ -93,7 +93,7 @@ bool MainScreen::update(sf::Time &time) {
   if (visual::DialogManager::update(time_)) {
     return true;
   } else {
-    auto dialog = visual::DialogManager::closedDialog();
+    const auto &dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc != "") {
       int choice = dialog->getChoice();
       GameState::lua()[dialog->callbackFunc.c_str()](choice);
