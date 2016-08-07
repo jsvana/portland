@@ -3,6 +3,7 @@
 namespace visual {
 
   Dialog::Dialog(std::string message) : message_(message) {
+    font_.loadFromFile("assets/fonts/arcade.ttf");
     map_ = std::unique_ptr<Map>(new Map("assets/maps/dialog.json"));
     map_->setPosition(position_.x, position_.y);
 
@@ -30,7 +31,7 @@ namespace visual {
         tmp = "";
       }
       sf::Text text;
-      text.setFont(*font_);
+      text.setFont(font_);
       text.setString(line);
 
       text.setFillColor(sf::Color::White);
@@ -71,7 +72,7 @@ namespace visual {
     } else {
       if (moreIndicator_ == nullptr) {
         moreIndicator_ = std::make_shared<sf::Text>();
-        moreIndicator_->setFont(*font_);
+        moreIndicator_->setFont(font_);
       }
       auto dim = moreIndicator_->getGlobalBounds();
       moreIndicator_->setPosition(
@@ -94,13 +95,13 @@ namespace visual {
     if (lines_.size() == VISIBLE_LINES - 1) {
       if (choiceIndicator_ == nullptr) {
         choiceIndicator_ = std::make_shared<sf::Text>();
-        choiceIndicator_->setFont(*font_);
+        choiceIndicator_->setFont(font_);
       }
       int offset = 0;
       int padding = 10;
       for (unsigned int i = 0; i < choices_.size(); i++) {
         sf::Text choiceText;
-        choiceText.setFont(*font_);
+        choiceText.setFont(font_);
         choiceText.setString(choices_[i]);
         choiceText.setFillColor(sf::Color::White);
         auto dim = choiceText.getGlobalBounds();
@@ -165,7 +166,7 @@ namespace visual {
       reflowText();
     }
 
-    return completed_;
+    return !completed_;
   }
 
   void Dialog::render(sf::RenderTarget &window) {

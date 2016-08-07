@@ -40,7 +40,7 @@ namespace visual {
     // Choices in dialog
     std::vector<std::string> choices_;
 
-    std::shared_ptr<sf::Font> font_;
+    sf::Font font_;
 
     // Vector of renderable lines of text
     std::deque<sf::Text> lines_;
