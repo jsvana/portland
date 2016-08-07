@@ -3,6 +3,8 @@
 #include "../util.h"
 #include "sprite.h"
 
+#include <SFML/Graphics.hpp>
+
 #include <string>
 
 /**
@@ -12,5 +14,5 @@ class Npc : public Sprite {
  public:
   Npc(const std::string &path) : Sprite(path) {}
 
-  void render(Point cameraPos) const;
+  void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
 };

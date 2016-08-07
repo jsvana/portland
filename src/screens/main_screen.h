@@ -1,12 +1,12 @@
 #pragma once
 
-#include "../progress_bar.h"
 #include "../state.h"
 #include "../util.h"
 #include "../visual/dialog.h"
+#include "../visual/progress_bar.h"
 #include "screen.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <functional>
 #include <stack>
@@ -21,13 +21,11 @@ class MainScreen : public Screen {
   // Once character hits these points screen will move instead of character
   const Point CAMERA_PADDING_TILES{6, 2};
 
-  unsigned long ticks_;
+  sf::Time time_;
 
-  const float MAX_JUMP_HOLD_DURATION = 20;
-  const float MIN_JUMP_HOLD_DURATION = 10;
-  const float JUMP_HOLD_INCREASE = 5;
-  bool jumpHeld_ = false;
-  float jumpHoldDuration_;
+  const sf::Time MAX_JUMP_HOLD_DURATION = sf::milliseconds(30);
+  const sf::Time MIN_JUMP_HOLD_DURATION = sf::milliseconds(0);
+  sf::Time jumpHoldDuration_;
 
   ProgressBar heroHealth_;
 
@@ -56,45 +54,31 @@ class MainScreen : public Screen {
    * @param moveDelta Distance to try to move the sprite
    * @return Whether the sprite was moved
    */
-  bool fixMovement(std::shared_ptr<Sprite> sprite, Point moveDelta);
+  bool fixMovement(std::shared_ptr<Sprite> sprite, sf::Vector2f moveDelta);
 
   /**
-   * Takes a sprite and updates its gravity, also updates
-   * a previous move if necessary.
-   *
-   * @param sprite Sprite to update
-   * @param moveDelta Previous move amount
-   * @return Updated sprite dimensions
-   */
-  Rect updateGravity(std::shared_ptr<Sprite> sprite, Point &moveDelta);
-
-  /**
-   * Helper for updateGravity that passes an initial
-   * movement of (0, 0).
+   * Takes a sprite and updates its gravity
    *
    * @param sprite Sprite to update
    * @return Updated sprite dimensions
    */
-  Rect updateGravity(std::shared_ptr<Sprite> sprite) {
-    Point moveDelta;
-    return updateGravity(sprite, moveDelta);
-  }
+  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite);
 
  public:
-  MainScreen(int width, int height);
+  MainScreen();
 
   /**
    * @see Screen::handleEvent
    */
-  void handleEvent(const SDL_Event &event);
+  void handleEvent(sf::Event &event);
 
   /**
    * @see Screen::update
    */
-  bool update(unsigned long frames);
+  bool update(sf::Time &time);
 
   /**
    * @see Screen::render
    */
-  void render(float interpolation);
+  void render(sf::RenderTarget &window);
 };

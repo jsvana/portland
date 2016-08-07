@@ -1,12 +1,9 @@
 #include "tileset.h"
 
-#include "asset_manager.h"
 #include "util.h"
 
 #include <iostream>
 #include <string>
-
-extern SDL_Renderer *renderer;
 
 Tileset::Tileset(const std::string &basePath,
                  const nlohmann::json &tilesetData) {
@@ -28,14 +25,8 @@ bool Tileset::load(const std::string &basePath,
 
   name_ = tilesetData["name"].get<std::string>();
 
-  dimensions_.w = tilesetData["imagewidth"].get<int>();
-  dimensions_.h = tilesetData["imageheight"].get<int>();
-
-  texture_ = AssetManager::getTexture(basePath + "/" + texturePath);
-  if (texture_ == nullptr) {
-    err()->error("\"{}\" does not exist, skipping render", texturePath);
-    return false;
-  }
+  texture_.loadFromFile(basePath + "/" + texturePath);
+  tile_.setTexture(texture_);
 
   auto properties = tilesetData.find("tileproperties");
   auto animationData = tilesetData.find("tiles");
@@ -102,18 +93,20 @@ bool Tileset::ladder(unsigned int tile) {
   return tiles_[tile - firstGid_].ladder;
 }
 
-bool Tileset::update(unsigned int ticks) {
-  if (ticks - lastTicks_ >= FRAME_TICKS_INTERVAL) {
+bool Tileset::update(sf::Time &time) {
+  time_ += time;
+  if (time_ >= sf::milliseconds(500)) {
     for (auto &tile : tiles_) {
       tile.second.frame =
           (tile.second.frame + 1) % tile.second.animationTiles.size();
-      lastTicks_ = ticks;
     }
+    time_ = sf::seconds(0);
   }
   return true;
 }
 
-void Tileset::renderTile(unsigned int tile, int x, int y) const {
+void Tileset::renderTile(sf::RenderTarget &window, unsigned int tile, int x,
+                         int y) {
   if (tile == 0) {
     return;
   }
@@ -122,18 +115,11 @@ void Tileset::renderTile(unsigned int tile, int x, int y) const {
   bool flipVertical = tile & FLIPPED_VERTICALLY;
   bool flipDiagonal = tile & FLIPPED_DIAGONALLY;
 
-  unsigned int flags = 0;
   unsigned int angle = 0;
   if (flipDiagonal) {
     angle = 90;
     flipVertical = !(tile & FLIPPED_HORIZONTALLY);
     flipHorizontal = tile & FLIPPED_VERTICALLY;
-  }
-  if (flipHorizontal) {
-    flags |= SDL_FLIP_HORIZONTAL;
-  }
-  if (flipVertical) {
-    flags |= SDL_FLIP_VERTICAL;
   }
 
   tile &= ~(FLIPPED_HORIZONTALLY | FLIPPED_VERTICALLY | FLIPPED_DIAGONALLY);
@@ -141,18 +127,21 @@ void Tileset::renderTile(unsigned int tile, int x, int y) const {
   tile -= firstGid_;
   tile = tileFor(tile);
 
-  SDL_Rect source;
-  source.x = tileWidth_ * (tile % columns_);
-  source.y = tileHeight_ * (tile / columns_);
-  source.w = tileWidth_;
-  source.h = tileHeight_;
+  sf::IntRect source(tileWidth_ * (tile % columns_),
+                     tileHeight_ * (tile / columns_), tileWidth_, tileHeight_);
 
-  SDL_Rect dest;
-  dest.x = x;
-  dest.y = y;
-  dest.w = tileWidth_;
-  dest.h = tileHeight_;
+  if (flipHorizontal) {
+    source.left += tileWidth_;
+    source.width = -tileWidth_;
+  }
+  if (flipVertical) {
+    source.top += tileHeight_;
+    source.height = -tileHeight_;
+  }
 
-  SDL_RenderCopyEx(renderer, texture_, &source, &dest, angle, NULL,
-                   (SDL_RendererFlip)flags);
+  tile_.setTextureRect(source);
+  tile_.setRotation(angle);
+  tile_.setPosition(x, y);
+
+  window.draw(tile_);
 }

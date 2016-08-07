@@ -1,15 +1,9 @@
 #include "sprite.h"
 
-#include "../asset_manager.h"
-
-#include <SDL.h>
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
 #include <vector>
-
-extern SDL_Renderer *renderer;
 
 Sprite::Sprite(const std::string &path) {
   load(path);
@@ -32,12 +26,13 @@ bool Sprite::load(const std::string &path) {
 
   auto spriteData = nlohmann::json::parse(fileData.str());
 
-  dimensions_.w = spriteData["width"].get<int>();
-  dimensions_.h = spriteData["height"].get<int>();
+  dimensions_.width = spriteData["width"].get<int>();
+  dimensions_.height = spriteData["height"].get<int>();
   tile_ = spriteData["tile"].get<int>();
   multiFile_ = spriteData["multi_file"].get<bool>();
   scale_ = spriteData["scale"].get<float>();
   frameSpacing_ = spriteData["frame_spacing"].get<int>();
+  columns_ = spriteData["columns"].get<int>();
 
   std::vector<std::string> texturePaths;
   if (multiFile_) {
@@ -51,15 +46,8 @@ bool Sprite::load(const std::string &path) {
   auto basePath = path.substr(0, path.find_last_of("/"));
   for (auto &path : texturePaths) {
     std::string fullPath = basePath + "/" + path;
-    auto texture = AssetManager::getTexture(fullPath);
-    if (texture == nullptr) {
-      err()->warn("\"{}\" does not exist, skipping render", fullPath);
-      return false;
-    }
-
-    // The two images should be the same size so I'm being lazy
-    SDL_QueryTexture(texture, NULL, NULL, &textureDimensions_.w,
-                     &textureDimensions_.h);
+    sf::Texture texture;
+    texture.loadFromFile(fullPath);
 
     textures_.push_back(texture);
   }
@@ -74,9 +62,11 @@ void Sprite::updateVelocity() {
   jumping_ = true;
 }
 
+void Sprite::setVelocity(float velocity) { velocityY_ = velocity; }
+
 void Sprite::startJump(float magnitudePercent) {
-  if (!jumping_) {
-    velocityY_ = (int)((float)STARTING_JUMP_VELOCITY * magnitudePercent);
+  if (!jumping_ && canJump_) {
+    velocityY_ = STARTING_JUMP_VELOCITY * magnitudePercent;
     jumping_ = true;
   }
 }
@@ -86,8 +76,9 @@ void Sprite::zeroVelocity(bool stopJump) {
   jumping_ = !stopJump;
 }
 
-void Sprite::update(unsigned long ticks) {
-  if (ticks - lastTicks_ >= FRAME_TICKS_INTERVAL) {
+void Sprite::update(sf::Time &time) {
+  time_ += time;
+  if (time_ >= sf::milliseconds(500)) {
     int limit = textures_.size();
     int frameIncrease;
     if (multiFile_) {
@@ -98,38 +89,32 @@ void Sprite::update(unsigned long ticks) {
       frameIncrease = frameSpacing_;
     }
     frame_ = (frame_ + frameIncrease) % limit;
-    lastTicks_ = ticks;
+    time_ = sf::seconds(0);
   }
 }
 
-void Sprite::render(Point cameraPos) const {
-  SDL_Rect source;
+void Sprite::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
   int tile = tile_;
   if (!multiFile_) {
     tile += frame_;
   }
-  source.x = (tile % (textureDimensions_.w / dimensions_.w)) * dimensions_.w;
-  source.y = (tile / (textureDimensions_.w / dimensions_.w)) * dimensions_.h;
+  sf::IntRect source((tile % columns_) * dimensions_.width,
+                     (tile / columns_) * dimensions_.height, dimensions_.width,
+                     dimensions_.height);
 
-  source.w = dimensions_.w;
-  source.h = dimensions_.h;
-
-  SDL_Rect dest;
-  dest.x = dimensions_.x - cameraPos.x;
-  dest.y = dimensions_.y - cameraPos.y;
-  dest.w = (int)((float)dimensions_.w * scale_);
-  dest.h = (int)((float)dimensions_.h * scale_);
-
-  SDL_Texture *tex;
+  sf::Texture tex;
   if (multiFile_) {
     tex = textures_[frame_];
   } else {
     tex = textures_[0];
   }
-  if (visualDirection_ == SPRITE_LEFT) {
-    SDL_RenderCopy(renderer, tex, &source, &dest);
-  } else {
-    SDL_RenderCopyEx(renderer, tex, &source, &dest, 0, NULL,
-                     SDL_FLIP_HORIZONTAL);
+  sprite_.setTexture(tex);
+  if (visualDirection_ == SPRITE_RIGHT) {
+    source.left += dimensions_.width;
+    source.width = -dimensions_.width;
   }
+  sprite_.setTextureRect(source);
+  sprite_.setPosition(dimensions_.left - cameraPos.x,
+                      dimensions_.top - cameraPos.y);
+  window.draw(sprite_);
 }

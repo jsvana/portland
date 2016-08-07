@@ -7,10 +7,7 @@
 #include <functional>
 #include <iostream>
 
-extern SDL_Renderer *renderer;
-
-PauseMenuScreen::PauseMenuScreen(int width, int height)
-    : MenuScreen(width, height) {
+PauseMenuScreen::PauseMenuScreen() : MenuScreen() {
   title_ = "PAUSED";
   items_ = {
       "Resume", "Quit",
@@ -28,21 +25,11 @@ bool PauseMenuScreen::resume() {
   return true;
 }
 
-bool PauseMenuScreen::quit() { return false; }
+bool PauseMenuScreen::quit() {
+  running_ = false;
+  return running_;
+}
 
-void PauseMenuScreen::render(float interpolation) {
-  Uint8 r, g, b, a;
-  SDL_GetRenderDrawColor(renderer, &r, &g, &b, &a);
-  SDL_SetRenderDrawColor(renderer, 0, 0, 0, a);
-
-  SDL_Rect rect;
-  rect.x = 0;
-  rect.y = 0;
-  rect.w = width_;
-  rect.h = height_;
-  SDL_RenderFillRect(renderer, &rect);
-
-  SDL_SetRenderDrawColor(renderer, r, g, b, a);
-
-  MenuScreen::render(interpolation);
+void PauseMenuScreen::render(sf::RenderTarget &target) {
+  MenuScreen::render(target);
 }

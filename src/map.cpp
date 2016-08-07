@@ -4,11 +4,10 @@
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
-
-extern SDL_Renderer *renderer;
 
 Map::Map(const std::string &path) : path_(path) { load(path); }
 
@@ -47,7 +46,7 @@ bool Map::load(const std::string &path) {
   return true;
 }
 
-void Map::ensurePointInMap(Point &p) {
+void Map::ensurePointInMap(sf::Vector2f &p) {
   if (p.x < 0) {
     p.x = 0;
   } else if (p.x >= mapWidth_) {
@@ -60,25 +59,25 @@ void Map::ensurePointInMap(Point &p) {
   }
 }
 
-Point Map::mapToPixel(int x, int y) {
-  Point pixelPosition(x, y);
+sf::Vector2f Map::mapToPixel(int x, int y) {
+  sf::Vector2f pixelPosition(x, y);
   ensurePointInMap(pixelPosition);
   pixelPosition.x *= tileWidth_;
   pixelPosition.y *= tileHeight_;
   return pixelPosition;
 }
 
-Point Map::pixelToMap(int x, int y) {
-  Point mapPosition(x, y);
-  mapPosition.x /= tileWidth_;
-  mapPosition.y /= tileHeight_;
+sf::Vector2f Map::pixelToMap(int x, int y) {
+  sf::Vector2f mapPosition(x, y);
+  mapPosition.x = (int)(mapPosition.x / tileWidth_);
+  mapPosition.y = (int)(mapPosition.y / tileHeight_);
   ensurePointInMap(mapPosition);
   return mapPosition;
 }
 
 std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
-  Point topLeft = pixelToMap(x, y);
-  Point bottomRight = pixelToMap(x + w - 1, y + h - 1);
+  auto topLeft = pixelToMap(x, y);
+  auto bottomRight = pixelToMap(x + w - 1, y + h - 1);
 
   // Only add the top nonzero tile
   std::set<unsigned int> tiles;
@@ -96,9 +95,30 @@ std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
   return tiles;
 }
 
-Rect Map::snapRectToTileBelow(Rect dim) {
-  Point bottomLeft = pixelToMap(dim.x, dim.y + dim.h - 1);
-  Point bottomRight = pixelToMap(dim.x + dim.w - 1, dim.y + dim.h - 1);
+float Map::positionOfTileAbove(sf::FloatRect dim) {
+  auto topLeft = pixelToMap(dim.left, dim.top);
+  auto topRight = pixelToMap(dim.left + dim.width - 1, dim.top);
+
+  for (int i = topLeft.y; i >= 0; i--) {
+    for (int j = topLeft.x; j <= topRight.x; j++) {
+      for (int k = (int)layers_.size() - 1; k >= 0; k--) {
+        unsigned int tile = layers_[k].tileAt(j, i);
+        if (tile == 0 || walkable(tile)) {
+          continue;
+        }
+        auto newPos = mapToPixel(j, i);
+        return newPos.y + tileHeight_;
+      }
+    }
+  }
+
+  return 0;
+}
+
+float Map::positionOfTileBelow(sf::FloatRect dim) {
+  auto bottomLeft = pixelToMap(dim.left, dim.top + dim.height - 1);
+  auto bottomRight =
+      pixelToMap(dim.left + dim.width - 1, dim.top + dim.height - 1);
 
   for (int i = bottomLeft.y; i < mapHeight_; i++) {
     for (int j = bottomLeft.x; j <= bottomRight.x; j++) {
@@ -107,19 +127,17 @@ Rect Map::snapRectToTileBelow(Rect dim) {
         if (tile == 0 || walkable(tile)) {
           continue;
         }
-        Point newPos = mapToPixel(j, i);
-        newPos.y -= dim.h + 1;
-        dim.y = newPos.y;
-        return dim;
+        auto newPos = mapToPixel(j, i);
+        return newPos.y - dim.height;
       }
     }
   }
 
-  return dim;
+  return std::numeric_limits<float>::max();
 }
 
-bool Map::isLadder(Rect dim) {
-  Point pos = pixelToMap(dim.x, dim.y);
+bool Map::isLadder(sf::FloatRect dim) {
+  auto pos = pixelToMap(dim.left, dim.top);
   for (int i = (int)layers_.size() - 1; i >= 0; i--) {
     unsigned int tile = layers_[i].tileAt(pos.x, pos.y);
     if (tile != 0 && ladder(tile)) {
@@ -173,15 +191,15 @@ bool Map::walkable(unsigned int tile) {
   return tileset->walkable(tile);
 }
 
-bool Map::update(unsigned int ticks) {
+bool Map::update(sf::Time &time) {
   for (auto &tileset : tilesets_) {
-    tileset->update(ticks);
+    tileset->update(time);
   }
 
   return true;
 }
 
-void Map::render(Point cameraPos) {
+void Map::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
   int xStart, xEnd;
   int yStart, yEnd;
   xStart = 0;
@@ -204,7 +222,7 @@ void Map::render(Point cameraPos) {
         if (!tileset) {
           continue;
         }
-        tileset->renderTile(tile, x + j * tileset->width(),
+        tileset->renderTile(window, tile, x + j * tileset->width(),
                             y + i * tileset->height());
       }
     }

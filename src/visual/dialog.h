@@ -2,9 +2,8 @@
 
 #include "../map.h"
 #include "../util.h"
-#include "text.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <deque>
 #include <memory>
@@ -32,8 +31,6 @@ namespace visual {
     const unsigned int FRAME_TICKS_INTERVAL = 24;
     const int BOUNCE_DISTANCE = 4;
 
-    SDL_Color DEFAULT_COLOR;
-
     // Kind of a hack. Contains the background of the dialog
     std::unique_ptr<Map> map_;
 
@@ -43,28 +40,32 @@ namespace visual {
     // Choices in dialog
     std::vector<std::string> choices_;
 
+    sf::Font font_;
+
     // Vector of renderable lines of text
-    std::deque<std::unique_ptr<Text>> lines_;
+    std::deque<sf::Text> lines_;
     // Vector of renderable choices for dialog with options (e.g., "Yes" and
     // "No")
-    std::vector<std::unique_ptr<Text>> choicesText_;
+    std::vector<sf::Text> choicesText_;
 
     int selectedChoice_;
 
-    unsigned int lastTicks_;
+    bool completed_ = false;
+
+    sf::Time time_;
     int indicatorOffset_;
 
     // Renderable textures for dialog indicators
-    std::unique_ptr<Text> moreIndicator_;
-    std::unique_ptr<Text> choiceIndicator_;
+    std::shared_ptr<sf::Text> moreIndicator_;
+    std::shared_ptr<sf::Text> choiceIndicator_;
 
     int lineIndex_;
 
     // Position of dialog (almost always the bottom of the screen)
-    Point position_;
+    sf::Vector2f position_;
 
     // Always at (0, 0)
-    Point camera_;
+    sf::Vector2f camera_;
 
     // Used for debouncing input
     unsigned int selectFrames_;
@@ -114,11 +115,11 @@ namespace visual {
     void setPosition(int x, int y);
 
     /**
-     * Sets dialog position with a Point
+     * Sets dialog position with a sf::Vector2f
      *
      * @param position Point of new dialog position
      */
-    void setPosition(Point position);
+    void setPosition(sf::Vector2f position);
 
     /**
      * Gets dialog width in pixels
@@ -141,24 +142,28 @@ namespace visual {
      */
     // TODO(jsvana): Actually set all the colors
     // and the default color here
-    void setColor(SDL_Color color) {
+    void setColor(sf::Color color) {
       for (auto &line : lines_) {
-        line->setColor(color);
+        line.setFillColor(color);
       }
     }
+
+    void handleEvent(sf::Event &event);
 
     /**
      * Handles key input and text reflow
      *
-     * @param ticks Number of ticks since start
+     * @param time Amount of time since last update
      * @return Whether dialog is still open or not
      */
-    bool update(unsigned long ticks);
+    bool update(sf::Time &time);
 
     /**
      * Renders the dialog
+     *
+     * @param window Window to render to
      */
-    void render();
+    void render(sf::RenderTarget &window);
   };
 
   namespace DialogManager {
@@ -218,18 +223,22 @@ namespace visual {
      */
     int dialogChoice(unsigned int uid);
 
+    void handleEvent(sf::Event &event);
+
     /**
      * Update the first dialog in the queue
      *
-     * @param ticks Number of ticks since start
+     * @param time Amount of time since last update
      * @return Whether dialogs are cleared
      */
-    bool update(unsigned int ticks);
+    bool update(sf::Time &time);
 
     /**
      * Renders the first dialog in the queue
+     *
+     * @param window Window to render to
      */
-    void render();
+    void render(sf::RenderTarget &window);
   }
 
 }  // namespace visual

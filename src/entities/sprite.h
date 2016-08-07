@@ -4,7 +4,7 @@
 
 #include <json.hpp>
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <string>
 
@@ -20,31 +20,36 @@ enum SpriteDirection {
  */
 class Sprite {
  private:
-  const int GRAVITY = 2;
-  const int STARTING_JUMP_VELOCITY = -15;
+  const float GRAVITY = .5;
+  const float STARTING_JUMP_VELOCITY = -10;
 
-  Rect dimensions_;
+  sf::FloatRect dimensions_;
   int totalFrames_ = 0;
   int tile_;
   float scale_;
   bool multiFile_;
   int frameSpacing_;
+  int columns_;
 
   int frame_ = 0;
 
   int hp_;
   int maxHp_;
 
+  bool canJump_ = true;
   bool jumping_ = false;
-  int velocityY_ = 0;
+  float velocityY_ = 0;
+
+  sf::Time time_;
 
   // Ticks at last frame transition
   unsigned long lastTicks_ = 0;
 
   const unsigned long FRAME_TICKS_INTERVAL = 24;
 
-  Rect textureDimensions_;
-  std::vector<SDL_Texture *> textures_;
+  sf::FloatRect textureDimensions_;
+  std::vector<sf::Texture> textures_;
+  sf::Sprite sprite_;
 
   SpriteDirection direction_;
   SpriteDirection visualDirection_;
@@ -70,10 +75,10 @@ class Sprite {
    *
    * @return Scaled sprite dimensions
    */
-  Rect getDimensions() {
-    Rect dim = dimensions_;
-    dim.w = (int)((float)dim.w * scale_);
-    dim.h = (int)((float)dim.h * scale_);
+  sf::FloatRect getDimensions() {
+    sf::FloatRect dim = dimensions_;
+    dim.width = dim.width * scale_;
+    dim.height = dim.height * scale_;
     return dim;
   }
 
@@ -82,10 +87,11 @@ class Sprite {
    *
    * @param dimensions New dimensions of sprite
    */
-  void setDimensions(Rect dimensions) {
-    dimensions.w = (int)((float)dimensions.w / scale_);
-    dimensions.h = (int)((float)dimensions.h / scale_);
+  void setDimensions(sf::FloatRect dimensions) {
+    dimensions.width = dimensions.width / scale_;
+    dimensions.height = dimensions.height / scale_;
     dimensions_ = dimensions;
+    dimensions_.top = (int)dimensions_.top;
   }
 
   /**
@@ -93,10 +99,10 @@ class Sprite {
    *
    * @return Position of sprite
    */
-  Point getPosition() {
-    Point position;
-    position.x = dimensions_.x;
-    position.y = dimensions_.y;
+  sf::Vector2f getPosition() {
+    sf::Vector2f position;
+    position.x = dimensions_.left;
+    position.y = dimensions_.top;
     return position;
   }
 
@@ -107,8 +113,8 @@ class Sprite {
    * @param y New y coordinate of sprite
    */
   void setPosition(int x, int y) {
-    dimensions_.x = x;
-    dimensions_.y = y;
+    dimensions_.left = x;
+    dimensions_.top = y;
   }
 
   /**
@@ -116,9 +122,9 @@ class Sprite {
    *
    * @param position New position of sprite
    */
-  void setPosition(Point position) {
-    dimensions_.x = position.x;
-    dimensions_.y = position.y;
+  void setPosition(sf::Vector2f position) {
+    dimensions_.left = position.x;
+    dimensions_.top = position.y;
   }
 
   /**
@@ -128,8 +134,8 @@ class Sprite {
    * @param dy Distance to move y coordinate
    */
   void move(int dx, int dy) {
-    dimensions_.x += dx;
-    dimensions_.y += dy;
+    dimensions_.left += dx;
+    dimensions_.top += dy;
   }
 
   /**
@@ -201,14 +207,14 @@ class Sprite {
    *
    * @return Scaled width of sprite
    */
-  int width() { return (int)((float)dimensions_.w * scale_); }
+  int width() { return dimensions_.width * scale_; }
 
   /**
    * Gets scaled height of sprite
    *
    * @return Scaled height of sprite
    */
-  int height() { return (int)((float)dimensions_.h * scale_); }
+  int height() { return dimensions_.height * scale_; }
 
   /**
    * Sets sprite's tile in spritesheet
@@ -222,12 +228,17 @@ class Sprite {
    *
    * @return Sprite's vertical velocity
    */
-  int velocity() { return velocityY_; }
+  float velocity() { return velocityY_; }
 
   /**
    * Updates the vertical velocity with the gravity constant
    */
   void updateVelocity();
+
+  /**
+   * Updates the vertical velocity with the gravity constant
+   */
+  void setVelocity(float velocity);
 
   /**
    * Initiates jump by setting vertical velocity
@@ -251,17 +262,35 @@ class Sprite {
   bool jumping() { return jumping_; }
 
   /**
+   * Gets whether or not sprite can jump
+   *
+   * @return Whether or not sprite can jump
+   */
+  bool canJump() { return canJump_; }
+
+  /**
+   * Allows sprite to jump
+   */
+  void allowJump() { canJump_ = true; }
+
+  /**
+   * Forbids player from jumping
+   */
+  void forbidJump() { canJump_ = false; }
+
+  /**
    * Animates sprite
    *
-   * @param ticks Number of ticks from start
+   * @param time Amount of time since last update
    */
-  void update(unsigned long ticks);
+  void update(sf::Time &time);
 
   /**
    * Renders sprite relative to cameraPos
    *
+   * @param window Window to render to
    * @param cameraPos Position of camera to render sprite
    * relative to
    */
-  void render(Point cameraPos) const;
+  void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
 };

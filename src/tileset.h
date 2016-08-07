@@ -2,7 +2,7 @@
 
 #include <json.hpp>
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <stdexcept>
 #include <string>
@@ -33,6 +33,8 @@ class Tileset {
   // Update interval for the tileset
   const unsigned int FRAME_TICKS_INTERVAL = 24;
 
+  sf::Time time_;
+
   // Updated and returned when a tile is not found
   TileProperties defaultTile_;
 
@@ -51,9 +53,8 @@ class Tileset {
   // Map of tile ID to tile properties
   std::unordered_map<unsigned int, TileProperties> tiles_;
 
-  SDL_Texture *texture_;
-
-  SDL_Rect dimensions_;
+  sf::Texture texture_;
+  sf::Sprite tile_;
 
   /**
    * Loads a tileset from the passed JSON object
@@ -146,17 +147,18 @@ class Tileset {
   /**
    * Animate tiles in the tileset
    *
-   * @param ticks Number of ticks from start
+   * @param time Time since last update
    * @return Always returns true
    */
-  bool update(unsigned int ticks);
+  bool update(sf::Time &time);
 
   /**
    * Renders the given tile at the specified point
    *
+   * @param window Window to render to
    * @param tile Tile index to render
    * @param x X coordinate of render point
    * @param y Y coordinate of render point
    */
-  void renderTile(unsigned int tile, int x, int y) const;
+  void renderTile(sf::RenderTarget &window, unsigned int tile, int x, int y);
 };

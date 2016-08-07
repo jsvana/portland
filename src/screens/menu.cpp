@@ -2,91 +2,69 @@
 
 #include "../util.h"
 
-#include <SDL.h>
+#include <SFML/Graphics.hpp>
 
 #include <iostream>
 
-extern SDL_Renderer *renderer;
-
-MenuScreen::MenuScreen(int width, int height) : Screen(width, height) {
-  selectedItem_ = 0;
-  selectFrames_ = 0;
-
-  SELECTED_COLOR.r = 220;
-  SELECTED_COLOR.g = 220;
-  SELECTED_COLOR.b = 220;
-
-  NORMAL_COLOR.r = 144;
-  NORMAL_COLOR.g = 144;
-  NORMAL_COLOR.b = 144;
-}
+MenuScreen::MenuScreen() { font_.loadFromFile("assets/fonts/arcade.ttf"); }
 
 void MenuScreen::load() {
-  int heightSection = height_ / (items_.size() + 1);
+  sf::Color titleColor(255, 255, 255);
 
-  SDL_Color titleColor;
-  titleColor.r = 255;
-  titleColor.g = 255;
-  titleColor.b = 255;
+  titleText_.setString(title_);
+  titleText_.setFont(font_);
+  titleText_.setCharacterSize(30);
+  titleText_.setFillColor(titleColor);
+  auto titleSize = titleText_.getLocalBounds();
+  titleText_.setOrigin(titleSize.width / 2, titleSize.height / 2);
 
-  titleTexture_ = new visual::Text(title_, 30);
-  titleTexture_->setPositionCenter(width_ / 2, 20);
-  titleTexture_->setColor(titleColor);
+  for (auto item : items_) {
+    sf::Text textItem;
+    textItem.setString(item);
+    textItem.setFont(font_);
+    textItem.setCharacterSize(20);
+    auto itemSize = textItem.getLocalBounds();
+    textItem.setOrigin(itemSize.width / 2, itemSize.height / 2);
+    textItem.setFillColor(NORMAL_COLOR);
+    textItems_.push_back(textItem);
+  }
 
-  for (unsigned int i = 0; i < items_.size(); i++) {
-    auto itemTexture = new visual::Text(items_[i], 10);
-    if (itemTexture == nullptr) {
-      err()->error("Unable to load font for \"{}\"", items_[i]);
-      return;
+  textItems_[selectedItem_].setFillColor(SELECTED_COLOR);
+}
+
+void MenuScreen::handleEvent(sf::Event &event) {
+  if (event.type == sf::Event::KeyPressed) {
+    textItems_[selectedItem_].setFillColor(NORMAL_COLOR);
+    switch (event.key.code) {
+      case sf::Keyboard::Up:
+      case sf::Keyboard::W:
+        selectedItem_ = (selectedItem_ + 1) % items_.size();
+        break;
+      case sf::Keyboard::Down:
+      case sf::Keyboard::S:
+        selectedItem_ =
+            (selectedItem_ > 0) ? selectedItem_ - 1 : items_.size() - 1;
+        break;
+      case sf::Keyboard::Return:
+        itemFunctions_[selectedItem_]();
+        break;
+      default:
+        break;
     }
-    itemTexture->setPositionCenter(width_ / 2,
-                                   heightSection + heightSection * i);
-    itemTexture->setColor(NORMAL_COLOR);
-    itemTextures_.push_back(itemTexture);
+    textItems_[selectedItem_].setFillColor(SELECTED_COLOR);
   }
 }
 
-void MenuScreen::handleEvent(const SDL_Event &) {}
+bool MenuScreen::update(sf::Time &) { return running_; }
 
-bool MenuScreen::update(unsigned long) {
-  auto state = SDL_GetKeyboardState(nullptr);
-  if (selectFrames_ > 0) {
-    selectFrames_ -= 1;
-  }
+void MenuScreen::render(sf::RenderTarget &target) {
+  auto targetSize = target.getSize();
 
-  if (state[SDL_SCANCODE_RETURN] && selectFrames_ == 0) {
-    bool res = itemFunctions_[selectedItem_]();
-    if (!res) {
-      return false;
-    }
-  }
+  target.draw(titleText_);
 
-  itemTextures_[selectedItem_]->setColor(NORMAL_COLOR);
-  if ((state[SDL_SCANCODE_W] || state[SDL_SCANCODE_UP]) && selectFrames_ == 0) {
-    selectedItem_ -= 1;
-    if (selectedItem_ < 0) {
-      selectedItem_ = items_.size() - 1;
-    }
-    selectFrames_ = FRAME_DEBOUNCE_DELAY;
-  }
-
-  if ((state[SDL_SCANCODE_S] || state[SDL_SCANCODE_DOWN]) &&
-      selectFrames_ == 0) {
-    selectedItem_ += 1;
-    if ((unsigned int)selectedItem_ >= items_.size()) {
-      selectedItem_ = 0;
-    }
-    selectFrames_ = FRAME_DEBOUNCE_DELAY;
-  }
-  itemTextures_[selectedItem_]->setColor(SELECTED_COLOR);
-
-  return true;
-}
-
-void MenuScreen::render(float) {
-  titleTexture_->render();
-
-  for (auto &itemTex : itemTextures_) {
-    itemTex->render();
+  for (unsigned int i = 0; i < textItems_.size(); i++) {
+    auto itemSize = textItems_[i].getLocalBounds();
+    textItems_[i].setPosition(targetSize.x / 2, 100 + itemSize.height * i);
+    target.draw(textItems_[i]);
   }
 }

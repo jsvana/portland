@@ -1,9 +1,7 @@
 #include "npc.h"
 
-#include <SDL.h>
-
 #include <iostream>
 
-extern SDL_Renderer *renderer;
-
-void Npc::render(Point cameraPos) const { Sprite::render(cameraPos); }
+void Npc::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
+  Sprite::render(window, cameraPos);
+}
