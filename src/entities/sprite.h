@@ -20,8 +20,8 @@ enum SpriteDirection {
  */
 class Sprite {
  private:
-  const float GRAVITY = .05;
-  const float STARTING_JUMP_VELOCITY = -15;
+  const float GRAVITY = .5;
+  const float STARTING_JUMP_VELOCITY = -10;
 
   sf::FloatRect dimensions_;
   int totalFrames_ = 0;
@@ -36,6 +36,7 @@ class Sprite {
   int hp_;
   int maxHp_;
 
+  bool canJump_ = true;
   bool jumping_ = false;
   float velocityY_ = 0;
 
@@ -90,6 +91,7 @@ class Sprite {
     dimensions.width = dimensions.width / scale_;
     dimensions.height = dimensions.height / scale_;
     dimensions_ = dimensions;
+    dimensions_.top = (int)dimensions_.top;
   }
 
   /**
@@ -234,6 +236,11 @@ class Sprite {
   void updateVelocity();
 
   /**
+   * Updates the vertical velocity with the gravity constant
+   */
+  void setVelocity(float velocity);
+
+  /**
    * Initiates jump by setting vertical velocity
    *
    * @param magnitudePercent Percentage of total jump to start
@@ -253,6 +260,23 @@ class Sprite {
    * @return Whether or not sprite is jumping
    */
   bool jumping() { return jumping_; }
+
+  /**
+   * Gets whether or not sprite can jump
+   *
+   * @return Whether or not sprite can jump
+   */
+  bool canJump() { return canJump_; }
+
+  /**
+   * Allows sprite to jump
+   */
+  void allowJump() { canJump_ = true; }
+
+  /**
+   * Forbids player from jumping
+   */
+  void forbidJump() { canJump_ = false; }
 
   /**
    * Animates sprite

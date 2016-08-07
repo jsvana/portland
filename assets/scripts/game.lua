@@ -11,7 +11,7 @@ function init()
   end
   gameLoadMap("assets/maps/main.json")
   gameLoadCharacter(SPRITE_PATH, HERO_TILE, 1, 6)
-  gameSetCharacterMoveSpeed(100, 100)
+  gameSetCharacterMoveSpeed(200, 100)
   gameSetCharacterMaxHp(100)
 
   gameRegisterTileEvent(9, 6, "showSign")

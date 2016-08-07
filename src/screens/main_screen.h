@@ -23,11 +23,9 @@ class MainScreen : public Screen {
 
   sf::Time time_;
 
-  const float MAX_JUMP_HOLD_DURATION = 20;
-  const float MIN_JUMP_HOLD_DURATION = 10;
-  const float JUMP_HOLD_INCREASE = 5;
-  bool jumpHeld_ = false;
-  float jumpHoldDuration_;
+  const sf::Time MAX_JUMP_HOLD_DURATION = sf::milliseconds(30);
+  const sf::Time MIN_JUMP_HOLD_DURATION = sf::milliseconds(0);
+  sf::Time jumpHoldDuration_;
 
   ProgressBar heroHealth_;
 
@@ -59,26 +57,12 @@ class MainScreen : public Screen {
   bool fixMovement(std::shared_ptr<Sprite> sprite, sf::Vector2f moveDelta);
 
   /**
-   * Takes a sprite and updates its gravity, also updates
-   * a previous move if necessary.
-   *
-   * @param sprite Sprite to update
-   * @param moveDelta Previous move amount
-   * @return Updated sprite dimensions
-   */
-  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite, sf::Vector2f &moveDelta);
-
-  /**
-   * Helper for updateGravity that passes an initial
-   * movement of (0, 0).
+   * Takes a sprite and updates its gravity
    *
    * @param sprite Sprite to update
    * @return Updated sprite dimensions
    */
-  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite) {
-    sf::Vector2f moveDelta;
-    return updateGravity(sprite, moveDelta);
-  }
+  sf::FloatRect updateGravity(std::shared_ptr<Sprite> sprite);
 
  public:
   MainScreen();

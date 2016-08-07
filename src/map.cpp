@@ -4,6 +4,7 @@
 
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -68,8 +69,8 @@ sf::Vector2f Map::mapToPixel(int x, int y) {
 
 sf::Vector2f Map::pixelToMap(int x, int y) {
   sf::Vector2f mapPosition(x, y);
-  mapPosition.x /= tileWidth_;
-  mapPosition.y /= tileHeight_;
+  mapPosition.x = (int)(mapPosition.x / tileWidth_);
+  mapPosition.y = (int)(mapPosition.y / tileHeight_);
   ensurePointInMap(mapPosition);
   return mapPosition;
 }
@@ -94,7 +95,27 @@ std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
   return tiles;
 }
 
-sf::FloatRect Map::snapRectToTileBelow(sf::FloatRect dim) {
+float Map::positionOfTileAbove(sf::FloatRect dim) {
+  auto topLeft = pixelToMap(dim.left, dim.top);
+  auto topRight = pixelToMap(dim.left + dim.width - 1, dim.top);
+
+  for (int i = topLeft.y; i >= 0; i--) {
+    for (int j = topLeft.x; j <= topRight.x; j++) {
+      for (int k = (int)layers_.size() - 1; k >= 0; k--) {
+        unsigned int tile = layers_[k].tileAt(j, i);
+        if (tile == 0 || walkable(tile)) {
+          continue;
+        }
+        auto newPos = mapToPixel(j, i);
+        return newPos.y + tileHeight_;
+      }
+    }
+  }
+
+  return 0;
+}
+
+float Map::positionOfTileBelow(sf::FloatRect dim) {
   auto bottomLeft = pixelToMap(dim.left, dim.top + dim.height - 1);
   auto bottomRight =
       pixelToMap(dim.left + dim.width - 1, dim.top + dim.height - 1);
@@ -107,14 +128,12 @@ sf::FloatRect Map::snapRectToTileBelow(sf::FloatRect dim) {
           continue;
         }
         auto newPos = mapToPixel(j, i);
-        newPos.y -= dim.height + 1;
-        dim.top = newPos.y;
-        return dim;
+        return newPos.y - dim.height;
       }
     }
   }
 
-  return dim;
+  return std::numeric_limits<float>::max();
 }
 
 bool Map::isLadder(sf::FloatRect dim) {

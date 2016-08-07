@@ -146,13 +146,20 @@ class Map {
   void setPosition(sf::Vector2f pos) { setPosition(pos.x, pos.y); }
 
   /**
-   * Finds next position below character that isn't walkable
-   * and return the adjusted position accordingly
+   * Finds position of the next not walkable tile above the rect
    *
    * @param dim Rectangle to test
-   * @return Adjusted position
+   * @return Position of next not walkable tile
    */
-  sf::FloatRect snapRectToTileBelow(sf::FloatRect dim);
+  float positionOfTileAbove(sf::FloatRect dim);
+
+  /**
+   * Finds position of the next not walkable tile below the rect
+   *
+   * @param dim Rectangle to test
+   * @return Position of next not walkable tile
+   */
+  float positionOfTileBelow(sf::FloatRect dim);
 
   /**
    * Gets map position
