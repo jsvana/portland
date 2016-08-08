@@ -15,6 +15,12 @@ enum SpriteDirection {
   SPRITE_DOWN,
 };
 
+enum SpriteType {
+  SPRITE_HERO,
+  SPRITE_ITEM,
+  SPRITE_NPC,
+};
+
 /**
  * Class to load, render, and update sprites onscreen
  */
@@ -22,6 +28,8 @@ class Sprite {
  private:
   const float GRAVITY = .5;
   const float STARTING_JUMP_VELOCITY = -10;
+
+  SpriteType type_;
 
   sf::FloatRect dimensions_;
   int totalFrames_ = 0;
@@ -68,7 +76,11 @@ class Sprite {
 
   unsigned int id;
 
-  Sprite(const std::string &path);
+  Sprite(const std::string &path) : Sprite(path, SPRITE_HERO) {}
+
+  Sprite(const std::string &path, SpriteType type);
+
+  SpriteType type() { return type_; }
 
   /**
    * Gets dimensions of the sprite after scaling

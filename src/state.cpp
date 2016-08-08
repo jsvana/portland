@@ -42,6 +42,8 @@ namespace GameState {
     lua_["gameDamageCharacter"] = &GameState::damageCharacter;
     lua_["gameHealCharacter"] = &GameState::healCharacter;
 
+    lua_["gameAddItem"] = &GameState::addItem;
+
     lua_["gameAddNpc"] = &GameState::addNpc;
     lua_["gameSetNpcCallback"] = &GameState::setNpcCallback;
     lua_["gameMoveNpc"] = &GameState::moveNpc;
@@ -172,6 +174,10 @@ namespace GameState {
 
   bool positionWalkable(const std::unique_ptr<Sprite> &sprite,
                         sf::FloatRect dim) {
+    return positionWalkable(sprite.get(), dim);
+  }
+
+  bool positionWalkable(Sprite *sprite, sf::FloatRect dim) {
     if (!map()->positionWalkable(dim)) {
       return false;
     }
@@ -190,7 +196,7 @@ namespace GameState {
       }
     }
 
-    if (sprite != hero_) {
+    if (sprite != hero_.get()) {
       auto otherDim = hero_->getDimensions();
       if (!(dim.left > otherDim.left + otherDim.width ||
             dim.left + dim.width < otherDim.left ||
@@ -261,6 +267,18 @@ namespace GameState {
     return true;
   }
 
+  unsigned int addItem(std::string path, int tile, int x, int y) {
+    auto item = util::make_unique<Item>(path);
+    item->setPosition(x * GameState::map()->tileWidth(),
+                      y * GameState::map()->tileHeight());
+    item->setTile(tile);
+
+    unsigned int spriteId = GameState::allocateSpriteId();
+    item->id = spriteId;
+    sprites()[spriteId] = std::move(item);
+    return spriteId;
+  }
+
   unsigned int addNpc(std::string path, int tile, int x, int y) {
     auto npc = util::make_unique<Npc>(path);
     npc->setPosition(x * GameState::map()->tileWidth(),
@@ -273,61 +291,69 @@ namespace GameState {
     return spriteId;
   }
 
-  // TODO(jsvana): figure out a way to not repeat the find logic all the time
-  bool setNpcCallback(unsigned int npcId, std::string callback) {
-    auto iter = sprites().find(npcId);
+  template <typename T>
+  T *findSprite(unsigned int spriteId, SpriteType type) {
+    auto iter = sprites().find(spriteId);
     if (iter == sprites().end()) {
-      util::err()->warn("Bad NPC ID: {}", npcId);
+      util::err()->warn("Bad sprite ID: {}", spriteId);
+      return nullptr;
+    }
+    if (iter->second->type() != type) {
+      util::err()->warn("ID {} is incorrect type {} (wanted type {})", spriteId,
+                        type, iter->second->type());
+      return nullptr;
+    }
+    return static_cast<T *>(iter->second.get());
+  }
+
+  bool setNpcCallback(unsigned int npcId, std::string callback) {
+    auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+    if (npc == nullptr) {
       return false;
     }
-    iter->second->callbackFunc = callback;
+    npc->callbackFunc = callback;
     return true;
   }
 
   bool moveNpc(unsigned int npcId, int dx, int dy) {
-    auto iter = sprites().find(npcId);
-    if (iter == sprites().end()) {
-      util::err()->warn("Bad NPC ID: {}", npcId);
+    auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+    if (npc == nullptr) {
       return false;
     }
-    auto pos = iter->second->getDimensions();
+    auto pos = npc->getDimensions();
     pos.left += dx;
     pos.top += dy;
-    if (positionWalkable(iter->second, pos)) {
-      iter->second->setDimensions(pos);
+    if (positionWalkable(npc, pos)) {
+      npc->setDimensions(pos);
       return true;
-    } else {
-      return false;
     }
+    return false;
   }
 
   bool setNpcMaxHp(unsigned int npcId, int hp) {
-    auto iter = sprites().find(npcId);
-    if (iter == sprites().end()) {
-      util::err()->warn("Bad NPC ID: {}", npcId);
+    auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+    if (npc == nullptr) {
       return false;
     }
-    iter->second->setMaxHp(hp);
+    npc->setMaxHp(hp);
     return true;
   }
 
   bool damageNpc(unsigned int npcId, int amount) {
-    auto iter = sprites().find(npcId);
-    if (iter == sprites().end()) {
-      util::err()->warn("Bad NPC ID: {}", npcId);
+    auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+    if (npc == nullptr) {
       return false;
     }
-    iter->second->damage(amount);
+    npc->damage(amount);
     return true;
   }
 
   bool healNpc(unsigned int npcId, int amount) {
-    auto iter = sprites().find(npcId);
-    if (iter == sprites().end()) {
-      util::err()->warn("Bad NPC ID: {}", npcId);
+    auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+    if (npc == nullptr) {
       return false;
     }
-    iter->second->heal(amount);
+    npc->heal(amount);
     return true;
   }
 
@@ -336,12 +362,11 @@ namespace GameState {
       util::err()->warn("Jump magnitude must be between 0 and 100, inclusive");
       return false;
     }
-    auto iter = sprites().find(npcId);
-    if (iter == sprites().end()) {
-      util::err()->warn("Bad NPC ID: {}", npcId);
+    auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+    if (npc == nullptr) {
       return false;
     }
-    iter->second->startJump((float)magnitude / 100.0);
+    npc->startJump((float)magnitude / 100.0);
     return true;
   }
 

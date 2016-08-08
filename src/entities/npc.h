@@ -12,7 +12,7 @@
  */
 class Npc : public Sprite {
  public:
-  Npc(const std::string &path) : Sprite(path) {}
+  Npc(const std::string &path) : Sprite(path, SPRITE_NPC) {}
 
   void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
 };

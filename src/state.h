@@ -1,6 +1,7 @@
 #pragma once
 
 #include "constants.h"
+#include "entities/item.h"
 #include "entities/npc.h"
 #include "entities/sprite.h"
 #include "map.h"
@@ -169,6 +170,15 @@ namespace GameState {
   bool positionWalkable(const std::unique_ptr<Sprite> &sprite, sf::FloatRect dim);
 
   /**
+   * Checks if a position is walkable by a given entity ID
+   *
+   * @param sprite Moving entity
+   * @param dim Rectangle to check
+   * @return Whether position is walkable
+   */
+  bool positionWalkable(Sprite *sprite, sf::FloatRect dim);
+
+  /**
    * Checks for an event on the character's current tile, runs the event, and
    * clears it
    */
@@ -254,6 +264,17 @@ namespace GameState {
   bool healCharacter(int amount);
 
   /**
+   * Adds a new item and sets its tile index and position
+   *
+   * @param path Path to item definition
+   * @param tile Tile index of item
+   * @param initX Initial x position
+   * @param initY Initial y position
+   * @return Item ID
+   */
+  unsigned int addItem(std::string path, int tile, int x, int y);
+
+  /**
    * Adds a new NPC and sets its tile index and position
    *
    * @param path Path to NPC definition
@@ -263,6 +284,16 @@ namespace GameState {
    * @return NPC ID
    */
   unsigned int addNpc(std::string path, int tile, int x, int y);
+
+  /**
+   * Finds a sprite with the given ID or returns nullptr
+   *
+   * @template T Type of sprite to cast to
+   * @param spriteId ID of sprite to find
+   */
+  template <typename T>
+  T *findSprite(unsigned int spriteId);
+
 
   /**
    * Sets an NPC callback function

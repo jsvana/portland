@@ -5,7 +5,7 @@
 #include <sstream>
 #include <vector>
 
-Sprite::Sprite(const std::string &path) {
+Sprite::Sprite(const std::string &path, SpriteType type) : type_(type) {
   load(path);
 
   direction_ = SPRITE_RIGHT;
