@@ -80,6 +80,9 @@ void Sprite::update(sf::Time &time) {
   time_ += time;
   if (time_ >= sf::milliseconds(500)) {
     int limit = textures_.size();
+    if (limit == 1 || totalFrames_ == 1) {
+      return;
+    }
     int frameIncrease;
     if (multiFile_) {
       limit = totalFrames_;

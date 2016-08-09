@@ -9,6 +9,7 @@
 
 #include <selene.h>
 
+#include <iterator>
 #include <memory>
 #include <stack>
 #include <string>
@@ -109,7 +110,7 @@ namespace GameState {
    *
    * @return Reference to topmost sprite map
    */
-  std::unordered_map<unsigned int, std::unique_ptr<Sprite>> &sprites();
+  std::vector<std::unique_ptr<Sprite>> &sprites();
 
   /**
    * Gets the topmost map

@@ -19,9 +19,7 @@ namespace GameState {
   int velocityY_ = 0;
 
   // Stack is used to mimick maps_
-  unsigned int nextSpriteId_ = 1;
-  std::stack<std::unordered_map<unsigned int, std::unique_ptr<Sprite>>>
-      sprites_;
+  std::stack<std::vector<std::unique_ptr<Sprite>>> sprites_;
 
   std::stack<std::unique_ptr<Map>> maps_;
 
@@ -67,11 +65,11 @@ namespace GameState {
     auto dim = sprite->getDimensions();
     sf::FloatRect collisionRect(dim.left, 0, dim.width, dim.top);
     for (const auto &s : sprites()) {
-      if (s.first == sprite->id) {
+      if (s->id == sprite->id) {
         continue;
       }
 
-      auto sDim = s.second->getDimensions();
+      auto sDim = s->getDimensions();
       if (collisionRect.intersects(sDim)) {
         return sDim.top + sDim.height;
       }
@@ -90,11 +88,11 @@ namespace GameState {
     sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
                                 map()->pixelHeight());
     for (const auto &s : sprites()) {
-      if (s.first == sprite->id) {
+      if (s->id == sprite->id) {
         continue;
       }
 
-      auto sDim = s.second->getDimensions();
+      auto sDim = s->getDimensions();
       if (collisionRect.intersects(sDim)) {
         return sDim.top - dim.height;
       }
@@ -122,20 +120,11 @@ namespace GameState {
 
   int heroMoveSpeed() { return moveSpeed_; }
 
-  unsigned int allocateSpriteId() {
-    unsigned int spriteId = nextSpriteId_;
-    nextSpriteId_ += 1;
-    return spriteId;
-  }
-
-  void pushSprites(
-      std::unordered_map<unsigned int, std::unique_ptr<Sprite>> sprites) {
+  void pushSprites(std::vector<std::unique_ptr<Sprite>> sprites) {
     sprites_.push(std::move(sprites));
   }
 
-  std::unordered_map<unsigned int, std::unique_ptr<Sprite>> &sprites() {
-    return sprites_.top();
-  }
+  std::vector<std::unique_ptr<Sprite>> &sprites() { return sprites_.top(); }
 
   void popSprites() { sprites_.pop(); }
 
@@ -184,10 +173,10 @@ namespace GameState {
 
     // Check sprite walkability
     for (auto &s : sprites()) {
-      if (s.first == sprite->id) {
+      if (s->id == sprite->id) {
         continue;
       }
-      auto otherDim = s.second->getDimensions();
+      auto otherDim = s->getDimensions();
       if (!(dim.left > otherDim.left + otherDim.width ||
             dim.left + dim.width < otherDim.left ||
             dim.top > otherDim.top + otherDim.height ||
@@ -273,9 +262,9 @@ namespace GameState {
                       y * GameState::map()->tileHeight());
     item->setTile(tile);
 
-    unsigned int spriteId = GameState::allocateSpriteId();
+    unsigned int spriteId = sprites().size();
     item->id = spriteId;
-    sprites()[spriteId] = std::move(item);
+    sprites().push_back(std::move(item));
     return spriteId;
   }
 
@@ -285,25 +274,24 @@ namespace GameState {
                      y * GameState::map()->tileHeight());
     npc->setTile(tile);
 
-    unsigned int spriteId = GameState::allocateSpriteId();
+    unsigned int spriteId = sprites().size();
     npc->id = spriteId;
-    sprites()[spriteId] = std::move(npc);
+    sprites().push_back(std::move(npc));
     return spriteId;
   }
 
   template <typename T>
   T *findSprite(unsigned int spriteId, SpriteType type) {
-    auto iter = sprites().find(spriteId);
-    if (iter == sprites().end()) {
+    if (spriteId >= sprites().size()) {
       util::err()->warn("Bad sprite ID: {}", spriteId);
       return nullptr;
     }
-    if (iter->second->type() != type) {
+    if (sprites()[spriteId]->type() != type) {
       util::err()->warn("ID {} is incorrect type {} (wanted type {})", spriteId,
-                        type, iter->second->type());
+                        type, sprites()[spriteId]->type());
       return nullptr;
     }
-    return static_cast<T *>(iter->second.get());
+    return static_cast<T *>(sprites()[spriteId].get());
   }
 
   bool setNpcCallback(unsigned int npcId, std::string callback) {

@@ -1,0 +1,11 @@
+{
+    "width": 16,
+    "height": 16,
+    "columns": 8,
+    "scale": 1,
+    "multi_file": false,
+    "total_frames": 1,
+    "tile": 0,
+    "frame_spacing": 0,
+    "texture": "../img/dawnlike/Items/Tool.png"
+}

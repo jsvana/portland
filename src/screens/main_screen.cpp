@@ -95,7 +95,7 @@ bool MainScreen::update(sf::Time &time) {
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
   for (const auto &sprite : GameState::sprites()) {
-    sprite.second->update(time_);
+    sprite->update(time_);
   }
   GameState::lua()["update"]();
 
@@ -197,11 +197,11 @@ bool MainScreen::update(sf::Time &time) {
   }
 
   for (const auto &sprite : GameState::sprites()) {
-    auto dim = updateGravity(sprite.second);
-    if (GameState::positionWalkable(sprite.second, dim)) {
+    auto dim = updateGravity(sprite);
+    if (GameState::positionWalkable(sprite, dim)) {
       // TODO(jsvana): figure out whether or not the sprite
       // collided with another sprite
-      sprite.second->setDimensions(dim);
+      sprite->setDimensions(dim);
     }
   }
 
@@ -212,7 +212,7 @@ void MainScreen::render(sf::RenderTarget &window) {
   GameState::map()->render(window, GameState::camera());
   GameState::hero()->render(window, GameState::camera());
   for (const auto &sprite : GameState::sprites()) {
-    sprite.second->render(window, GameState::camera());
+    sprite->render(window, GameState::camera());
   }
   heroHealth_.render(window);
 
