@@ -16,8 +16,9 @@ MainScreen::MainScreen() {
   heroHealth_.setDimensions(16, 16, 64, 16);
 
   // Load the game script
-  GameState::lua().Load("assets/scripts/game.lua");
-  GameState::lua()["init"]();
+  GameState::chai().eval_file("assets/scripts/game.chai");
+  auto init = GameState::chai().eval<std::function<void()>>("init");
+  init();
   GameState::markInitialized();
 
   visual::Console::initialize();
@@ -97,7 +98,6 @@ bool MainScreen::update(sf::Time &time) {
   for (const auto &sprite : GameState::sprites()) {
     sprite->update(time_);
   }
-  GameState::lua()["update"]();
 
   if (visual::Console::visible()) {
     visual::Console::update(time);
@@ -110,7 +110,8 @@ bool MainScreen::update(sf::Time &time) {
     const auto &dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc != "") {
       int choice = dialog->getChoice();
-      GameState::lua()[dialog->callbackFunc.c_str()](choice);
+      // TODO(jsvana): convert to actual function callback
+      //GameState::chai().eval(dialog->callbackFunc + "(" + std::itoa(choice) + ");");
     }
     visual::DialogManager::clearClosedDialog();
   }

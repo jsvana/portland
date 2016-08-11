@@ -7,6 +7,8 @@
 #include "map.h"
 #include "visual/dialog.h"
 
+#include <chaiscript/chaiscript.hpp>
+#include <chaiscript/chaiscript_stdlib.hpp>
 #include <selene.h>
 
 #include <iterator>
@@ -125,6 +127,13 @@ namespace GameState {
    * @return Reference to Lua state
    */
   sel::State &lua();
+
+  /**
+   * Gets a reference to the ChaiScript state
+   *
+   * @return Reference to ChaiScript state
+   */
+  chaiscript::ChaiScript &chai();
 
   /**
    * Adds a callback to a specific tile

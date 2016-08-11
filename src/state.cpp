@@ -27,38 +27,46 @@ namespace GameState {
 
   std::unordered_map<int, std::string> tileEvents_;
 
+  chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
+
   // Contains all scripting state
   sel::State lua_{true};
 
+  std::string helloWorld(const std::string &t_name) {
+      return "Hello " + t_name + "!";
+  }
+
   void initLuaApi() {
-    lua_["gameInitialized"] = &GameState::initialized;
-    lua_["gameTicks"] = &GameState::ticks;
+    chai_.add(chaiscript::fun(&helloWorld), "helloWorld");
 
-    lua_["gameLoadMap"] = &GameState::loadMap;
-    lua_["gamePopMap"] = &GameState::popMap;
-    lua_["gameLoadCharacter"] = &GameState::loadCharacter;
-    lua_["gameSetCharacterMoveSpeed"] = &GameState::setCharacterMoveSpeed;
-    lua_["gameSetCharacterMaxHp"] = &GameState::setCharacterMaxHp;
-    lua_["gameDamageCharacter"] = &GameState::damageCharacter;
-    lua_["gameHealCharacter"] = &GameState::healCharacter;
+    chai_.add(chaiscript::fun(&GameState::initialized), "gameInitialized");
+    chai_.add(chaiscript::fun(&GameState::ticks), "gameTicks");
 
-    lua_["gameAddItem"] = &GameState::addItem;
+    chai_.add(chaiscript::fun(&GameState::loadMap), "gameLoadMap");
+    chai_.add(chaiscript::fun(&GameState::popMap), "gamePopMap");
+    chai_.add(chaiscript::fun(&GameState::loadCharacter), "gameLoadCharacter");
+    chai_.add(chaiscript::fun(&GameState::setCharacterMoveSpeed), "gameSetCharacterMoveSpeed");
+    chai_.add(chaiscript::fun(&GameState::setCharacterMaxHp), "gameSetCharacterMaxHp");
+    chai_.add(chaiscript::fun(&GameState::damageCharacter), "gameDamageCharacter");
+    chai_.add(chaiscript::fun(&GameState::healCharacter), "gameHealCharacter");
 
-    lua_["gameAddNpc"] = &GameState::addNpc;
-    lua_["gameSetNpcCallback"] = &GameState::setNpcCallback;
-    lua_["gameMoveNpc"] = &GameState::moveNpc;
-    lua_["gameSetNpcMaxHp"] = &GameState::setNpcMaxHp;
-    lua_["gameDamageNpc"] = &GameState::damageNpc;
-    lua_["gameHealNpc"] = &GameState::healNpc;
-    lua_["gameJumpNpc"] = &GameState::jumpNpc;
+    chai_.add(chaiscript::fun(&GameState::addItem), "gameAddItem");
 
-    lua_["gameShowDialog"] = &GameState::showDialog;
-    lua_["gameAddDialogOption"] = &GameState::addDialogOption;
-    lua_["gameSetDialogCallback"] = &GameState::setDialogCallback;
+    chai_.add(chaiscript::fun(&GameState::addNpc), "gameAddNpc");
+    chai_.add(chaiscript::fun(&GameState::setNpcCallback), "gameSetNpcCallback");
+    chai_.add(chaiscript::fun(&GameState::moveNpc), "gameMoveNpc");
+    chai_.add(chaiscript::fun(&GameState::setNpcMaxHp), "gameSetNpcMaxHp");
+    chai_.add(chaiscript::fun(&GameState::damageNpc), "gameDamageNpc");
+    chai_.add(chaiscript::fun(&GameState::healNpc), "gameHealNpc");
+    chai_.add(chaiscript::fun(&GameState::jumpNpc), "gameJumpNpc");
 
-    lua_["gameSetCharacterPosition"] = &GameState::setCharacterPosition;
-    lua_["gameClearEvents"] = &GameState::clearEvents;
-    lua_["gameRegisterTileEvent"] = &GameState::registerTileEvent;
+    chai_.add(chaiscript::fun(&GameState::showDialog), "gameShowDialog");
+    chai_.add(chaiscript::fun(&GameState::addDialogOption), "gameAddDialogOption");
+    chai_.add(chaiscript::fun(&GameState::setDialogCallback), "gameSetDialogCallback");
+
+    chai_.add(chaiscript::fun(&GameState::setCharacterPosition), "gameSetCharacterPosition");
+    chai_.add(chaiscript::fun(&GameState::clearEvents), "gameClearEvents");
+    chai_.add(chaiscript::fun(&GameState::registerTileEvent), "gameRegisterTileEvent");
   }
 
   sf::Vector2f &camera() { return camera_; }
@@ -132,7 +140,7 @@ namespace GameState {
 
   const std::unique_ptr<Map> &map() { return maps_.top(); }
 
-  sel::State &lua() { return lua_; }
+  chaiscript::ChaiScript &chai() { return chai_; }
 
   void addTileEvent(int id, std::string callback) {
     tileEvents_[id] = callback;
@@ -159,7 +167,7 @@ namespace GameState {
     }
 
     std::string callback = tileCallback(tileNumber);
-    lua()[callback.c_str()]();
+    chai_.eval(callback + "();");
     clearTileEvent(tileNumber);
   }
 

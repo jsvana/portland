@@ -27,12 +27,13 @@ find_package(Lua 5.2 REQUIRED lua52)
 include_directories(
   ${SFML_INCLUDE_DIR}
   ${LUA_INCLUDE_DIR}
-  "vendor/spdlog/include"
-  "vendor/selene/include"
+  "vendor/ChaiScript-5.8.1/include"
   "vendor/json"
+  "vendor/selene/include"
+  "vendor/spdlog/include"
 )
 
-set(PLATFORM_LIBRARIES pthread)
+set(PLATFORM_LIBRARIES pthread dl)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
   set(PLATFORM_LIBRARIES ${SDL2MAIN_LIBRARY})
 endif()
