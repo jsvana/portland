@@ -16,7 +16,7 @@ Map::Map(const std::string &path) : path_(path) { load(path); }
 bool Map::load(const std::string &path) {
   std::ifstream mapfile(path, std::ios::in);
   if (!mapfile.is_open()) {
-    LOG(ERROR) << "Unable to open mapfile: " << path;
+    LOG(WARNING) << "Unable to open mapfile: " << path;
     return false;
   }
 

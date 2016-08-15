@@ -285,11 +285,11 @@ namespace GameState {
   template <typename T>
   T *findSprite(unsigned int spriteId, SpriteType type) {
     if (spriteId >= sprites().size()) {
-      LOG(ERROR) << "Bad sprite ID: " << spriteId;
+      LOG(WARNING) << "Bad sprite ID: " << spriteId;
       return nullptr;
     }
     if (sprites()[spriteId]->type() != type) {
-      LOG(ERROR) << "ID " << spriteId << " is incorrect type " << type
+      LOG(WARNING) << "ID " << spriteId << " is incorrect type " << type
                  << " (wanted type " << sprites()[spriteId]->type() << ")";
       return nullptr;
     }
@@ -349,7 +349,7 @@ namespace GameState {
 
   bool jumpNpc(unsigned int npcId, int magnitude) {
     if (magnitude < 0 || magnitude > 100) {
-      LOG(ERROR) << "Jump magnitude must be between 0 and 100, inclusive";
+      LOG(WARNING) << "Jump magnitude must be between 0 and 100, inclusive";
       return false;
     }
     auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
