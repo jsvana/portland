@@ -22,7 +22,7 @@ namespace visual {
      * @param value Name of value to fetch
      * @return Fetched value
      */
-    template<typename T>
+    template <typename T>
     T getValue(std::string value) {
       return static_cast<T>(GameState::lua()[value.c_str()]);
     }
@@ -80,6 +80,6 @@ namespace visual {
      */
     void render(sf::RenderTarget &window);
 
-  } // namespace Console
+  }  // namespace Console
 
 }  // namespace visual

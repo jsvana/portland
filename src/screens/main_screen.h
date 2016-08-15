@@ -39,7 +39,7 @@ class MainScreen : public Screen {
    */
   sf::Vector2f cameraPadding() {
     sf::Vector2f p(CAMERA_PADDING_TILES.x * GameState::map()->tileWidth(),
-            CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
+                   CAMERA_PADDING_TILES.y * GameState::map()->tileHeight());
     return p;
   }
 
@@ -54,7 +54,8 @@ class MainScreen : public Screen {
    * @param moveDelta Distance to try to move the sprite
    * @return Whether the sprite was moved
    */
-  bool fixMovement(const std::unique_ptr<Sprite> &sprite, sf::Vector2f moveDelta);
+  bool fixMovement(const std::unique_ptr<Sprite> &sprite,
+                   sf::Vector2f moveDelta);
 
   /**
    * Takes a sprite and updates its gravity

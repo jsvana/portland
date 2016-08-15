@@ -168,7 +168,8 @@ namespace GameState {
    * @param dim Rectangle to check
    * @return Whether position is walkable
    */
-  bool positionWalkable(const std::unique_ptr<Sprite> &sprite, sf::FloatRect dim);
+  bool positionWalkable(const std::unique_ptr<Sprite> &sprite,
+                        sf::FloatRect dim);
 
   /**
    * Checks if a position is walkable by a given entity ID
@@ -295,7 +296,6 @@ namespace GameState {
   template <typename T>
   T *findSprite(unsigned int spriteId);
 
-
   /**
    * Sets an NPC callback function
    *
@@ -399,5 +399,4 @@ namespace GameState {
   ///////////////////////
 
   void collision(unsigned int spriteId1, unsigned int spriteId2);
-
 }
