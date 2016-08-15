@@ -22,25 +22,19 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 else()
   find_package(SFML COMPONENTS audio graphics system window)
 endif()
-find_package(SDL2 REQUIRED sdl2)
-find_package(SDL2_image REQUIRED SDL2_image)
-find_package(SDL2_ttf REQUIRED SDL2_ttf)
 find_package(Lua 5.2 REQUIRED lua52)
 
 include_directories(
   ${SFML_INCLUDE_DIR}
-  ${SDL2_INCLUDE_DIR}
-  ${SDL2_IMAGE_INCLUDE_DIR}
-  ${SDL2_TTF_INCLUDE_DIR}
   ${LUA_INCLUDE_DIR}
   "vendor/spdlog/include"
   "vendor/selene/include"
   "vendor/json"
 )
 
-set(PLATFORM_LIBARIES pthread)
+set(PLATFORM_LIBRARIES pthread)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-  set(PLATFORM_LIBARIES ${SDL2MAIN_LIBRARY})
+  set(PLATFORM_LIBRARIES ${SDL2MAIN_LIBRARY})
 endif()
 
 file(GLOB_RECURSE portland_sources src/*.cpp)
@@ -48,9 +42,6 @@ add_executable(becoming_portland ${portland_sources})
 target_link_libraries(
   becoming_portland
   ${SFML_LIBRARIES}
-  ${SDL2_LIBRARY}
-  ${SDL2_IMAGE_LIBRARY}
-  ${SDL2_TTF_LIBRARY}
   ${LUA_LIBRARY}
   ${PLATFORM_LIBRARIES}
 )
