@@ -2,6 +2,8 @@
 
 #include "../constants.h"
 
+#include <glog/logging.h>
+
 #include <deque>
 
 namespace visual {
@@ -35,7 +37,7 @@ namespace visual {
         return "Done";
       } else if (command.find("run ") == 0) {
         command = command.substr(4);
-        util::out()->info("Running Lua string: \"{}\"", command);
+        LOG(INFO) << "Running Lua string: " << command;
         GameState::lua()(command.c_str());
         return "Done";
       } else if (command.find("get") == 0) {

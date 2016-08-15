@@ -1,25 +1,9 @@
 #pragma once
 
-#include <spdlog/spdlog.h>
-
 #include <memory>
 #include <ostream>
 
 namespace util {
-
-/**
- * Gets a reference to the stdout logger
- *
- * @return Reference to stdout logger
- */
-std::shared_ptr<spdlog::logger> out();
-
-/**
- * Gets a reference to the stderr logger
- *
- * @return Reference to stderr logger
- */
-std::shared_ptr<spdlog::logger> err();
 
 template<typename T, typename... Args>
 std::unique_ptr<T> make_unique(Args&&... args) {

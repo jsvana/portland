@@ -4,8 +4,7 @@
 #include "state.h"
 #include "util.h"
 
-#include "spdlog/spdlog.h"
-
+#include <glog/logging.h>
 #include <SFML/Graphics.hpp>
 
 namespace Engine {
@@ -23,7 +22,7 @@ namespace Engine {
 
     GameState::initLuaApi();
 
-    util::out()->info("Game initialized");
+    LOG(INFO) << "Game initialized";
 
     return true;
   }
