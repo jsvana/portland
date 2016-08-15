@@ -39,11 +39,11 @@ These are necessary because we cannot peak at the type of the Lua value in C++.
 
 Xcode (Tested with 6.1.1)
 
-`brew install sdl2 sdl2_ttf sdl2_image cmake`
+`brew install cmake sfml glog`
 
 ### Linux
 
-Packages: `cmake`, `sdl2`, `sdl2_gfx`, `sdl2_image`, `sdl2_mixer`, `sdl2_ttf`, `smpeg2`
+Packages: `cmake`, `sfml`, and `google-glog`
 
 ## Build and run
 
