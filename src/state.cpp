@@ -1,5 +1,7 @@
 #include "state.h"
 
+#include <glog/logging.h>
+
 #include <limits.h>
 
 namespace GameState {
@@ -283,12 +285,12 @@ namespace GameState {
   template <typename T>
   T *findSprite(unsigned int spriteId, SpriteType type) {
     if (spriteId >= sprites().size()) {
-      util::err()->warn("Bad sprite ID: {}", spriteId);
+      LOG(WARNING) << "Bad sprite ID: " << spriteId;
       return nullptr;
     }
     if (sprites()[spriteId]->type() != type) {
-      util::err()->warn("ID {} is incorrect type {} (wanted type {})", spriteId,
-                        type, sprites()[spriteId]->type());
+      LOG(WARNING) << "ID " << spriteId << " is incorrect type " << type
+                 << " (wanted type " << sprites()[spriteId]->type() << ")";
       return nullptr;
     }
     return static_cast<T *>(sprites()[spriteId].get());
@@ -347,7 +349,7 @@ namespace GameState {
 
   bool jumpNpc(unsigned int npcId, int magnitude) {
     if (magnitude < 0 || magnitude > 100) {
-      util::err()->warn("Jump magnitude must be between 0 and 100, inclusive");
+      LOG(WARNING) << "Jump magnitude must be between 0 and 100, inclusive";
       return false;
     }
     auto npc = findSprite<Npc>(npcId, SPRITE_NPC);

@@ -36,8 +36,8 @@ class ProgressBar {
   }
 
  public:
-  ProgressBar() { }
-  ProgressBar(int max) : max_(max), current_(max) { }
+  ProgressBar() {}
+  ProgressBar(int max) : max_(max), current_(max) {}
 
   void setMax(float max) {
     max_ = max;
@@ -93,7 +93,8 @@ class ProgressBar {
    * @param h New height of progress bar
    */
   void setDimensions(int x, int y, int w, int h) {
-    sf::FloatRect dim(x + PADDING, y + PADDING, w - 2 * PADDING, h - 2 * PADDING);
+    sf::FloatRect dim(x + PADDING, y + PADDING, w - 2 * PADDING,
+                      h - 2 * PADDING);
     setDimensions(dim);
   }
 
@@ -103,7 +104,8 @@ class ProgressBar {
    * @return Progress bar position
    */
   sf::Vector2f getPosition() {
-    sf::Vector2f position(dimensions_.left - PADDING, dimensions_.top - PADDING);
+    sf::Vector2f position(dimensions_.left - PADDING,
+                          dimensions_.top - PADDING);
     return position;
   }
 

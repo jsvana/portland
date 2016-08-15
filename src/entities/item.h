@@ -14,7 +14,6 @@
  */
 class Item : public Sprite {
  private:
-
   /**
    * Loads sprite from given path
    *

@@ -4,9 +4,15 @@
 
 #include "screens/opening.h"
 
-int main(int, char **) {
+#include <glog/logging.h>
+
+int main(int argc, char *argv[]) {
+  // Set up logging
+  FLAGS_logtostderr = 1;
+  google::InitGoogleLogging(argv[0]);
+
   if (!Engine::init()) {
-    util::err()->error("Error loading engine");
+    LOG(ERROR) << "Error loading engine";
     Engine::cleanup();
     return 1;
   }
@@ -15,7 +21,7 @@ int main(int, char **) {
 
   Engine::run();
 
-  util::out()->info("Thanks for playing!");
+  LOG(INFO) << "Thanks for playing!";
 
   Engine::cleanup();
 
