@@ -15,7 +15,17 @@ namespace Engine {
   bool running_ = true;
 
   bool init() {
-    window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Portland");
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    int scale = std::min(desktop.width / SCREEN_WIDTH,
+                         desktop.height / SCREEN_HEIGHT);
+
+    LOG(INFO) << "Desktop width: " << desktop.width;
+    LOG(INFO) << "Desktop height: " << desktop.height;
+
+    LOG(INFO) << "Screen scale ratio: " << scale;
+
+    window.create(sf::VideoMode(SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale),
+                  "Portland");
 
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
