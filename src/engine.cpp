@@ -72,12 +72,9 @@ namespace Engine {
       rendered.setOrigin(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
       rendered.setPosition(windowSize.x / 2, windowSize.y / 2);
 
-      float scale;
-      if (windowSize.x * 9 > windowSize.y * 16) {
-        scale = 1.0f * windowSize.y / SCREEN_HEIGHT;
-      } else {
-        scale = 1.0f * windowSize.x / SCREEN_WIDTH;
-      }
+      float scale = std::min(1.0f * windowSize.y / SCREEN_HEIGHT,
+                             1.0f * windowSize.x / SCREEN_WIDTH);
+
       rendered.setScale(scale, scale);
 
       window.clear(sf::Color::Black);
