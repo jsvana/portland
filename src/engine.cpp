@@ -15,7 +15,17 @@ namespace Engine {
   bool running_ = true;
 
   bool init() {
-    window.create(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Portland");
+    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+    int scale =
+        std::min(desktop.width / SCREEN_WIDTH, desktop.height / SCREEN_HEIGHT);
+
+    LOG(INFO) << "Desktop width: " << desktop.width;
+    LOG(INFO) << "Desktop height: " << desktop.height;
+
+    LOG(INFO) << "Screen scale ratio: " << scale;
+
+    window.create(sf::VideoMode(SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale),
+                  "Portland");
 
     window.setFramerateLimit(60);
     window.setVerticalSyncEnabled(true);
@@ -62,12 +72,9 @@ namespace Engine {
       rendered.setOrigin(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
       rendered.setPosition(windowSize.x / 2, windowSize.y / 2);
 
-      float scale;
-      if (windowSize.x * 9 > windowSize.y * 16) {
-        scale = 1.0f * windowSize.y / SCREEN_HEIGHT;
-      } else {
-        scale = 1.0f * windowSize.x / SCREEN_WIDTH;
-      }
+      float scale = std::min(1.0f * windowSize.y / SCREEN_HEIGHT,
+                             1.0f * windowSize.x / SCREEN_WIDTH);
+
       rendered.setScale(scale, scale);
 
       window.clear(sf::Color::Black);
