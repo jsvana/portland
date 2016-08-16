@@ -16,8 +16,8 @@ namespace Engine {
 
   bool init() {
     sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-    int scale = std::min(desktop.width / SCREEN_WIDTH,
-                         desktop.height / SCREEN_HEIGHT);
+    int scale =
+        std::min(desktop.width / SCREEN_WIDTH, desktop.height / SCREEN_HEIGHT);
 
     LOG(INFO) << "Desktop width: " << desktop.width;
     LOG(INFO) << "Desktop height: " << desktop.height;

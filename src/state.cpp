@@ -290,7 +290,7 @@ namespace GameState {
     }
     if (sprites()[spriteId]->type() != type) {
       LOG(WARNING) << "ID " << spriteId << " is incorrect type " << type
-                 << " (wanted type " << sprites()[spriteId]->type() << ")";
+                   << " (wanted type " << sprites()[spriteId]->type() << ")";
       return nullptr;
     }
     return static_cast<T *>(sprites()[spriteId].get());
