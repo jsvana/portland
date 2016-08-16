@@ -9,7 +9,6 @@
 
 #include <chaiscript/chaiscript.hpp>
 #include <chaiscript/chaiscript_stdlib.hpp>
-#include <selene.h>
 
 #include <iterator>
 #include <memory>
@@ -120,13 +119,6 @@ namespace GameState {
    * @return Topmost map
    */
   const std::unique_ptr<Map> &map();
-
-  /**
-   * Gets a reference to the Lua state
-   *
-   * @return Reference to Lua state
-   */
-  sel::State &lua();
 
   /**
    * Gets a reference to the ChaiScript state

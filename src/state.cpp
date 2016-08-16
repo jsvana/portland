@@ -29,9 +29,6 @@ namespace GameState {
 
   chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
-  // Contains all scripting state
-  sel::State lua_{true};
-
   std::string helloWorld(const std::string &t_name) {
       return "Hello " + t_name + "!";
   }
@@ -397,7 +394,7 @@ namespace GameState {
   ///////////////////////
 
   void collision(unsigned int spriteId1, unsigned int spriteId2) {
-    lua_["collision"](spriteId1, spriteId2);
+    //lua_["collision"](spriteId1, spriteId2);
   }
 
 }  // namespace GameState
