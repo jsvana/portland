@@ -25,7 +25,7 @@ namespace GameState {
 
   std::stack<std::unique_ptr<Map>> maps_;
 
-  std::unordered_map<int, std::string> tileEvents_;
+  std::unordered_map<int, std::function<void()>> tileEvents_;
 
   chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
@@ -139,7 +139,7 @@ namespace GameState {
 
   chaiscript::ChaiScript &chai() { return chai_; }
 
-  void addTileEvent(int id, std::string callback) {
+  void addTileEvent(int id, std::function<void()> callback) {
     tileEvents_[id] = callback;
   }
 
@@ -151,7 +151,7 @@ namespace GameState {
     return true;
   }
 
-  std::string tileCallback(int id) { return tileEvents_[id]; }
+  std::function<void()> tileCallback(int id) { return tileEvents_[id]; }
 
   void clearTileEvent(int id) { tileEvents_.erase(id); }
 
@@ -163,8 +163,8 @@ namespace GameState {
       return;
     }
 
-    std::string callback = tileCallback(tileNumber);
-    chai_.eval(callback + "();");
+    std::function<void()> callback = tileCallback(tileNumber);
+    callback();
     clearTileEvent(tileNumber);
   }
 
@@ -301,7 +301,7 @@ namespace GameState {
     return static_cast<T *>(sprites()[spriteId].get());
   }
 
-  bool setNpcCallback(unsigned int npcId, std::string callback) {
+  bool setNpcCallback(unsigned int npcId, std::function<void()> callback) {
     auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
     if (npc == nullptr) {
       return false;
@@ -375,11 +375,11 @@ namespace GameState {
     return visual::DialogManager::addDialogOption(uid, option);
   }
 
-  bool setDialogCallback(unsigned int uid, std::string callback) {
+  bool setDialogCallback(unsigned int uid, std::function<void(int)> callback) {
     return visual::DialogManager::setDialogCallback(uid, callback);
   }
 
-  bool registerTileEvent(int x, int y, std::string callback) {
+  bool registerTileEvent(int x, int y, std::function<void()> callback) {
     addTileEvent(map()->mapPointToTileNumber(x, y), callback);
     return true;
   }

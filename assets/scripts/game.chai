@@ -7,7 +7,7 @@ def init() {
   gameSetCharacterMoveSpeed(200, 100);
   gameSetCharacterMaxHp(100);
 
-  gameRegisterTileEvent(9, 6, "showSign");
+  gameRegisterTileEvent(9, 6, showSign);
 
   /*
   local npc = helpers.Npc("assets/sprites/undead.json", 0, 3, 1)
@@ -23,5 +23,12 @@ def init() {
 
 def showSign() {
   //helpers.Dialog("You're reading a sign!")
-  gameShowDialog("You're reading a sign!");
+  var id = gameShowDialog("Are you reading this sign?");
+  gameAddDialogOption(id, "No");
+  gameAddDialogOption(id, "Yes");
+  gameSetDialogCallback(id, dialogCallback);
+}
+
+def dialogCallback(choice) {
+  puts("Test");
 }

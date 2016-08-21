@@ -72,7 +72,7 @@ class Sprite {
 
  public:
   // Name of Lua function to call when sprite is interacted with
-  std::string callbackFunc;
+  std::function<void()> callbackFunc;
 
   unsigned int id;
 

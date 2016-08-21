@@ -108,10 +108,9 @@ bool MainScreen::update(sf::Time &time) {
     return true;
   } else {
     const auto &dialog = visual::DialogManager::closedDialog();
-    if (dialog != nullptr && dialog->callbackFunc != "") {
+    if (dialog != nullptr && dialog->callbackFunc) {
       int choice = dialog->getChoice();
-      // TODO(jsvana): convert to actual function callback
-      //GameState::chai().eval(dialog->callbackFunc + "(" + std::itoa(choice) + ");");
+      dialog->callbackFunc(dialog->getChoice());
     }
     visual::DialogManager::clearClosedDialog();
   }

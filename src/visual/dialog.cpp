@@ -224,7 +224,7 @@ namespace visual {
       return true;
     }
 
-    bool setDialogCallback(unsigned int uid, std::string callback) {
+    bool setDialogCallback(unsigned int uid, std::function<void(int)> callback) {
       const auto &dialog = getDialogByUid(uid);
       if (!dialog) {
         return false;

@@ -79,7 +79,7 @@ namespace visual {
 
    public:
     // Name of Lua function to call after dialog is complete
-    std::string callbackFunc;
+    std::function<void(int)> callbackFunc;
 
     Dialog(std::string message);
 
@@ -197,10 +197,10 @@ namespace visual {
      * Wrapper to set a dialog's callback function by UID
      *
      * @param uid UID of dialog to add option to
-     * @param callback Name of callback function
+     * @param callback Callback function
      * @return Whether operation was successful
      */
-    bool setDialogCallback(unsigned int uid, std::string callback);
+    bool setDialogCallback(unsigned int uid, std::function<void(int)> callback);
 
     /**
      * Gets the most recently closed dialog or nullptr if there isn't one
