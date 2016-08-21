@@ -3,6 +3,7 @@
 #include "../state.h"
 #include "../util.h"
 
+#include <chaiscript/chaiscript.hpp>
 #include <SFML/Graphics.hpp>
 
 #include <string>
@@ -24,8 +25,7 @@ namespace visual {
      */
     template <typename T>
     T getValue(std::string value) {
-      //return static_cast<T>(GameState::lua()[value.c_str()]);
-      return static_cast<T>("");
+      return static_cast<T>(GameState::chai().eval<T>(value));
     }
 
     /**

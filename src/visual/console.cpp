@@ -47,7 +47,11 @@ namespace visual {
         }
         std::string val;
         if (command.find("s ") == 0 || command.find(" ") == 0) {
-          val = getValue<std::string>(command.substr(2));
+          try {
+            val = getValue<std::string>(command.substr(2));
+          } catch (chaiscript::exception::eval_error e) {
+            val = e.what();
+          }
         } else if (command.find("b ") == 0) {
           //bool x = getValue<bool>(command.substr(2));
           bool x = true;
