@@ -24,7 +24,8 @@ namespace visual {
      */
     template <typename T>
     T getValue(std::string value) {
-      return static_cast<T>(GameState::lua()[value.c_str()]);
+      //return static_cast<T>(GameState::lua()[value.c_str()]);
+      return static_cast<T>("");
     }
 
     /**

@@ -1,0 +1,34 @@
+def init() {
+  if (gameInitialized()) {
+    return;
+  }
+  gameLoadMap("assets/maps/main.json");
+  gameLoadCharacter("assets/sprites/hero.json", 0, 1, 6);
+  gameSetCharacterMoveSpeed(200, 100);
+  gameSetCharacterMaxHp(100);
+
+  gameRegisterTileEvent(9, 6, showSign);
+
+  /*
+  local npc = helpers.Npc("assets/sprites/undead.json", 0, 3, 1)
+  helpers.npcs:append(npc)
+
+  id = gameAddItem("assets/sprites/item.json", 2, 14, 0)
+  print(id)
+
+  --d = helpers.Dialog("Here's a really really really long message that will scroll yay messages wooo so this one time at band camp this really cool thing happened and then the story ended")
+  --d:addOptions({"No", "Yes"})
+  */
+}
+
+def showSign() {
+  //helpers.Dialog("You're reading a sign!")
+  var id = gameShowDialog("Are you reading this sign?");
+  gameAddDialogOption(id, "No");
+  gameAddDialogOption(id, "Yes");
+  gameSetDialogCallback(id, dialogCallback);
+}
+
+def dialogCallback(choice) {
+  puts("Test");
+}

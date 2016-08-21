@@ -7,7 +7,8 @@
 #include "map.h"
 #include "visual/dialog.h"
 
-#include <selene.h>
+#include <chaiscript/chaiscript.hpp>
+#include <chaiscript/chaiscript_stdlib.hpp>
 
 #include <iterator>
 #include <memory>
@@ -120,19 +121,19 @@ namespace GameState {
   const std::unique_ptr<Map> &map();
 
   /**
-   * Gets a reference to the Lua state
+   * Gets a reference to the ChaiScript state
    *
-   * @return Reference to Lua state
+   * @return Reference to ChaiScript state
    */
-  sel::State &lua();
+  chaiscript::ChaiScript &chai();
 
   /**
    * Adds a callback to a specific tile
    *
    * @param id Tile ID to add callback to
-   * @param callback Name of Lua callback function
+   * @param callback Name of ChaiScript callback function
    */
-  void addTileEvent(int id, std::string callback);
+  void addTileEvent(int id, std::function<void()> callback);
 
   /**
    * Checks if given tile ID has an event
@@ -142,12 +143,12 @@ namespace GameState {
   bool tileHasEvent(int id);
 
   /**
-   * Gets Lua callback function name for tile ID
+   * Gets ChaiScript callback function name for tile ID
    *
    * @param id Tile ID to get callback function for
    * @return Lua callback function name
    */
-  std::string tileCallback(int id);
+  std::function<void()> tileCallback(int id);
 
   /**
    * Clears an event for a specific tile
@@ -300,10 +301,10 @@ namespace GameState {
    * Sets an NPC callback function
    *
    * @param npcId ID of NPC to set callback for
-   * @param callback Name of Lua callback function
+   * @param callback Name of ChaiScript  callback function
    * @return Whether the operation is successful
    */
-  bool setNpcCallback(unsigned int npcId, std::string callback);
+  bool setNpcCallback(unsigned int npcId, std::function<void()> callback);
 
   /**
    * Moves an NPC
@@ -374,7 +375,7 @@ namespace GameState {
    * @param callback Name of Lua callback function
    * @return Whether the operation is successful
    */
-  bool setDialogCallback(unsigned int uid, std::string callback);
+  bool setDialogCallback(unsigned int uid, std::function<void(int)> callback);
 
   /**
    * Adds a tile event to a tile to run when the character hits the
@@ -382,10 +383,10 @@ namespace GameState {
    *
    * @param x X coordinate of tile
    * @param y Y coordinate of tile
-   * @param callback Name of Lua callback function to run on contact
+   * @param callback Name of ChaiScript callback function to run on contact
    * @return Whether the operation is successful
    */
-  bool registerTileEvent(int x, int y, std::string callback);
+  bool registerTileEvent(int x, int y, std::function<void()> callback);
 
   /**
    * Clears all registered tile events

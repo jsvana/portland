@@ -6,7 +6,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${becoming_portland_SOURCE_DIR}/cmak
 
 # Bump up warning levels appropriately for clang, gcc & msvc and build in debug mode
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL "AppleClang")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-unused-but-set-parameter -Wno-deprecated-declarations -std=c++11")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-deprecated-declarations -std=c++11")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
@@ -22,17 +22,15 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
 else()
   find_package(SFML COMPONENTS audio graphics system window)
 endif()
-find_package(Lua 5.2 REQUIRED lua52)
 
 include_directories(
   ${SFML_INCLUDE_DIR}
-  ${LUA_INCLUDE_DIR}
-  "vendor/spdlog/include"
-  "vendor/selene/include"
+  "vendor/ChaiScript-5.8.1/include"
   "vendor/json"
+  "vendor/spdlog/include"
 )
 
-set(PLATFORM_LIBRARIES pthread)
+set(PLATFORM_LIBRARIES pthread dl)
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
   set(PLATFORM_LIBRARIES ${SDL2MAIN_LIBRARY})
 endif()
@@ -42,7 +40,6 @@ add_executable(becoming_portland ${portland_sources})
 target_link_libraries(
   becoming_portland
   ${SFML_LIBRARIES}
-  ${LUA_LIBRARY}
   ${PLATFORM_LIBRARIES}
   glog
 )
