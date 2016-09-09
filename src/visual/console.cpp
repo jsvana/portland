@@ -37,32 +37,43 @@ namespace visual {
         return "Done";
       } else if (command.find("run ") == 0) {
         command = command.substr(4);
-        LOG(INFO) << "Running Lua string: " << command;
-        //GameState::lua()(command.c_str());
-        return "Done";
+        LOG(INFO) << "Running ChaiScript string: " << command;
+        std::string val;
+        try {
+          GameState::chai().eval(command);
+          val = "Done";
+        } catch (chaiscript::exception::eval_error e) {
+          val = e.what();
+        }
+        return val;
       } else if (command.find("get") == 0) {
         command = command.substr(3);
         if (command.length() == 0) {
           return "Malformed command";
         }
         std::string val;
-        if (command.find("s ") == 0 || command.find(" ") == 0) {
+        if (command.find(" ") == 0) {
           try {
-            val = getValue<std::string>(command.substr(2));
+            val = getValue<std::string>(command.substr(1));
           } catch (chaiscript::exception::eval_error e) {
             val = e.what();
           }
-        } else if (command.find("b ") == 0) {
-          //bool x = getValue<bool>(command.substr(2));
-          bool x = true;
-          if (x) {
-            val = "true";
-          } else {
-            val = "false";
+        } else {
+          if (command[0] == 's') {
+            try {
+              val = getValue<std::string>(command.substr(2));
+            } catch (chaiscript::exception::eval_error e) {
+              val = e.what();
+            }
+          } else if (command[0] == 'b') {
+            if (getValue<bool>(command.substr(2))) {
+              val = "true";
+            } else {
+              val = "false";
+            }
+          } else if (command[0] == 'i') {
+            val = std::to_string(getValue<int>(command.substr(2)));
           }
-        } else if (command.find("i ") == 0) {
-          //val = std::to_string(getValue<int>(command.substr(2)));
-          val = 1;
         }
         return "-> " + val;
       } else {
