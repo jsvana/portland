@@ -4,16 +4,8 @@ set -e
 
 pushd build >/dev/null
 
-if [[ ! -f ./CMakeCache.txt ]]; then
-  cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
-fi
-
-make
+ninja
 
 popd >/dev/null
-
-if [[ ! -h ./compile_commands.json ]]; then
-  ln -s ./build/compile_commands.json ./
-fi
 
 ./build/becoming_portland

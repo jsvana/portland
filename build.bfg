@@ -1,0 +1,31 @@
+# -*- python -*-
+
+project("becoming_portland")
+
+executable(
+    "becoming_portland",
+    files=find_files("src", "*.cpp"),
+    compile_options=[
+      "-Wall",
+      "-Wextra",
+      "-pedantic",
+      "-Wno-deprecated-declarations",
+      "-DCHAISCRIPT_NO_THREADS",
+      "-std=c++14",
+      "-ggdb",
+    ],
+    packages=[
+      system_package("glog"),
+      system_package("sfml-audio"),
+      system_package("sfml-graphics"),
+      system_package("sfml-system"),
+      system_package("sfml-window"),
+      system_package("pthread"),
+      system_package("dl"),
+      system_package("glog"),
+    ],
+    include=[
+      header_directory("vendor/ChaiScript-5.8.1/include"),
+      header_directory("vendor/json"),
+    ],
+)

@@ -109,7 +109,6 @@ bool MainScreen::update(sf::Time &time) {
   } else {
     const auto &dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc) {
-      int choice = dialog->getChoice();
       dialog->callbackFunc(dialog->getChoice());
     }
     visual::DialogManager::clearClosedDialog();
