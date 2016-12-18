@@ -5,16 +5,16 @@
 #include <iostream>
 #include <string>
 
-Tileset::Tileset(const std::string &basePath,
-                 const nlohmann::json &tilesetData) {
+Tileset::Tileset(const std::string& basePath,
+                 const nlohmann::json& tilesetData) {
   load(basePath, tilesetData);
 
   defaultTile_.walkable = false;
   defaultTile_.frame = 0;
 }
 
-bool Tileset::load(const std::string &basePath,
-                   const nlohmann::json &tilesetData) {
+bool Tileset::load(const std::string& basePath,
+                   const nlohmann::json& tilesetData) {
   auto texturePath = tilesetData["image"].get<std::string>();
   tileWidth_ = tilesetData["tilewidth"].get<int>();
   tileHeight_ = tilesetData["tileheight"].get<int>();
@@ -51,7 +51,7 @@ bool Tileset::load(const std::string &basePath,
           if (animationList != (*iter).end()) {
             auto animation =
                 (*animationList).get<std::vector<nlohmann::json>>();
-            for (auto &obj : animation) {
+            for (auto& obj : animation) {
               unsigned int tileId = obj["tileid"].get<unsigned int>();
               t.animationTiles.push_back(tileId);
             }
@@ -93,10 +93,10 @@ bool Tileset::ladder(unsigned int tile) {
   return tiles_[tile - firstGid_].ladder;
 }
 
-bool Tileset::update(sf::Time &time) {
+bool Tileset::update(sf::Time& time) {
   time_ += time;
   if (time_ >= sf::milliseconds(500)) {
-    for (auto &tile : tiles_) {
+    for (auto& tile : tiles_) {
       tile.second.frame =
           (tile.second.frame + 1) % tile.second.animationTiles.size();
     }
@@ -105,7 +105,7 @@ bool Tileset::update(sf::Time &time) {
   return true;
 }
 
-void Tileset::renderTile(sf::RenderTarget &window, unsigned int tile, int x,
+void Tileset::renderTile(sf::RenderTarget& window, unsigned int tile, int x,
                          int y) {
   if (tile == 0) {
     return;

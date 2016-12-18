@@ -11,9 +11,9 @@
 #include <string>
 #include <vector>
 
-Map::Map(const std::string &path) : path_(path) { load(path); }
+Map::Map(const std::string& path) : path_(path) { load(path); }
 
-bool Map::load(const std::string &path) {
+bool Map::load(const std::string& path) {
   std::ifstream mapfile(path, std::ios::in);
   if (!mapfile.is_open()) {
     LOG(WARNING) << "Unable to open mapfile: " << path;
@@ -28,7 +28,7 @@ bool Map::load(const std::string &path) {
   auto mapData = nlohmann::json::parse(fileData.str());
 
   auto tilesets = mapData["tilesets"].get<std::vector<nlohmann::json>>();
-  for (auto &tileset : tilesets) {
+  for (auto& tileset : tilesets) {
     tilesets_.push_back(util::make_unique<Tileset>(mapBasePath, tileset));
   }
 
@@ -41,14 +41,14 @@ bool Map::load(const std::string &path) {
   mapPixelHeight_ = mapHeight_ * tileHeight_;
 
   auto layers = mapData["layers"].get<std::vector<nlohmann::json>>();
-  for (auto &layer : layers) {
+  for (auto& layer : layers) {
     layers_.push_back(MapLayer(layer));
   }
 
   return true;
 }
 
-void Map::ensurePointInMap(sf::Vector2f &p) {
+void Map::ensurePointInMap(sf::Vector2f& p) {
   if (p.x < 0) {
     p.x = 0;
   } else if (p.x >= mapWidth_) {
@@ -167,8 +167,8 @@ bool Map::positionWalkable(int x, int y, int w, int h) {
   return true;
 }
 
-Tileset *Map::tilesetForTile(unsigned int tile) {
-  for (const auto &tileset : tilesets_) {
+Tileset* Map::tilesetForTile(unsigned int tile) {
+  for (const auto& tileset : tilesets_) {
     if (tileset->contains(tile)) {
       return tileset.get();
     }
@@ -178,7 +178,7 @@ Tileset *Map::tilesetForTile(unsigned int tile) {
 }
 
 bool Map::ladder(unsigned int tile) {
-  const auto &tileset = tilesetForTile(tile);
+  const auto& tileset = tilesetForTile(tile);
   if (!tileset) {
     return false;
   }
@@ -186,22 +186,22 @@ bool Map::ladder(unsigned int tile) {
 }
 
 bool Map::walkable(unsigned int tile) {
-  const auto &tileset = tilesetForTile(tile);
+  const auto& tileset = tilesetForTile(tile);
   if (!tileset) {
     return false;
   }
   return tileset->walkable(tile);
 }
 
-bool Map::update(sf::Time &time) {
-  for (const auto &tileset : tilesets_) {
+bool Map::update(sf::Time& time) {
+  for (const auto& tileset : tilesets_) {
     tileset->update(time);
   }
 
   return true;
 }
 
-void Map::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
+void Map::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
   int xStart, xEnd;
   int yStart, yEnd;
   xStart = 0;
@@ -213,14 +213,14 @@ void Map::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
   int x = position_.x - cameraPos.x;
   int y = position_.y - cameraPos.y;
 
-  for (auto &layer : layers_) {
+  for (auto& layer : layers_) {
     for (int i = yStart; i < yEnd; i++) {
       for (int j = xStart; j < xEnd; j++) {
         unsigned int tile = layer.tiles[i][j];
         if (tile == 0) {
           continue;
         }
-        const auto &tileset = tilesetForTile(tile);
+        const auto& tileset = tilesetForTile(tile);
         if (!tileset) {
           continue;
         }
@@ -231,7 +231,7 @@ void Map::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
   }
 }
 
-MapLayer::MapLayer(const nlohmann::json &layerData) {
+MapLayer::MapLayer(const nlohmann::json& layerData) {
   auto width = layerData["width"].get<int>();
   auto height = layerData["height"].get<int>();
   auto data = layerData["data"].get<std::vector<int>>();

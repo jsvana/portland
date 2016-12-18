@@ -28,6 +28,6 @@ bool PauseMenuScreen::quit() {
   return running_;
 }
 
-void PauseMenuScreen::render(sf::RenderTarget &target) {
+void PauseMenuScreen::render(sf::RenderTarget& target) {
   MenuScreen::render(target);
 }

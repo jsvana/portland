@@ -54,7 +54,7 @@ class MainScreen : public Screen {
    * @param moveDelta Distance to try to move the sprite
    * @return Whether the sprite was moved
    */
-  bool fixMovement(const std::unique_ptr<Sprite> &sprite,
+  bool fixMovement(const std::unique_ptr<Sprite>& sprite,
                    sf::Vector2f moveDelta);
 
   /**
@@ -63,7 +63,7 @@ class MainScreen : public Screen {
    * @param sprite Sprite to update
    * @return Updated sprite dimensions
    */
-  sf::FloatRect updateGravity(const std::unique_ptr<Sprite> &sprite);
+  sf::FloatRect updateGravity(const std::unique_ptr<Sprite>& sprite);
 
  public:
   MainScreen();
@@ -71,15 +71,15 @@ class MainScreen : public Screen {
   /**
    * @see Screen::handleEvent
    */
-  void handleEvent(sf::Event &event);
+  void handleEvent(sf::Event& event);
 
   /**
    * @see Screen::update
    */
-  bool update(sf::Time &time);
+  bool update(sf::Time& time);
 
   /**
    * @see Screen::render
    */
-  void render(sf::RenderTarget &window);
+  void render(sf::RenderTarget& window);
 };

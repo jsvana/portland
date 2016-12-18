@@ -23,15 +23,15 @@ class OpeningScreen : public Screen {
   /**
    * @see Screen::handleEvent
    */
-  void handleEvent(sf::Event &event);
+  void handleEvent(sf::Event& event);
 
   /**
    * @see Screen::update
    */
-  bool update(sf::Time &elapsed);
+  bool update(sf::Time& elapsed);
 
   /**
    * @see Screen::render
    */
-  void render(sf::RenderTarget &target);
+  void render(sf::RenderTarget& target);
 };

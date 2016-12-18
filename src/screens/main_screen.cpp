@@ -24,7 +24,7 @@ MainScreen::MainScreen() {
   visual::Console::initialize();
 }
 
-bool MainScreen::fixMovement(const std::unique_ptr<Sprite> &sprite,
+bool MainScreen::fixMovement(const std::unique_ptr<Sprite>& sprite,
                              sf::Vector2f moveDelta) {
   auto dim = sprite->getDimensions();
   auto oldDim = dim;
@@ -41,7 +41,7 @@ bool MainScreen::fixMovement(const std::unique_ptr<Sprite> &sprite,
   return dim != oldDim;
 }
 
-sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite> &sprite) {
+sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);
@@ -68,7 +68,7 @@ sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite> &sprite) {
   return dim;
 }
 
-void MainScreen::handleEvent(sf::Event &event) {
+void MainScreen::handleEvent(sf::Event& event) {
   if (visual::Console::visible()) {
     visual::Console::handleEvent(event);
     return;
@@ -89,13 +89,13 @@ void MainScreen::handleEvent(sf::Event &event) {
   }
 }
 
-bool MainScreen::update(sf::Time &time) {
+bool MainScreen::update(sf::Time& time) {
   // Used for getting ticks in Lua
   time_ = time;
 
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
-  for (const auto &sprite : GameState::sprites()) {
+  for (const auto& sprite : GameState::sprites()) {
     sprite->update(time_);
   }
 
@@ -107,7 +107,7 @@ bool MainScreen::update(sf::Time &time) {
   if (visual::DialogManager::update(time_)) {
     return true;
   } else {
-    const auto &dialog = visual::DialogManager::closedDialog();
+    const auto& dialog = visual::DialogManager::closedDialog();
     if (dialog != nullptr && dialog->callbackFunc) {
       dialog->callbackFunc(dialog->getChoice());
     }
@@ -195,7 +195,7 @@ bool MainScreen::update(sf::Time &time) {
     GameState::camera().y = y;
   }
 
-  for (const auto &sprite : GameState::sprites()) {
+  for (const auto& sprite : GameState::sprites()) {
     auto dim = updateGravity(sprite);
     if (GameState::positionWalkable(sprite, dim)) {
       // TODO(jsvana): figure out whether or not the sprite
@@ -207,10 +207,10 @@ bool MainScreen::update(sf::Time &time) {
   return true;
 }
 
-void MainScreen::render(sf::RenderTarget &window) {
+void MainScreen::render(sf::RenderTarget& window) {
   GameState::map()->render(window, GameState::camera());
   GameState::hero()->render(window, GameState::camera());
-  for (const auto &sprite : GameState::sprites()) {
+  for (const auto& sprite : GameState::sprites()) {
     sprite->render(window, GameState::camera());
   }
   heroHealth_.render(window);

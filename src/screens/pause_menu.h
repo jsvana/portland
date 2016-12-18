@@ -29,5 +29,5 @@ class PauseMenuScreen : public MenuScreen {
   /**
    * @see Screen::render
    */
-  void render(sf::RenderTarget &window);
+  void render(sf::RenderTarget& window);
 };

@@ -17,7 +17,7 @@ class MapLayer {
  public:
   std::vector<std::vector<unsigned int>> tiles;
 
-  MapLayer(const nlohmann::json &layerData);
+  MapLayer(const nlohmann::json& layerData);
 
   /**
    * Gets the tile at a given (x, y) coordinate
@@ -67,14 +67,14 @@ class Map {
    * @param path Path to map file
    * @return Whether operation was successful
    */
-  bool load(const std::string &path);
+  bool load(const std::string& path);
 
   /**
    * Clamps a point to map dimensions
    *
    * @param p sf::Vector2f to clamp
    */
-  void ensurePointInMap(sf::Vector2f &p);
+  void ensurePointInMap(sf::Vector2f& p);
 
   /**
    * Takes a rectangle in screen space and returns a list of tiles in
@@ -106,7 +106,7 @@ class Map {
    * @param tile Tile to get tileset for
    * @return Tileset for tile or nullptr if not found
    */
-  Tileset *tilesetForTile(unsigned int tile);
+  Tileset* tilesetForTile(unsigned int tile);
 
   /**
    * Checks if tile is walkable
@@ -125,7 +125,7 @@ class Map {
   bool ladder(unsigned int tile);
 
  public:
-  Map(const std::string &path);
+  Map(const std::string& path);
 
   /**
    * Sets map position to the given point
@@ -299,7 +299,7 @@ class Map {
    *
    * @param time Time since last update
    */
-  bool update(sf::Time &time);
+  bool update(sf::Time& time);
 
   /**
    * Renders map relative to the given camera position
@@ -307,5 +307,5 @@ class Map {
    * @param window Window to render to
    * @param cameraPos Position of camera to render map relative to
    */
-  void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
+  void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };

@@ -68,7 +68,7 @@ class Sprite {
    * @param path Path to load sprite from
    * @param Whether operation was successful
    */
-  bool load(const std::string &path);
+  bool load(const std::string& path);
 
  public:
   // Name of Lua function to call when sprite is interacted with
@@ -76,9 +76,9 @@ class Sprite {
 
   unsigned int id;
 
-  Sprite(const std::string &path) : Sprite(path, SPRITE_HERO) {}
+  Sprite(const std::string& path) : Sprite(path, SPRITE_HERO) {}
 
-  Sprite(const std::string &path, SpriteType type);
+  Sprite(const std::string& path, SpriteType type);
 
   SpriteType type() { return type_; }
 
@@ -295,7 +295,7 @@ class Sprite {
    *
    * @param time Amount of time since last update
    */
-  void update(sf::Time &time);
+  void update(sf::Time& time);
 
   /**
    * Renders sprite relative to cameraPos
@@ -304,5 +304,5 @@ class Sprite {
    * @param cameraPos Position of camera to render sprite
    * relative to
    */
-  void render(sf::RenderTarget &window, sf::Vector2f cameraPos);
+  void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };

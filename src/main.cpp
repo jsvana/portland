@@ -6,7 +6,7 @@
 
 #include <glog/logging.h>
 
-int main(int, char *argv[]) {
+int main(int, char* argv[]) {
   // Set up logging
   FLAGS_logtostderr = 1;
   google::InitGoogleLogging(argv[0]);

@@ -132,5 +132,5 @@ class ProgressBar {
    *
    * @param window Window to render to
    */
-  void render(sf::RenderTarget &window);
+  void render(sf::RenderTarget& window);
 };

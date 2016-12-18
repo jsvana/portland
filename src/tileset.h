@@ -64,7 +64,7 @@ class Tileset {
    * @param tilesetData JSON object to load tileset from
    * @return Whether the operation was successful
    */
-  bool load(const std::string &basePath, const nlohmann::json &tilesetData);
+  bool load(const std::string& basePath, const nlohmann::json& tilesetData);
 
   /**
    * Removes rotation and reflection flags on a tile
@@ -75,7 +75,7 @@ class Tileset {
   unsigned int removeFlags(unsigned int tile);
 
  public:
-  Tileset(const std::string &basePath, const nlohmann::json &tilesetData);
+  Tileset(const std::string& basePath, const nlohmann::json& tilesetData);
 
   /**
    * Gets TileProperties for the given tile index or the default tile if
@@ -84,7 +84,7 @@ class Tileset {
    * @param t Tile to find properties for
    * @return Found TileProperties
    */
-  const TileProperties &tile(unsigned int t) const {
+  const TileProperties& tile(unsigned int t) const {
     auto res = tiles_.find(t);
     if (res == tiles_.end()) {
       return defaultTile_;
@@ -150,7 +150,7 @@ class Tileset {
    * @param time Time since last update
    * @return Always returns true
    */
-  bool update(sf::Time &time);
+  bool update(sf::Time& time);
 
   /**
    * Renders the given tile at the specified point
@@ -160,5 +160,5 @@ class Tileset {
    * @param x X coordinate of render point
    * @param y Y coordinate of render point
    */
-  void renderTile(sf::RenderTarget &window, unsigned int tile, int x, int y);
+  void renderTile(sf::RenderTarget& window, unsigned int tile, int x, int y);
 };

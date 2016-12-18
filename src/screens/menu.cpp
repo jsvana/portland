@@ -34,7 +34,7 @@ void MenuScreen::load() {
   textItems_[selectedItem_].setColor(SELECTED_COLOR);
 }
 
-void MenuScreen::handleEvent(sf::Event &event) {
+void MenuScreen::handleEvent(sf::Event& event) {
   if (event.type == sf::Event::KeyPressed) {
     textItems_[selectedItem_].setColor(NORMAL_COLOR);
     switch (event.key.code) {
@@ -57,9 +57,9 @@ void MenuScreen::handleEvent(sf::Event &event) {
   }
 }
 
-bool MenuScreen::update(sf::Time &) { return running_; }
+bool MenuScreen::update(sf::Time&) { return running_; }
 
-void MenuScreen::render(sf::RenderTarget &target) {
+void MenuScreen::render(sf::RenderTarget& target) {
   auto targetSize = target.getSize();
 
   target.draw(titleText_);

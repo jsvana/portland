@@ -21,15 +21,15 @@ OpeningScreen::OpeningScreen() {
   enterText.setOrigin(enterSize.width / 2, enterSize.height / 2);
 }
 
-void OpeningScreen::handleEvent(sf::Event &event) {
+void OpeningScreen::handleEvent(sf::Event& event) {
   if (event.type == sf::Event::KeyPressed) {
     Engine::replaceScreen(new MainScreen());
   }
 }
 
-bool OpeningScreen::update(sf::Time &) { return true; }
+bool OpeningScreen::update(sf::Time&) { return true; }
 
-void OpeningScreen::render(sf::RenderTarget &target) {
+void OpeningScreen::render(sf::RenderTarget& target) {
   auto windowSize = target.getSize();
 
   titleText.setPosition(windowSize.x / 2, windowSize.y / 4);

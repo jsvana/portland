@@ -7,14 +7,14 @@
 #include <sstream>
 #include <vector>
 
-Sprite::Sprite(const std::string &path, SpriteType type) : type_(type) {
+Sprite::Sprite(const std::string& path, SpriteType type) : type_(type) {
   load(path);
 
   direction_ = SPRITE_RIGHT;
   visualDirection_ = SPRITE_RIGHT;
 }
 
-bool Sprite::load(const std::string &path) {
+bool Sprite::load(const std::string& path) {
   std::ifstream spritefile(path);
 
   if (!spritefile.is_open()) {
@@ -46,7 +46,7 @@ bool Sprite::load(const std::string &path) {
   }
 
   auto basePath = path.substr(0, path.find_last_of("/"));
-  for (auto &path : texturePaths) {
+  for (auto& path : texturePaths) {
     std::string fullPath = basePath + "/" + path;
     sf::Texture texture;
     texture.loadFromFile(fullPath);
@@ -78,7 +78,7 @@ void Sprite::zeroVelocity(bool stopJump) {
   jumping_ = !stopJump;
 }
 
-void Sprite::update(sf::Time &time) {
+void Sprite::update(sf::Time& time) {
   time_ += time;
   if (time_ >= sf::milliseconds(500)) {
     int limit = textures_.size();
@@ -98,7 +98,7 @@ void Sprite::update(sf::Time &time) {
   }
 }
 
-void Sprite::render(sf::RenderTarget &window, sf::Vector2f cameraPos) {
+void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
   int tile = tile_;
   if (!multiFile_) {
     tile += frame_;

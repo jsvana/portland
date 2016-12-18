@@ -8,104 +8,102 @@
 #include <SFML/Graphics.hpp>
 
 namespace Engine {
-  std::stack<std::unique_ptr<Screen>> screens;
+std::stack<std::unique_ptr<Screen>> screens;
 
-  sf::RenderWindow window;
+sf::RenderWindow window;
 
-  bool running_ = true;
+bool running_ = true;
 
-  bool init() {
-    sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
-    int scale =
-        std::min(desktop.width / SCREEN_WIDTH, desktop.height / SCREEN_HEIGHT);
+bool init() {
+  sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+  int scale =
+      std::min(desktop.width / SCREEN_WIDTH, desktop.height / SCREEN_HEIGHT);
 
-    LOG(INFO) << "Desktop width: " << desktop.width;
-    LOG(INFO) << "Desktop height: " << desktop.height;
+  LOG(INFO) << "Desktop width: " << desktop.width;
+  LOG(INFO) << "Desktop height: " << desktop.height;
 
-    LOG(INFO) << "Screen scale ratio: " << scale;
+  LOG(INFO) << "Screen scale ratio: " << scale;
 
-    window.create(sf::VideoMode(SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale),
-                  "Portland");
+  window.create(sf::VideoMode(SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale),
+                "Portland");
 
-    window.setFramerateLimit(60);
-    window.setVerticalSyncEnabled(true);
+  window.setFramerateLimit(60);
+  window.setVerticalSyncEnabled(true);
 
-    GameState::initLuaApi();
+  GameState::initLuaApi();
 
-    LOG(INFO) << "Game initialized";
+  LOG(INFO) << "Game initialized";
 
-    return true;
-  }
+  return true;
+}
 
-  void run() {
-    sf::Clock clock;
+void run() {
+  sf::Clock clock;
 
-    sf::RenderTexture target;
-    target.create(SCREEN_WIDTH, SCREEN_HEIGHT);
+  sf::RenderTexture target;
+  target.create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-    while (window.isOpen() && running_) {
-      sf::Time elapsed = clock.restart();
+  while (window.isOpen() && running_) {
+    sf::Time elapsed = clock.restart();
 
-      sf::Event event;
-      while (window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
-          window.close();
-          return;
-        } else if (event.type == sf::Event::Resized) {
-          auto windowSize = window.getSize();
-          window.setView(
-              sf::View(sf::FloatRect(0.f, 0.f, windowSize.x, windowSize.y)));
-        }
-
-        screens.top()->handleEvent(event);
+    sf::Event event;
+    while (window.pollEvent(event)) {
+      if (event.type == sf::Event::Closed) {
+        window.close();
+        return;
+      } else if (event.type == sf::Event::Resized) {
+        auto windowSize = window.getSize();
+        window.setView(
+            sf::View(sf::FloatRect(0.f, 0.f, windowSize.x, windowSize.y)));
       }
 
-      running_ = screens.top()->update(elapsed);
-
-      auto windowSize = window.getSize();
-
-      target.clear(sf::Color::Black);
-      screens.top()->render(target);
-      target.display();
-
-      sf::Sprite rendered(target.getTexture());
-      rendered.setOrigin(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-      rendered.setPosition(windowSize.x / 2, windowSize.y / 2);
-
-      float scale = std::min(1.0f * windowSize.y / SCREEN_HEIGHT,
-                             1.0f * windowSize.x / SCREEN_WIDTH);
-
-      rendered.setScale(scale, scale);
-
-      window.clear(sf::Color::Black);
-      window.draw(rendered);
-      window.display();
+      screens.top()->handleEvent(event);
     }
-  }
 
-  void cleanup() {
-    while (!screens.empty()) {
-      popScreen();
-    }
-  }
+    running_ = screens.top()->update(elapsed);
 
-  void pushScreen(Screen *screen) {
-    pushScreen(std::unique_ptr<Screen>(screen));
-  }
+    auto windowSize = window.getSize();
 
-  void pushScreen(std::unique_ptr<Screen> screen) {
-    screens.push(std::move(screen));
-  }
+    target.clear(sf::Color::Black);
+    screens.top()->render(target);
+    target.display();
 
-  std::unique_ptr<Screen> popScreen() {
-    auto top = std::move(screens.top());
-    screens.pop();
-    return top;
-  }
+    sf::Sprite rendered(target.getTexture());
+    rendered.setOrigin(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+    rendered.setPosition(windowSize.x / 2, windowSize.y / 2);
 
-  std::unique_ptr<Screen> replaceScreen(Screen *screen) {
-    auto replaced = popScreen();
-    pushScreen(screen);
-    return replaced;
+    float scale = std::min(1.0f * windowSize.y / SCREEN_HEIGHT,
+                           1.0f * windowSize.x / SCREEN_WIDTH);
+
+    rendered.setScale(scale, scale);
+
+    window.clear(sf::Color::Black);
+    window.draw(rendered);
+    window.display();
   }
+}
+
+void cleanup() {
+  while (!screens.empty()) {
+    popScreen();
+  }
+}
+
+void pushScreen(Screen* screen) { pushScreen(std::unique_ptr<Screen>(screen)); }
+
+void pushScreen(std::unique_ptr<Screen> screen) {
+  screens.push(std::move(screen));
+}
+
+std::unique_ptr<Screen> popScreen() {
+  auto top = std::move(screens.top());
+  screens.pop();
+  return top;
+}
+
+std::unique_ptr<Screen> replaceScreen(Screen* screen) {
+  auto replaced = popScreen();
+  pushScreen(screen);
+  return replaced;
+}
 }

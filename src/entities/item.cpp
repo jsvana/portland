@@ -5,4 +5,4 @@
 #include <sstream>
 #include <vector>
 
-void Item::update(sf::Time &time) { Sprite::update(time); }
+void Item::update(sf::Time& time) { Sprite::update(time); }
