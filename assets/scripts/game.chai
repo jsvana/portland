@@ -7,6 +7,8 @@ def init() {
   gameSetCharacterMoveSpeed(200, 100);
   gameSetCharacterMaxHp(100);
 
+  gameAddNpc("assets/sprites/undead.json", 0, 3, 1);
+
   gameRegisterTileEvent(9, 6, showSign);
 }
 
