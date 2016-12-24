@@ -8,17 +8,21 @@
 
 #include <string>
 
-enum SpriteDirection {
-  SPRITE_LEFT,
-  SPRITE_RIGHT,
-  SPRITE_UP,
-  SPRITE_DOWN,
+namespace entities {
+
+typedef std::function<void()> SpriteCallback;
+
+enum class SpriteDirection : int {
+  LEFT = 0,
+  RIGHT = 1,
+  UP = 2,
+  DOWN = 3,
 };
 
-enum SpriteType {
-  SPRITE_HERO,
-  SPRITE_ITEM,
-  SPRITE_NPC,
+enum class SpriteType : int {
+  HERO = 0,
+  ITEM = 1,
+  NPC = 2,
 };
 
 /**
@@ -72,11 +76,11 @@ class Sprite {
 
  public:
   // Name of Lua function to call when sprite is interacted with
-  std::function<void()> callbackFunc;
+  SpriteCallback callbackFunc;
 
   unsigned int id;
 
-  Sprite(const std::string& path) : Sprite(path, SPRITE_HERO) {}
+  Sprite(const std::string& path) : Sprite(path, SpriteType::HERO) {}
 
   Sprite(const std::string& path, SpriteType type);
 
@@ -160,7 +164,7 @@ class Sprite {
    */
   void setDirection(SpriteDirection dir) {
     direction_ = dir;
-    if (dir == SPRITE_LEFT || dir == SPRITE_RIGHT) {
+    if (dir == SpriteDirection::LEFT || dir == SpriteDirection::RIGHT) {
       visualDirection_ = dir;
     }
   }
@@ -306,3 +310,5 @@ class Sprite {
    */
   void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };
+
+}  // namespace entities

@@ -15,7 +15,7 @@ sf::FloatRect cameraBounds_;
 
 unsigned int ticks_ = 0;
 
-std::unique_ptr<Sprite> hero_;
+std::unique_ptr<entities::Sprite> hero_;
 float moveSpeed_;
 
 // Jumping stuff
@@ -23,11 +23,11 @@ bool jumping_ = false;
 int velocityY_ = 0;
 
 // Stack is used to mimick maps_
-std::stack<std::vector<std::unique_ptr<Sprite>>> sprites_;
+std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 
 std::stack<std::unique_ptr<Map>> maps_;
 
-std::unordered_map<int, std::function<void()>> tileEvents_;
+std::unordered_map<int, TileCallback> tileEvents_;
 
 chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
@@ -77,7 +77,7 @@ void initLuaApi() {
 
 sf::Vector2f& camera() { return camera_; }
 
-float positionOfSpriteAbove(const std::unique_ptr<Sprite>& sprite) {
+float positionOfSpriteAbove(const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   sf::FloatRect collisionRect(dim.left, 0, dim.width, dim.top);
   for (const auto& s : sprites()) {
@@ -93,13 +93,13 @@ float positionOfSpriteAbove(const std::unique_ptr<Sprite>& sprite) {
   return 0;
 }
 
-float densePositionAbove(const std::unique_ptr<Sprite>& sprite) {
+float densePositionAbove(const std::unique_ptr<entities::Sprite>& sprite) {
   float spriteAbove = positionOfSpriteAbove(sprite);
   float tileAbove = map()->positionOfTileAbove(sprite->getDimensions());
   return std::max<float>(spriteAbove, tileAbove);
 }
 
-float positionOfSpriteBelow(const std::unique_ptr<Sprite>& sprite) {
+float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
                               map()->pixelHeight());
@@ -116,7 +116,7 @@ float positionOfSpriteBelow(const std::unique_ptr<Sprite>& sprite) {
   return std::numeric_limits<float>::max();
 }
 
-float densePositionBelow(const std::unique_ptr<Sprite>& sprite) {
+float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   float spriteBelow = positionOfSpriteBelow(sprite);
   float tileBelow = map()->positionOfTileBelow(sprite->getDimensions());
   return std::min<float>(spriteBelow, tileBelow);
@@ -126,9 +126,11 @@ void setTicks(unsigned int ticks) { ticks_ = ticks; }
 
 int ticks() { return (int)(ticks_ % INT_MAX); }
 
-void setHero(std::unique_ptr<Sprite> hero) { hero_ = std::move(hero); }
+void setHero(std::unique_ptr<entities::Sprite> hero) {
+  hero_ = std::move(hero);
+}
 
-const std::unique_ptr<Sprite>& hero() { return hero_; }
+const std::unique_ptr<entities::Sprite>& hero() { return hero_; }
 
 void setHeroMoveSpeed(int amount, int total) {
   moveSpeed_ = (float)amount / (float)total;
@@ -136,11 +138,13 @@ void setHeroMoveSpeed(int amount, int total) {
 
 int heroMoveSpeed() { return moveSpeed_; }
 
-void pushSprites(std::vector<std::unique_ptr<Sprite>> sprites) {
+void pushSprites(std::vector<std::unique_ptr<entities::Sprite>> sprites) {
   sprites_.push(std::move(sprites));
 }
 
-std::vector<std::unique_ptr<Sprite>>& sprites() { return sprites_.top(); }
+std::vector<std::unique_ptr<entities::Sprite>>& sprites() {
+  return sprites_.top();
+}
 
 void popSprites() { sprites_.pop(); }
 
@@ -148,9 +152,7 @@ const std::unique_ptr<Map>& map() { return maps_.top(); }
 
 chaiscript::ChaiScript& chai() { return chai_; }
 
-void addTileEvent(int id, std::function<void()> callback) {
-  tileEvents_[id] = callback;
-}
+void addTileEvent(int id, TileCallback callback) { tileEvents_[id] = callback; }
 
 bool tileHasEvent(int id) {
   auto event = tileEvents_.find(id);
@@ -160,7 +162,7 @@ bool tileHasEvent(int id) {
   return true;
 }
 
-std::function<void()> tileCallback(int id) { return tileEvents_[id]; }
+const TileCallback& tileCallback(int id) { return tileEvents_[id]; }
 
 void clearTileEvent(int id) { tileEvents_.erase(id); }
 
@@ -172,17 +174,17 @@ void runTileEvent() {
     return;
   }
 
-  std::function<void()> callback = tileCallback(tileNumber);
+  TileCallback callback = tileCallback(tileNumber);
   callback();
   clearTileEvent(tileNumber);
 }
 
-bool positionWalkable(const std::unique_ptr<Sprite>& sprite,
+bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
                       sf::FloatRect dim) {
   return positionWalkable(sprite.get(), dim);
 }
 
-bool positionWalkable(Sprite* sprite, sf::FloatRect dim) {
+bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
   if (!map()->positionWalkable(dim)) {
     return false;
   }
@@ -193,7 +195,7 @@ bool positionWalkable(Sprite* sprite, sf::FloatRect dim) {
   treeDim.top = 0;
   treeDim.width = map()->pixelWidth();
   treeDim.height = map()->pixelHeight();
-  Quadtree<Sprite*> tree(treeDim);
+  Quadtree<entities::Sprite*> tree(treeDim);
 
   for (auto& s : sprites()) {
     if (s->id == sprite->id) {
@@ -249,7 +251,7 @@ bool popMap() {
 }
 
 bool loadCharacter(std::string path, int tile, int initX, int initY) {
-  hero_ = util::make_unique<Sprite>(path);
+  hero_ = util::make_unique<entities::Sprite>(path);
   hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
   hero_->setTile(tile);
 
@@ -289,7 +291,7 @@ bool healCharacter(int amount) {
 }
 
 unsigned int addItem(std::string path, int tile, int x, int y) {
-  auto item = util::make_unique<Item>(path);
+  auto item = util::make_unique<entities::Item>(path);
   item->setPosition(x * GameState::map()->tileWidth(),
                     y * GameState::map()->tileHeight());
   item->setTile(tile);
@@ -301,7 +303,7 @@ unsigned int addItem(std::string path, int tile, int x, int y) {
 }
 
 unsigned int addNpc(std::string path, int tile, int x, int y) {
-  auto npc = util::make_unique<Npc>(path);
+  auto npc = util::make_unique<entities::Npc>(path);
   npc->setPosition(x * GameState::map()->tileWidth(),
                    y * GameState::map()->tileHeight());
   npc->setTile(tile);
@@ -313,21 +315,22 @@ unsigned int addNpc(std::string path, int tile, int x, int y) {
 }
 
 template <typename T>
-T* findSprite(unsigned int spriteId, SpriteType type) {
+T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
   if (spriteId >= sprites().size()) {
     LOG(WARNING) << "Bad sprite ID: " << spriteId;
     return nullptr;
   }
   if (sprites()[spriteId]->type() != type) {
-    LOG(WARNING) << "ID " << spriteId << " is incorrect type " << type
-                 << " (wanted type " << sprites()[spriteId]->type() << ")";
+    LOG(WARNING) << "ID " << spriteId << " is incorrect type "
+                 << static_cast<int>(type) << " (wanted type "
+                 << static_cast<int>(sprites()[spriteId]->type()) << ")";
     return nullptr;
   }
   return static_cast<T*>(sprites()[spriteId].get());
 }
 
-bool setNpcCallback(unsigned int npcId, std::function<void()> callback) {
-  auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback) {
+  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
   }
@@ -336,7 +339,7 @@ bool setNpcCallback(unsigned int npcId, std::function<void()> callback) {
 }
 
 bool moveNpc(unsigned int npcId, int dx, int dy) {
-  auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
   }
@@ -351,7 +354,7 @@ bool moveNpc(unsigned int npcId, int dx, int dy) {
 }
 
 bool setNpcMaxHp(unsigned int npcId, int hp) {
-  auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
   }
@@ -360,7 +363,7 @@ bool setNpcMaxHp(unsigned int npcId, int hp) {
 }
 
 bool damageNpc(unsigned int npcId, int amount) {
-  auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
   }
@@ -369,7 +372,7 @@ bool damageNpc(unsigned int npcId, int amount) {
 }
 
 bool healNpc(unsigned int npcId, int amount) {
-  auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
   }
@@ -382,7 +385,7 @@ bool jumpNpc(unsigned int npcId, int magnitude) {
     LOG(WARNING) << "Jump magnitude must be between 0 and 100, inclusive";
     return false;
   }
-  auto npc = findSprite<Npc>(npcId, SPRITE_NPC);
+  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
   }
@@ -400,11 +403,11 @@ bool addDialogOption(unsigned int uid, std::string option) {
   return visual::DialogManager::addDialogOption(uid, option);
 }
 
-bool setDialogCallback(unsigned int uid, std::function<void(int)> callback) {
+bool setDialogCallback(unsigned int uid, DialogCallback callback) {
   return visual::DialogManager::setDialogCallback(uid, callback);
 }
 
-bool registerTileEvent(int x, int y, std::function<void()> callback) {
+bool registerTileEvent(int x, int y, TileCallback callback) {
   addTileEvent(map()->mapPointToTileNumber(x, y), callback);
   return true;
 }

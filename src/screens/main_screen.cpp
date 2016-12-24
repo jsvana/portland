@@ -24,7 +24,7 @@ MainScreen::MainScreen() {
   visual::Console::initialize();
 }
 
-bool MainScreen::fixMovement(const std::unique_ptr<Sprite>& sprite,
+bool MainScreen::fixMovement(const std::unique_ptr<entities::Sprite>& sprite,
                              sf::Vector2f moveDelta) {
   auto dim = sprite->getDimensions();
   auto oldDim = dim;
@@ -41,7 +41,8 @@ bool MainScreen::fixMovement(const std::unique_ptr<Sprite>& sprite,
   return dim != oldDim;
 }
 
-sf::FloatRect MainScreen::updateGravity(const std::unique_ptr<Sprite>& sprite) {
+sf::FloatRect MainScreen::updateGravity(
+    const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   if (GameState::map()->isLadder(dim)) {
     sprite->zeroVelocity(/*stopJump = */ true);
@@ -149,16 +150,16 @@ bool MainScreen::update(sf::Time& time) {
 
   // Change character direction
   if (moveDelta.x > 0) {
-    GameState::hero()->setDirection(SPRITE_RIGHT);
+    GameState::hero()->setDirection(entities::SpriteDirection::RIGHT);
   }
   if (moveDelta.x < 0) {
-    GameState::hero()->setDirection(SPRITE_LEFT);
+    GameState::hero()->setDirection(entities::SpriteDirection::LEFT);
   }
   if (moveDelta.y > 0) {
-    GameState::hero()->setDirection(SPRITE_DOWN);
+    GameState::hero()->setDirection(entities::SpriteDirection::DOWN);
   }
   if (moveDelta.y < 0) {
-    GameState::hero()->setDirection(SPRITE_UP);
+    GameState::hero()->setDirection(entities::SpriteDirection::UP);
   }
 
   auto dim = updateGravity(GameState::hero());

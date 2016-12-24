@@ -9,6 +9,8 @@
 
 #include <string>
 
+namespace entities {
+
 /**
  * Class to load, render, and update items onscreen
  */
@@ -25,7 +27,7 @@ class Item : public Sprite {
  public:
   unsigned int id;
 
-  Item(const std::string& path) : Sprite(path, SPRITE_ITEM) {}
+  Item(const std::string& path) : Sprite(path, SpriteType::ITEM) {}
 
   /**
    * Animates item
@@ -34,3 +36,5 @@ class Item : public Sprite {
    */
   void update(sf::Time& time);
 };
+
+}  // namespace entities

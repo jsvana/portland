@@ -19,6 +19,9 @@
 
 namespace GameState {
 
+typedef std::function<void(int)> DialogCallback;
+typedef std::function<void()> TileCallback;
+
 const int GRAVITY = 2;
 
 const int STARTING_JUMP_VELOCITY = -15;
@@ -44,7 +47,7 @@ sf::Vector2f& camera();
  * @param sprite Sprite to check
  * @return Position of next sprite
  */
-float positionOfSpriteAbove(const std::unique_ptr<Sprite>& sprite);
+float positionOfSpriteAbove(const std::unique_ptr<entities::Sprite>& sprite);
 
 /**
  * Finds position of the next dense object above the sprite
@@ -52,7 +55,7 @@ float positionOfSpriteAbove(const std::unique_ptr<Sprite>& sprite);
  * @param sprite Sprite to check
  * @return Position of next dense object
  */
-float densePositionAbove(const std::unique_ptr<Sprite>& sprite);
+float densePositionAbove(const std::unique_ptr<entities::Sprite>& sprite);
 
 /**
  * Finds position of the next sprite below the sprite
@@ -60,7 +63,7 @@ float densePositionAbove(const std::unique_ptr<Sprite>& sprite);
  * @param sprite Sprite to check
  * @return Position of next sprite
  */
-float positionOfSpriteBelow(const std::unique_ptr<Sprite>& sprite);
+float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite);
 
 /**
  * Finds position of the next dense object below the sprite
@@ -68,7 +71,7 @@ float positionOfSpriteBelow(const std::unique_ptr<Sprite>& sprite);
  * @param sprite Sprite to check
  * @return Position of next dense object
  */
-float densePositionBelow(const std::unique_ptr<Sprite>& sprite);
+float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite);
 
 /**
  * Sets the current game ticks
@@ -89,7 +92,7 @@ int ticks();
  *
  * @return Main character
  */
-const std::unique_ptr<Sprite>& hero();
+const std::unique_ptr<entities::Sprite>& hero();
 
 /**
  * Gets the hero's move speed
@@ -111,7 +114,7 @@ unsigned int allocateSpriteId();
  *
  * @return Reference to topmost sprite map
  */
-std::vector<std::unique_ptr<Sprite>>& sprites();
+std::vector<std::unique_ptr<entities::Sprite>>& sprites();
 
 /**
  * Gets the topmost map
@@ -133,7 +136,7 @@ chaiscript::ChaiScript& chai();
  * @param id Tile ID to add callback to
  * @param callback Name of ChaiScript callback function
  */
-void addTileEvent(int id, std::function<void()> callback);
+void addTileEvent(int id, TileCallback callback);
 
 /**
  * Checks if given tile ID has an event
@@ -146,9 +149,9 @@ bool tileHasEvent(int id);
  * Gets ChaiScript callback function name for tile ID
  *
  * @param id Tile ID to get callback function for
- * @return Lua callback function name
+ * @return ChaiScript callback function name
  */
-std::function<void()> tileCallback(int id);
+const TileCallback& tileCallback(int id);
 
 /**
  * Clears an event for a specific tile
@@ -169,7 +172,8 @@ void clearTileEvents();
  * @param dim Rectangle to check
  * @return Whether position is walkable
  */
-bool positionWalkable(const std::unique_ptr<Sprite>& sprite, sf::FloatRect dim);
+bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
+                      sf::FloatRect dim);
 
 /**
  * Checks if a position is walkable by a given entity ID
@@ -178,7 +182,7 @@ bool positionWalkable(const std::unique_ptr<Sprite>& sprite, sf::FloatRect dim);
  * @param dim Rectangle to check
  * @return Whether position is walkable
  */
-bool positionWalkable(Sprite* sprite, sf::FloatRect dim);
+bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim);
 
 /**
  * Checks for an event on the character's current tile, runs the event, and
@@ -292,9 +296,10 @@ unsigned int addNpc(std::string path, int tile, int x, int y);
  *
  * @template T Type of sprite to cast to
  * @param spriteId ID of sprite to find
+ * @param type Type of sprite to find
  */
 template <typename T>
-T* findSprite(unsigned int spriteId);
+T* findSprite(unsigned int spriteId, const entities::SpriteType type);
 
 /**
  * Sets an NPC callback function
@@ -303,7 +308,7 @@ T* findSprite(unsigned int spriteId);
  * @param callback Name of ChaiScript  callback function
  * @return Whether the operation is successful
  */
-bool setNpcCallback(unsigned int npcId, std::function<void()> callback);
+bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback);
 
 /**
  * Moves an NPC
@@ -374,7 +379,7 @@ bool addDialogOption(unsigned int uid, std::string option);
  * @param callback Name of Lua callback function
  * @return Whether the operation is successful
  */
-bool setDialogCallback(unsigned int uid, std::function<void(int)> callback);
+bool setDialogCallback(unsigned int uid, DialogCallback callback);
 
 /**
  * Adds a tile event to a tile to run when the character hits the
@@ -385,7 +390,7 @@ bool setDialogCallback(unsigned int uid, std::function<void(int)> callback);
  * @param callback Name of ChaiScript callback function to run on contact
  * @return Whether the operation is successful
  */
-bool registerTileEvent(int x, int y, std::function<void()> callback);
+bool registerTileEvent(int x, int y, TileCallback callback);
 
 /**
  * Clears all registered tile events

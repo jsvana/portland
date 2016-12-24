@@ -7,11 +7,13 @@
 #include <sstream>
 #include <vector>
 
+namespace entities {
+
 Sprite::Sprite(const std::string& path, SpriteType type) : type_(type) {
   load(path);
 
-  direction_ = SPRITE_RIGHT;
-  visualDirection_ = SPRITE_RIGHT;
+  direction_ = SpriteDirection::RIGHT;
+  visualDirection_ = SpriteDirection::RIGHT;
 }
 
 bool Sprite::load(const std::string& path) {
@@ -114,7 +116,7 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
     tex = textures_[0];
   }
   sprite_.setTexture(tex);
-  if (visualDirection_ == SPRITE_RIGHT) {
+  if (visualDirection_ == SpriteDirection::RIGHT) {
     source.left += dimensions_.width;
     source.width = -dimensions_.width;
   }
@@ -123,3 +125,5 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
                       dimensions_.top - cameraPos.y);
   window.draw(sprite_);
 }
+
+}  // namespace entities
