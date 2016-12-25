@@ -78,7 +78,7 @@ class Dialog {
   void reflowText();
 
  public:
-  // Name of Lua function to call after dialog is complete
+  // ChaiScript function to call after dialog is complete
   std::function<void(int)> callbackFunc;
 
   Dialog(std::string message);

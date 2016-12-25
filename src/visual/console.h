@@ -17,7 +17,7 @@ const float PADDING = 2;
 const int FONT_SIZE = 8;
 
 /**
- * Gets the specified value from Lua
+ * Gets the specified value from ChaiScript
  *
  * @template T Type to fetch
  * @param value Name of value to fetch
@@ -29,7 +29,7 @@ T getValue(std::string value) {
 }
 
 /**
- * Runs the given command string against Lua and returns
+ * Runs the given command string against ChaiScript and returns
  * the result
  *
  * @param command Command to run

@@ -413,10 +413,10 @@ unsigned int showDialog(std::string message);
 bool addDialogOption(unsigned int uid, std::string option);
 
 /**
- * Sets the Lua callback for the given dialog
+ * Sets the ChaiScript callback for the given dialog
  *
  * @param uid ID of dialog to set callback for
- * @param callback Name of Lua callback function
+ * @param callback ChaiScript callback function
  * @return Whether the operation is successful
  */
 bool setDialogCallback(unsigned int uid, DialogCallback callback);
@@ -438,10 +438,4 @@ bool registerTileEvent(int x, int y, TileCallback callback);
  * @return Whether the operation is successful
  */
 bool clearEvents();
-
-///////////////////
-// API Callbacks //
-///////////////////
-
-void collision(unsigned int spriteId1, unsigned int spriteId2);
 }

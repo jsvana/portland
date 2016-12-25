@@ -444,12 +444,4 @@ bool clearEvents() {
   return true;
 }
 
-///////////////////
-// API Callbacks //
-///////////////////
-
-void collision(unsigned int, unsigned int) {
-  // lua_["collision"](spriteId1, spriteId2);
-}
-
 }  // namespace GameState
