@@ -24,7 +24,7 @@ enum class SpriteType : int {
 class Sprite {
  private:
   const float GRAVITY = .5;
-  const float STARTING_JUMP_VELOCITY = -10;
+  const float STARTING_JUMP_VELOCITY = -7;
 
   SpriteType type_;
 

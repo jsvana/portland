@@ -35,7 +35,6 @@ bool MainScreen::fixMovement(const std::unique_ptr<entities::Sprite>& sprite,
   if (!GameState::positionWalkable(sprite, dim)) {
     dim.left = oldDim.left;
   }
-  // dim.top += moveDelta.y;
   if (!GameState::positionWalkable(sprite, dim)) {
     dim.top = oldDim.top;
   }
@@ -115,7 +114,7 @@ bool MainScreen::update(sf::Time& time) {
     return true;
   } else {
     const auto& dialog = visual::DialogManager::closedDialog();
-    if (dialog != nullptr && dialog->callbackFunc) {
+    if (dialog && dialog->callbackFunc) {
       dialog->callbackFunc(dialog->getChoice());
     }
     visual::DialogManager::clearClosedDialog();
@@ -130,16 +129,15 @@ bool MainScreen::update(sf::Time& time) {
   if (controls::directionPressed(util::Direction::RIGHT)) {
     moveDelta.x += GameState::heroMoveSpeed();
   }
-  if (controls::directionPressed(util::Direction::DOWN)) {
-    if (GameState::map()->isLadder(GameState::hero()->getDimensions())) {
-      moveDelta.y += GameState::heroMoveSpeed();
-    }
+  if (controls::directionPressed(util::Direction::DOWN) &&
+      GameState::map()->isLadder(GameState::hero()->getDimensions())) {
+    // TODO(jsvana): fix this? somehow it's broken
+    moveDelta.y += GameState::heroMoveSpeed();
   }
-  if (controls::directionPressed(util::Direction::UP)) {
-    if (GameState::map()->isLadder(GameState::hero()->getDimensions()) &&
-        !GameState::hero()->jumping()) {
-      moveDelta.y -= GameState::heroMoveSpeed();
-    }
+  if (controls::directionPressed(util::Direction::UP) &&
+      GameState::map()->isLadder(GameState::hero()->getDimensions()) &&
+      !GameState::hero()->jumping()) {
+    moveDelta.y -= GameState::heroMoveSpeed();
   }
   fixMovement(GameState::hero(), moveDelta);
 
