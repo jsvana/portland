@@ -287,7 +287,7 @@ bool healCharacter(int amount);
  * @param initY Initial y position
  * @return Item ID
  */
-unsigned int addItem(std::string path, int tile, int x, int y);
+unsigned int addItem(const std::string& path, int tile, int x, int y);
 
 /**
  * Adds a new NPC and sets its tile index and position
@@ -298,7 +298,7 @@ unsigned int addItem(std::string path, int tile, int x, int y);
  * @param initY Initial y position
  * @return NPC ID
  */
-unsigned int addNpc(std::string path, int tile, int x, int y);
+unsigned int addNpc(const std::string& path, int tile, int x, int y);
 
 /**
  * Finds a sprite with the given ID or returns nullptr

@@ -75,7 +75,7 @@ class Sprite {
   bool load(const std::string& path);
 
  public:
-  // Name of Lua function to call when sprite is interacted with
+  // Name of API function to call when sprite is interacted with
   SpriteCallback callbackFunc;
 
   unsigned int id;
@@ -299,14 +299,14 @@ class Sprite {
    *
    * @return Whether or not sprite can occupy the same space as another sprite
    */
-  bool phased() { return false; }
+  virtual bool phased() { return false; }
 
   /**
    * Animates sprite
    *
    * @param time Amount of time since last update
    */
-  void update(sf::Time& time);
+  virtual void update(sf::Time& time);
 
   /**
    * Renders sprite relative to cameraPos
@@ -315,7 +315,7 @@ class Sprite {
    * @param cameraPos Position of camera to render sprite
    * relative to
    */
-  void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
+  virtual void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };
 
 }  // namespace entities

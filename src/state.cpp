@@ -22,6 +22,8 @@ float moveSpeed_;
 bool jumping_ = false;
 int velocityY_ = 0;
 
+unsigned int lastId = 1;
+
 // Stack is used to mimick maps_
 std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 
@@ -83,6 +85,9 @@ float positionOfSpriteAbove(const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   sf::FloatRect collisionRect(dim.left, 0, dim.width, dim.top);
   for (const auto& s : sprites()) {
+    if (s->phased()) {
+      continue;
+    }
     if (s->id == sprite->id) {
       continue;
     }
@@ -106,6 +111,9 @@ float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
                               map()->pixelHeight());
   for (const auto& s : sprites()) {
+    if (s->phased()) {
+      continue;
+    }
     if (s->id == sprite->id) {
       continue;
     }
@@ -188,11 +196,6 @@ bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
   return positionWalkable(sprite.get(), dim);
 }
 
-static void printRect(const sf::FloatRect& rect) {
-  LOG(INFO) << "(" << rect.left << ", " << rect.top << "), (" << rect.width
-            << ", " << rect.height << ")";
-}
-
 bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
   if (sprite->phased()) {
     return true;
@@ -212,12 +215,6 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
     }
     sf::FloatRect intersection;
     if (dim.intersects(s->getDimensions(), intersection)) {
-      LOG(INFO) << "sprite " << sprite->id;
-      printRect(sprite->getDimensions());
-      LOG(INFO) << "s " << s->id;
-      printRect(s->getDimensions());
-      LOG(INFO) << "intersect ";
-      printRect(intersection);
       return false;
     }
   }
@@ -287,28 +284,25 @@ bool healCharacter(int amount) {
   return true;
 }
 
-unsigned int addItem(std::string path, int tile, int x, int y) {
-  auto item = util::make_unique<entities::Item>(path);
+template <typename T>
+unsigned int addSprite(const std::string& path, int tile, int x, int y) {
+  sprites().push_back(std::make_unique<T>(path));
+  auto item = sprites().back().get();
   item->setPosition(x * GameState::map()->tileWidth(),
                     y * GameState::map()->tileHeight());
   item->setTile(tile);
 
-  unsigned int spriteId = sprites().size() + 1;
+  unsigned int spriteId = sprites().size();
   item->id = spriteId;
-  sprites().push_back(std::move(item));
   return spriteId;
 }
 
-unsigned int addNpc(std::string path, int tile, int x, int y) {
-  auto npc = util::make_unique<entities::Npc>(path);
-  npc->setPosition(x * GameState::map()->tileWidth(),
-                   y * GameState::map()->tileHeight());
-  npc->setTile(tile);
+unsigned int addItem(const std::string& path, int tile, int x, int y) {
+  return addSprite<entities::Item>(path, tile, x, y);
+}
 
-  unsigned int spriteId = sprites().size() + 1;
-  npc->id = spriteId;
-  sprites().push_back(std::move(npc));
-  return spriteId;
+unsigned int addNpc(const std::string& path, int tile, int x, int y) {
+  return addSprite<entities::Npc>(path, tile, x, y);
 }
 
 template <typename T>

@@ -34,10 +34,11 @@ bool MainScreen::fixMovement(const std::unique_ptr<entities::Sprite>& sprite,
   if (!GameState::positionWalkable(sprite, dim)) {
     dim.left = oldDim.left;
   }
-  dim.top += moveDelta.y;
+  // dim.top += moveDelta.y;
   if (!GameState::positionWalkable(sprite, dim)) {
     dim.top = oldDim.top;
   }
+  // This could probably still cause weirdness
   sprite->setDimensions(dim);
   return dim != oldDim;
 }
