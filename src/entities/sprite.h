@@ -12,13 +12,6 @@ namespace entities {
 
 typedef std::function<void()> SpriteCallback;
 
-enum class SpriteDirection : int {
-  LEFT = 0,
-  RIGHT = 1,
-  UP = 2,
-  DOWN = 3,
-};
-
 enum class SpriteType : int {
   HERO = 0,
   ITEM = 1,
@@ -63,8 +56,8 @@ class Sprite {
   std::vector<sf::Texture> textures_;
   sf::Sprite sprite_;
 
-  SpriteDirection direction_;
-  SpriteDirection visualDirection_;
+  util::Direction direction_;
+  util::Direction visualDirection_;
 
   /**
    * Loads sprite from given path
@@ -162,9 +155,9 @@ class Sprite {
    *
    * @param dir New sprite direction
    */
-  void setDirection(SpriteDirection dir) {
+  void setDirection(util::Direction dir) {
     direction_ = dir;
-    if (dir == SpriteDirection::LEFT || dir == SpriteDirection::RIGHT) {
+    if (dir == util::Direction::LEFT || dir == util::Direction::RIGHT) {
       visualDirection_ = dir;
     }
   }
@@ -174,7 +167,7 @@ class Sprite {
    *
    * @return Current sprite direction
    */
-  SpriteDirection getDirection() { return direction_; }
+  util::Direction getDirection() { return direction_; }
 
   /**
    * Sets HP to max HP

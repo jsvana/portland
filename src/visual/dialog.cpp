@@ -71,7 +71,7 @@ void Dialog::reflowText() {
     moreIndicator_.reset();
   } else {
     if (!moreIndicator_) {
-      moreIndicator_ = util::make_unique<sf::Text>();
+      moreIndicator_ = std::make_unique<sf::Text>();
       moreIndicator_->setFont(font_);
     }
     auto dim = moreIndicator_->getGlobalBounds();
@@ -94,7 +94,7 @@ void Dialog::reflowText() {
   // Position and show choices and choice indicator
   if (lines_.size() == VISIBLE_LINES - 1) {
     if (!choiceIndicator_) {
-      choiceIndicator_ = util::make_unique<sf::Text>();
+      choiceIndicator_ = std::make_unique<sf::Text>();
       choiceIndicator_->setFont(font_);
     }
     int offset = 0;

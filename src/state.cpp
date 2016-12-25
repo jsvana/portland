@@ -231,7 +231,7 @@ void markInitialized() { initialized_ = true; }
 bool initialized() { return initialized_; }
 
 bool loadMap(std::string path) {
-  maps_.push(util::make_unique<Map>(path));
+  maps_.push(std::make_unique<Map>(path));
   sprites_.emplace();
 
   return true;
@@ -245,7 +245,7 @@ bool popMap() {
 }
 
 bool loadCharacter(std::string path, int tile, int initX, int initY) {
-  hero_ = util::make_unique<entities::Sprite>(path);
+  hero_ = std::make_unique<entities::Sprite>(path);
   hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
   hero_->setTile(tile);
 

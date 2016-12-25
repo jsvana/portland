@@ -5,10 +5,12 @@
 
 namespace util {
 
-template <typename T, typename... Args>
-std::unique_ptr<T> make_unique(Args&&... args) {
-  return std::unique_ptr<T>(new T(std::forward<Args>(args)...));
-}
+enum class Direction : int {
+  LEFT = 0,
+  RIGHT = 1,
+  UP = 2,
+  DOWN = 3,
+};
 
 /**
  * Generic function to clamp a number inside the given min and max

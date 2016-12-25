@@ -1,5 +1,6 @@
 #include "main_screen.h"
 
+#include "../controls.h"
 #include "../engine.h"
 #include "../state.h"
 #include "../util.h"
@@ -123,22 +124,18 @@ bool MainScreen::update(sf::Time& time) {
   auto startDim = GameState::hero()->getDimensions();
 
   sf::Vector2f moveDelta;
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
+  if (controls::directionPressed(util::Direction::LEFT)) {
     moveDelta.x -= GameState::heroMoveSpeed();
   }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+  if (controls::directionPressed(util::Direction::RIGHT)) {
     moveDelta.x += GameState::heroMoveSpeed();
   }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
+  if (controls::directionPressed(util::Direction::DOWN)) {
     if (GameState::map()->isLadder(GameState::hero()->getDimensions())) {
       moveDelta.y += GameState::heroMoveSpeed();
     }
   }
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
+  if (controls::directionPressed(util::Direction::UP)) {
     if (GameState::map()->isLadder(GameState::hero()->getDimensions()) &&
         !GameState::hero()->jumping()) {
       moveDelta.y -= GameState::heroMoveSpeed();
@@ -146,24 +143,22 @@ bool MainScreen::update(sf::Time& time) {
   }
   fixMovement(GameState::hero(), moveDelta);
 
-  if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::W) ||
-      sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+  if (controls::jumpPressed()) {
     GameState::hero()->startJump(1);
   }
 
   // Change character direction
   if (moveDelta.x > 0) {
-    GameState::hero()->setDirection(entities::SpriteDirection::RIGHT);
+    GameState::hero()->setDirection(util::Direction::RIGHT);
   }
   if (moveDelta.x < 0) {
-    GameState::hero()->setDirection(entities::SpriteDirection::LEFT);
+    GameState::hero()->setDirection(util::Direction::LEFT);
   }
   if (moveDelta.y > 0) {
-    GameState::hero()->setDirection(entities::SpriteDirection::DOWN);
+    GameState::hero()->setDirection(util::Direction::DOWN);
   }
   if (moveDelta.y < 0) {
-    GameState::hero()->setDirection(entities::SpriteDirection::UP);
+    GameState::hero()->setDirection(util::Direction::UP);
   }
 
   auto dim = updateGravity(GameState::hero());

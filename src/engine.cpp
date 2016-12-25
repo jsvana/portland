@@ -1,6 +1,7 @@
 #include "engine.h"
 
 #include "constants.h"
+#include "controls.h"
 #include "state.h"
 #include "util.h"
 
@@ -31,6 +32,8 @@ bool init() {
   window.setVerticalSyncEnabled(true);
 
   GameState::initApi();
+
+  controls::init();
 
   LOG(INFO) << "Game initialized";
 

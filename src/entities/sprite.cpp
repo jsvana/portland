@@ -12,8 +12,8 @@ namespace entities {
 Sprite::Sprite(const std::string& path, SpriteType type) : type_(type) {
   load(path);
 
-  direction_ = SpriteDirection::RIGHT;
-  visualDirection_ = SpriteDirection::RIGHT;
+  direction_ = util::Direction::RIGHT;
+  visualDirection_ = util::Direction::RIGHT;
 }
 
 bool Sprite::load(const std::string& path) {
@@ -116,7 +116,7 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
     tex = textures_[0];
   }
   sprite_.setTexture(tex);
-  if (visualDirection_ == SpriteDirection::RIGHT) {
+  if (visualDirection_ == util::Direction::RIGHT) {
     source.left += dimensions_.width;
     source.width = -dimensions_.width;
   }
