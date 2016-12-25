@@ -16,6 +16,8 @@ class Npc : public Sprite {
  public:
   Npc(const std::string& path) : Sprite(path, entities::SpriteType::NPC) {}
 
+  bool phased() { return false; }
+
   void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };
 

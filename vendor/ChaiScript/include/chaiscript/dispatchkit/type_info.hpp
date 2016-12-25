@@ -60,6 +60,16 @@ namespace chaiscript
         return m_type_info < ti.m_type_info;
       }
 
+      CHAISCRIPT_CONSTEXPR bool operator!=(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
+      {
+        return !(operator==(ti));
+      }
+
+      CHAISCRIPT_CONSTEXPR bool operator!=(const std::type_info &ti) const CHAISCRIPT_NOEXCEPT
+      {
+        return !(operator==(ti));
+      }
+
       CHAISCRIPT_CONSTEXPR bool operator==(const Type_Info &ti) const CHAISCRIPT_NOEXCEPT
       {
         return ti.m_type_info == m_type_info
@@ -160,6 +170,11 @@ namespace chaiscript
               &typeid(std::shared_ptr<T> ), 
               &typeid(typename Bare_Type<T>::type));
         }
+      };
+
+    template<typename T>
+      struct Get_Type_Info<std::shared_ptr<T> &> : Get_Type_Info<std::shared_ptr<T>>
+      {
       };
 
     template<typename T>

@@ -94,6 +94,9 @@ bool MainScreen::update(sf::Time& time) {
   // Used for getting ticks in Lua
   time_ = time;
 
+  const auto chaiUpdate =
+      GameState::chai().eval<std::function<void()>>("update");
+  chaiUpdate();
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
   for (const auto& sprite : GameState::sprites()) {

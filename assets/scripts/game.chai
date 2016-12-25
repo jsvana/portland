@@ -1,3 +1,5 @@
+global UPDATE_INTERVAL = 500
+
 def init() {
   if (gameInitialized()) {
     return;
@@ -8,8 +10,18 @@ def init() {
   gameSetCharacterMaxHp(100);
 
   gameAddNpc("assets/sprites/undead.json", 0, 3, 1);
+  gameAddItem("assets/sprites/item.json", 2, 14, 0);
 
   gameRegisterTileEvent(9, 6, showSign);
+}
+
+def update() {
+  /*
+  var ticks = gameTicks();
+  if (mod(ticks, UPDATE_INTERVAL) == 0) {
+    print("update");
+  }
+  */
 }
 
 def showSign() {

@@ -30,7 +30,7 @@ bool init() {
   window.setFramerateLimit(60);
   window.setVerticalSyncEnabled(true);
 
-  GameState::initLuaApi();
+  GameState::initApi();
 
   LOG(INFO) << "Game initialized";
 

@@ -430,7 +430,8 @@ namespace chaiscript
         };
 
         Dispatch_Engine()
-          : m_stack_holder(this)
+          : m_stack_holder(this),
+            m_method_missing_loc(0)
         {
         }
 

@@ -295,6 +295,13 @@ class Sprite {
   void forbidJump() { canJump_ = false; }
 
   /**
+   * Whether or not this sprite can occupy the same space as another sprite
+   *
+   * @return Whether or not sprite can occupy the same space as another sprite
+   */
+  bool phased() { return false; }
+
+  /**
    * Animates sprite
    *
    * @param time Amount of time since last update

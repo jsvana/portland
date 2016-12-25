@@ -29,6 +29,8 @@ class Item : public Sprite {
 
   Item(const std::string& path) : Sprite(path, SpriteType::ITEM) {}
 
+  bool phased() { return true; }
+
   /**
    * Animates item
    *

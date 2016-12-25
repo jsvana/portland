@@ -35,7 +35,9 @@ std::string helloWorld(const std::string& t_name) {
   return "Hello " + t_name + "!";
 }
 
-void initLuaApi() {
+void initApi() {
+  chai_.add(chaiscript::fun(&mod), "mod");
+
   chai_.add(chaiscript::fun(&helloWorld), "helloWorld");
 
   chai_.add(chaiscript::fun(&GameState::initialized), "gameInitialized");
@@ -122,6 +124,8 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   return std::min<float>(spriteBelow, tileBelow);
 }
 
+int mod(int a, int b) { return a % b; }
+
 void setTicks(unsigned int ticks) { ticks_ = ticks; }
 
 int ticks() { return (int)(ticks_ % INT_MAX); }
@@ -185,48 +189,29 @@ bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
 }
 
 bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
+  if (sprite->phased()) {
+    return true;
+  }
+
   if (!map()->positionWalkable(dim)) {
     return false;
   }
 
-  // TODO(jsvana): actually use?
-  sf::FloatRect treeDim;
-  treeDim.left = 0;
-  treeDim.top = 0;
-  treeDim.width = map()->pixelWidth();
-  treeDim.height = map()->pixelHeight();
-  Quadtree<entities::Sprite*> tree(treeDim);
-
-  for (auto& s : sprites()) {
-    if (s->id == sprite->id) {
-      continue;
-    }
-    tree.insert(s.get());
-  }
-  tree.insert(hero().get());
-
   // Check sprite walkability
   for (auto& s : sprites()) {
+    if (s->phased()) {
+      continue;
+    }
     if (s->id == sprite->id) {
       continue;
     }
-    auto otherDim = s->getDimensions();
-    if (!(dim.left > otherDim.left + otherDim.width ||
-          dim.left + dim.width < otherDim.left ||
-          dim.top > otherDim.top + otherDim.height ||
-          dim.top + dim.height < otherDim.top)) {
+    if (dim.intersects(s->getDimensions())) {
       return false;
     }
   }
 
-  if (sprite != hero_.get()) {
-    auto otherDim = hero_->getDimensions();
-    if (!(dim.left > otherDim.left + otherDim.width ||
-          dim.left + dim.width < otherDim.left ||
-          dim.top > otherDim.top + otherDim.height ||
-          dim.top + dim.height < otherDim.top)) {
-      return false;
-    }
+  if (sprite != hero_.get() && dim.intersects(hero_->getDimensions())) {
+    return false;
   }
 
   return true;
@@ -417,9 +402,9 @@ bool clearEvents() {
   return true;
 }
 
-///////////////////////
-// LUA API Callbacks //
-///////////////////////
+///////////////////
+// API Callbacks //
+///////////////////
 
 void collision(unsigned int, unsigned int) {
   // lua_["collision"](spriteId1, spriteId2);

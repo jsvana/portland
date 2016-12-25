@@ -27,9 +27,9 @@ const int GRAVITY = 2;
 const int STARTING_JUMP_VELOCITY = -15;
 
 /**
- * Initializes Lua API
+ * Initializes API
  */
-void initLuaApi();
+void initApi();
 
 /**
  * Updates the camera bounds on map change
@@ -72,6 +72,15 @@ float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite);
  * @return Position of next dense object
  */
 float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite);
+
+/**
+ * API wrapper from mod
+ *
+ * @param a Number to mod
+ * @param b Number to mod by
+ * @return mod(a, b)
+ */
+int mod(int a, int b);
 
 /**
  * Sets the current game ticks
@@ -399,9 +408,9 @@ bool registerTileEvent(int x, int y, TileCallback callback);
  */
 bool clearEvents();
 
-///////////////////////
-// LUA API Callbacks //
-///////////////////////
+///////////////////
+// API Callbacks //
+///////////////////
 
 void collision(unsigned int spriteId1, unsigned int spriteId2);
 }
