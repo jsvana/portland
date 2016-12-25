@@ -196,8 +196,6 @@ bool MainScreen::update(sf::Time& time) {
   for (const auto& sprite : GameState::sprites()) {
     auto dim = updateGravity(sprite);
     if (GameState::positionWalkable(sprite, dim)) {
-      // TODO(jsvana): figure out whether or not the sprite
-      // collided with another sprite
       sprite->setDimensions(dim);
     }
   }

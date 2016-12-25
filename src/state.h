@@ -193,6 +193,8 @@ bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
  */
 bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim);
 
+void dispatchCollision(entities::Sprite* mover, entities::Sprite* other);
+
 /**
  * Checks for an event on the character's current tile, runs the event, and
  * clears it

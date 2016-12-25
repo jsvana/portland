@@ -126,6 +126,8 @@ float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   return std::numeric_limits<float>::max();
 }
 
+// TODO(jsvana): make this and Above return the sprite if there is one
+// for collisions
 float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   float spriteBelow = positionOfSpriteBelow(sprite);
   float tileBelow = map()->positionOfTileBelow(sprite->getDimensions());
@@ -197,33 +199,36 @@ bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
 }
 
 bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
-  if (sprite->phased()) {
-    return true;
-  }
-
   if (!map()->positionWalkable(dim)) {
     return false;
   }
 
   // Check sprite walkability
   for (const auto& s : sprites()) {
-    if (s->phased()) {
-      continue;
-    }
     if (s->id == sprite->id) {
       continue;
     }
     sf::FloatRect intersection;
     if (dim.intersects(s->getDimensions(), intersection)) {
-      return false;
+      dispatchCollision(sprite, s.get());
+      if (!s->phased()) {
+        return false;
+      }
     }
   }
 
   if (sprite != hero_.get() && dim.intersects(hero_->getDimensions())) {
-    return false;
+    dispatchCollision(sprite, hero_.get());
+    if (!sprite->phased()) {
+      return false;
+    }
   }
 
   return true;
+}
+
+void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
+  LOG(INFO) << mover->id << " collided with " << other->id;
 }
 
 void markInitialized() { initialized_ = true; }
