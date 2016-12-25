@@ -211,7 +211,7 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
       continue;
     }
     sf::FloatRect intersection;
-    if (sprite->getDimensions().intersects(s->getDimensions(), intersection)) {
+    if (dim.intersects(s->getDimensions(), intersection)) {
       LOG(INFO) << "sprite " << sprite->id;
       printRect(sprite->getDimensions());
       LOG(INFO) << "s " << s->id;
@@ -222,8 +222,7 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
     }
   }
 
-  if (sprite != hero_.get() &&
-      sprite->getDimensions().intersects(hero_->getDimensions())) {
+  if (sprite != hero_.get() && dim.intersects(hero_->getDimensions())) {
     return false;
   }
 

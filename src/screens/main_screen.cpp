@@ -31,10 +31,10 @@ bool MainScreen::fixMovement(const std::unique_ptr<entities::Sprite>& sprite,
   auto dim = sprite->getDimensions();
   const auto oldDim = dim;
   dim.left += moveDelta.x;
-  dim.top += moveDelta.y;
   if (!GameState::positionWalkable(sprite, dim)) {
     dim.left = oldDim.left;
   }
+  dim.top += moveDelta.y;
   if (!GameState::positionWalkable(sprite, dim)) {
     dim.top = oldDim.top;
   }
@@ -150,7 +150,6 @@ bool MainScreen::update(sf::Time& time) {
       sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
     GameState::hero()->startJump(1);
   }
-  fixMovement(GameState::hero(), moveDelta);
 
   // Change character direction
   if (moveDelta.x > 0) {
