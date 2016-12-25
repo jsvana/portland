@@ -6,6 +6,8 @@
 #include "../visual/console.h"
 #include "pause_menu.h"
 
+#include <glog/logging.h>
+
 #include <functional>
 #include <iostream>
 #include <set>
@@ -27,15 +29,14 @@ MainScreen::MainScreen() {
 bool MainScreen::fixMovement(const std::unique_ptr<entities::Sprite>& sprite,
                              sf::Vector2f moveDelta) {
   auto dim = sprite->getDimensions();
-  auto oldDim = dim;
+  const auto oldDim = dim;
   dim.left += moveDelta.x;
   dim.top += moveDelta.y;
   if (!GameState::positionWalkable(sprite, dim)) {
-    dim.left -= moveDelta.x;
+    dim.left = oldDim.left;
   }
   if (!GameState::positionWalkable(sprite, dim)) {
-    dim.left += moveDelta.x;
-    dim.top -= moveDelta.y;
+    dim.top = oldDim.top;
   }
   sprite->setDimensions(dim);
   return dim != oldDim;

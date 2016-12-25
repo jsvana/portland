@@ -188,6 +188,11 @@ bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
   return positionWalkable(sprite.get(), dim);
 }
 
+static void printRect(const sf::FloatRect& rect) {
+  LOG(INFO) << "(" << rect.left << ", " << rect.top << "), (" << rect.width
+            << ", " << rect.height << ")";
+}
+
 bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
   if (sprite->phased()) {
     return true;
@@ -198,19 +203,27 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
   }
 
   // Check sprite walkability
-  for (auto& s : sprites()) {
+  for (const auto& s : sprites()) {
     if (s->phased()) {
       continue;
     }
     if (s->id == sprite->id) {
       continue;
     }
-    if (dim.intersects(s->getDimensions())) {
+    sf::FloatRect intersection;
+    if (sprite->getDimensions().intersects(s->getDimensions(), intersection)) {
+      LOG(INFO) << "sprite " << sprite->id;
+      printRect(sprite->getDimensions());
+      LOG(INFO) << "s " << s->id;
+      printRect(s->getDimensions());
+      LOG(INFO) << "intersect ";
+      printRect(intersection);
       return false;
     }
   }
 
-  if (sprite != hero_.get() && dim.intersects(hero_->getDimensions())) {
+  if (sprite != hero_.get() &&
+      sprite->getDimensions().intersects(hero_->getDimensions())) {
     return false;
   }
 
@@ -281,7 +294,7 @@ unsigned int addItem(std::string path, int tile, int x, int y) {
                     y * GameState::map()->tileHeight());
   item->setTile(tile);
 
-  unsigned int spriteId = sprites().size();
+  unsigned int spriteId = sprites().size() + 1;
   item->id = spriteId;
   sprites().push_back(std::move(item));
   return spriteId;
@@ -293,7 +306,7 @@ unsigned int addNpc(std::string path, int tile, int x, int y) {
                    y * GameState::map()->tileHeight());
   npc->setTile(tile);
 
-  unsigned int spriteId = sprites().size();
+  unsigned int spriteId = sprites().size() + 1;
   npc->id = spriteId;
   sprites().push_back(std::move(npc));
   return spriteId;
