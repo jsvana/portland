@@ -174,13 +174,7 @@ chaiscript::ChaiScript& chai() { return chai_; }
 
 void addTileEvent(int id, TileCallback callback) { tileEvents_[id] = callback; }
 
-bool tileHasEvent(int id) {
-  auto event = tileEvents_.find(id);
-  if (event == tileEvents_.end()) {
-    return false;
-  }
-  return true;
-}
+bool tileHasEvent(int id) { return tileEvents_.find(id) != tileEvents_.end(); }
 
 const TileCallback& tileCallback(int id) { return tileEvents_[id]; }
 

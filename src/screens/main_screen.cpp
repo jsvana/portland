@@ -204,10 +204,10 @@ bool MainScreen::update(sf::Time& time) {
 
 void MainScreen::render(sf::RenderTarget& window) {
   GameState::map()->render(window, GameState::camera());
-  GameState::hero()->render(window, GameState::camera());
   for (const auto& sprite : GameState::sprites()) {
     sprite->render(window, GameState::camera());
   }
+  GameState::hero()->render(window, GameState::camera());
   heroHealth_.render(window);
 
   visual::DialogManager::render(window);
