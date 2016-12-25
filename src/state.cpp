@@ -58,6 +58,10 @@ void initApi() {
 
   chai_.add(chaiscript::fun(&GameState::addItem), "gameAddItem");
 
+  chai_.add(chaiscript::fun(&GameState::setHeroCollisionCallback),
+            "gameSetHeroCollisionCallback");
+  chai_.add(chaiscript::fun(&GameState::setSpriteCollisionCallback),
+            "gameSetSpriteCollisionCallback");
   chai_.add(chaiscript::fun(&GameState::addNpc), "gameAddNpc");
   chai_.add(chaiscript::fun(&GameState::setNpcCallback), "gameSetNpcCallback");
   chai_.add(chaiscript::fun(&GameState::moveNpc), "gameMoveNpc");
@@ -228,7 +232,10 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
 }
 
 void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
-  LOG(INFO) << mover->id << " collided with " << other->id;
+  if (!mover->collisionFunc) {
+    return;
+  }
+  mover->collisionFunc(other->id);
 }
 
 void markInitialized() { initialized_ = true; }
@@ -311,9 +318,18 @@ unsigned int addNpc(const std::string& path, int tile, int x, int y) {
 }
 
 template <typename T>
-T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
+T* findSprite(unsigned int spriteId) {
   if (spriteId >= sprites().size()) {
     LOG(WARNING) << "Bad sprite ID: " << spriteId;
+    return nullptr;
+  }
+  return static_cast<T*>(sprites()[spriteId].get());
+}
+
+template <typename T>
+T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
+  auto sprite = findSprite<T>(spriteId);
+  if (!sprite) {
     return nullptr;
   }
   if (sprites()[spriteId]->type() != type) {
@@ -322,7 +338,22 @@ T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
                  << static_cast<int>(sprites()[spriteId]->type()) << ")";
     return nullptr;
   }
-  return static_cast<T*>(sprites()[spriteId].get());
+  return sprite;
+}
+
+bool setHeroCollisionCallback(entities::CollisionCallback callback) {
+  hero()->collisionFunc = callback;
+  return true;
+}
+
+bool setSpriteCollisionCallback(unsigned int spriteId,
+                                entities::CollisionCallback callback) {
+  auto sprite = findSprite<entities::Sprite>(spriteId);
+  if (sprite == nullptr) {
+    return false;
+  }
+  sprite->collisionFunc = callback;
+  return true;
 }
 
 bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback) {

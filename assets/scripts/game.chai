@@ -12,6 +12,8 @@ def init() {
   gameAddNpc("assets/sprites/undead.json", 0, 3, 1);
   gameAddItem("assets/sprites/item.json", 2, 14, 0);
 
+  gameSetHeroCollisionCallback(heroCollision);
+
   gameRegisterTileEvent(9, 6, showSign);
 }
 
@@ -22,6 +24,12 @@ def update() {
     print("update");
   }
   */
+}
+
+def heroCollision(otherId) {
+  if (otherId == 1) {
+    gameDamageCharacter(1);
+  }
 }
 
 def showSign() {

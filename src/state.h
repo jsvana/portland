@@ -307,16 +307,45 @@ unsigned int addNpc(const std::string& path, int tile, int x, int y);
  *
  * @template T Type of sprite to cast to
  * @param spriteId ID of sprite to find
+ * @return Found sprite or nullptr
+ */
+template <typename T>
+T* findSprite(unsigned int spriteId);
+
+/**
+ * Finds a sprite with the given ID or returns nullptr
+ *
+ * @template T Type of sprite to cast to
+ * @param spriteId ID of sprite to find
  * @param type Type of sprite to find
+ * @return Found sprite or nullptr
  */
 template <typename T>
 T* findSprite(unsigned int spriteId, const entities::SpriteType type);
 
 /**
+ * Sets the hero collision callback function
+ *
+ * @param callback ChaiScript callback function
+ * @return Whether the operation is successful
+ */
+bool setHeroCollisionCallback(entities::CollisionCallback callback);
+
+/**
+ * Sets a sprite collision callback function
+ *
+ * @param spriteId ID of sprite to set callback for
+ * @param callback ChaiScript callback function
+ * @return Whether the operation is successful
+ */
+bool setSpriteCollisionCallback(unsigned int spriteId,
+                                entities::CollisionCallback callback);
+
+/**
  * Sets an NPC callback function
  *
  * @param npcId ID of NPC to set callback for
- * @param callback Name of ChaiScript  callback function
+ * @param callback ChaiScript callback function
  * @return Whether the operation is successful
  */
 bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback);

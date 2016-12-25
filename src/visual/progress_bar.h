@@ -50,7 +50,8 @@ class ProgressBar {
    * @param value New progress bar value
    */
   void setValue(float value) {
-    util::clamp<float>(value, 0, max_);
+    current_ = value;
+    util::clamp<float>(current_, 0, max_);
     updateFillDimensions();
   }
 

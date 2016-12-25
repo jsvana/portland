@@ -15,7 +15,7 @@
 
 MainScreen::MainScreen() {
   heroHealth_.setMax(100);
-  heroHealth_.setValue(70);
+  heroHealth_.setValue(100);
   heroHealth_.setDimensions(16, 16, 64, 16);
 
   // Load the game script
@@ -82,8 +82,6 @@ void MainScreen::handleEvent(sf::Event& event) {
   if (event.type == sf::Event::KeyPressed) {
     if (event.key.code == sf::Keyboard::P) {
       Engine::pushScreen(new PauseMenuScreen());
-    } else if (event.key.code == sf::Keyboard::T) {
-      heroHealth_.shrink(5);
     } else if (event.key.code == sf::Keyboard::C) {
       if (sf::Keyboard::isKeyPressed(sf::Keyboard::LControl)) {
         visual::Console::show();
@@ -93,7 +91,7 @@ void MainScreen::handleEvent(sf::Event& event) {
 }
 
 bool MainScreen::update(sf::Time& time) {
-  // Used for getting ticks in Lua
+  // Used for getting ticks in ChaiScript
   time_ = time;
 
   const auto chaiUpdate =
@@ -101,6 +99,7 @@ bool MainScreen::update(sf::Time& time) {
   chaiUpdate();
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
+  heroHealth_.setValue(GameState::hero()->hp());
   for (const auto& sprite : GameState::sprites()) {
     sprite->update(time_);
   }

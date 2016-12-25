@@ -11,6 +11,7 @@
 namespace entities {
 
 typedef std::function<void()> SpriteCallback;
+typedef std::function<void(unsigned int)> CollisionCallback;
 
 enum class SpriteType : int {
   HERO = 0,
@@ -68,8 +69,11 @@ class Sprite {
   bool load(const std::string& path);
 
  public:
-  // Name of API function to call when sprite is interacted with
+  // API function to call when sprite is interacted with
   SpriteCallback callbackFunc;
+
+  // API function to call when sprite collides with another sprite
+  CollisionCallback collisionFunc;
 
   unsigned int id;
 
