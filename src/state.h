@@ -42,6 +42,14 @@ void updateCamera();
 sf::Vector2f& camera();
 
 /**
+ * Finds a sprite that collides with the given rectangle
+ *
+ * @param collisionRect Rectangle to check
+ * @return Sprite colliding or nullptr
+ */
+entities::Sprite* spriteCollision(const sf::FloatRect& collisionRect);
+
+/**
  * Finds position of the next sprite above the sprite
  *
  * @param sprite Sprite to check

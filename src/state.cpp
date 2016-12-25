@@ -85,9 +85,9 @@ void initApi() {
 
 sf::Vector2f& camera() { return camera_; }
 
-float positionOfSpriteAbove(const std::unique_ptr<entities::Sprite>& sprite) {
-  auto dim = sprite->getDimensions();
-  sf::FloatRect collisionRect(dim.left, 0, dim.width, dim.top);
+entities::Sprite* spriteCollision(
+    const std::unique_ptr<entities::Sprite>& sprite,
+    const sf::FloatRect& collisionRect) {
   for (const auto& s : sprites()) {
     if (s->phased()) {
       continue;
@@ -96,10 +96,20 @@ float positionOfSpriteAbove(const std::unique_ptr<entities::Sprite>& sprite) {
       continue;
     }
 
-    auto sDim = s->getDimensions();
-    if (collisionRect.intersects(sDim)) {
-      return sDim.top + sDim.height;
+    if (collisionRect.intersects(s->getDimensions())) {
+      return s.get();
     }
+  }
+  return nullptr;
+}
+
+float positionOfSpriteAbove(const std::unique_ptr<entities::Sprite>& sprite) {
+  auto dim = sprite->getDimensions();
+  sf::FloatRect collisionRect(dim.left, 0, dim.width, dim.top);
+  const auto other = spriteCollision(sprite, collisionRect);
+  if (other) {
+    const auto oDim = other->getDimensions();
+    return oDim.top + oDim.height;
   }
   return 0;
 }
@@ -114,18 +124,10 @@ float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
                               map()->pixelHeight());
-  for (const auto& s : sprites()) {
-    if (s->phased()) {
-      continue;
-    }
-    if (s->id == sprite->id) {
-      continue;
-    }
-
-    auto sDim = s->getDimensions();
-    if (collisionRect.intersects(sDim)) {
-      return sDim.top - dim.height;
-    }
+  const auto other = spriteCollision(sprite, collisionRect);
+  if (other) {
+    const auto oDim = other->getDimensions();
+    return oDim.top - dim.height;
   }
   return std::numeric_limits<float>::max();
 }
