@@ -1,41 +1,43 @@
 global UPDATE_INTERVAL = 500
 
 def init() {
-  if (gameInitialized()) {
+  if (initialized()) {
     return;
   }
-  gameLoadMap("assets/maps/main.json");
-  gameLoadCharacter("assets/sprites/hero.json", 0, 1, 6);
-  gameSetCharacterMoveSpeed(200, 100);
-  gameSetCharacterMaxHp(100);
+  loadMap("assets/maps/main.json");
+  loadCharacter("assets/sprites/hero.json", 0, 1, 6);
+  setCharacterMoveSpeed(200, 100);
+  getHero().setMaxHp(100);
 
-  gameAddNpc("assets/sprites/undead.json", 0, 3, 1);
-  gameAddItem("assets/sprites/item.json", 2, 14, 0);
+  addNpc("assets/sprites/undead.json", 0, 3, 1);
+  addItem("assets/sprites/item.json", 2, 14, 0);
 
-  gameSetHeroCollisionCallback(heroCollision);
+  getHero().setCollisionCallback(heroCollision);
 
-  gameRegisterTileEvent(9, 6, showSign);
+  registerTileEvent(9, 6, showSign);
 }
 
 def update() {
-  /*
-  var ticks = gameTicks();
-  if (mod(ticks, UPDATE_INTERVAL) == 0) {
-    print("update");
+  if (mod(ticks(), UPDATE_INTERVAL) == 0) {
+    getSprite(1).startJump(1);
   }
-  */
 }
 
 def heroCollision(otherId) {
   if (otherId == 1) {
-    gameDamageCharacter(1);
+    getHero().damage(1);
   } else if (otherId == 2) {
-    gameAddItemToInventory(otherId);
+    var item = getItem(otherId);
+    if (item.held()) {
+      return;
+    }
+    item.hold();
+    getHero().addItem(otherId);
   }
 }
 
 def showSign() {
-  var id = gameShowDialog("Are you reading this sign?");
+  var id = showDialog("Are you reading this sign?");
 }
 
 def dialogCallback(choice) {

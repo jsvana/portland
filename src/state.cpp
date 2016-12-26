@@ -33,51 +33,56 @@ std::unordered_map<int, TileCallback> tileEvents_;
 
 chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
+#define ADD_METHOD(Class, Name) chai_.add(chaiscript::fun(&Class::Name), #Name)
+#define ADD_FUNCTION(Name) ADD_METHOD(GameState, Name)
+#define ADD_TYPE(Type, Name) chai_.add(chaiscript::user_type<Type>(), Name);
+
 void initApi() {
-  chai_.add(chaiscript::fun(&mod), "mod");
+  ADD_FUNCTION(mod);
 
-  chai_.add(chaiscript::fun(&GameState::initialized), "gameInitialized");
-  chai_.add(chaiscript::fun(&GameState::ticks), "gameTicks");
+  ADD_FUNCTION(initialized);
+  ADD_FUNCTION(ticks);
 
-  chai_.add(chaiscript::fun(&GameState::loadMap), "gameLoadMap");
-  chai_.add(chaiscript::fun(&GameState::popMap), "gamePopMap");
-  chai_.add(chaiscript::fun(&GameState::loadCharacter), "gameLoadCharacter");
-  chai_.add(chaiscript::fun(&GameState::setCharacterMoveSpeed),
-            "gameSetCharacterMoveSpeed");
-  chai_.add(chaiscript::fun(&GameState::setCharacterMaxHp),
-            "gameSetCharacterMaxHp");
-  chai_.add(chaiscript::fun(&GameState::damageCharacter),
-            "gameDamageCharacter");
-  chai_.add(chaiscript::fun(&GameState::healCharacter), "gameHealCharacter");
-  chai_.add(chaiscript::fun(&GameState::addItemToInventory),
-            "gameAddItemToInventory");
-  chai_.add(chaiscript::fun(&GameState::addItem), "gameAddItem");
+  ADD_FUNCTION(loadMap);
+  ADD_FUNCTION(popMap);
+  ADD_FUNCTION(loadCharacter);
+  ADD_FUNCTION(addItem);
+  ADD_FUNCTION(setCharacterMoveSpeed);
 
-  chai_.add(chaiscript::fun(&GameState::setHeroCollisionCallback),
-            "gameSetHeroCollisionCallback");
-  chai_.add(chaiscript::fun(&GameState::setSpriteCollisionCallback),
-            "gameSetSpriteCollisionCallback");
-  chai_.add(chaiscript::fun(&GameState::addNpc), "gameAddNpc");
-  chai_.add(chaiscript::fun(&GameState::setNpcCallback), "gameSetNpcCallback");
-  chai_.add(chaiscript::fun(&GameState::moveNpc), "gameMoveNpc");
-  chai_.add(chaiscript::fun(&GameState::setNpcMaxHp), "gameSetNpcMaxHp");
-  chai_.add(chaiscript::fun(&GameState::damageNpc), "gameDamageNpc");
-  chai_.add(chaiscript::fun(&GameState::healNpc), "gameHealNpc");
-  chai_.add(chaiscript::fun(&GameState::jumpNpc), "gameJumpNpc");
+  ADD_FUNCTION(addNpc);
+  ADD_FUNCTION(setNpcCallback);
 
-  chai_.add(chaiscript::fun(&GameState::showDialog), "gameShowDialog");
-  chai_.add(chaiscript::fun(&GameState::addDialogOption),
-            "gameAddDialogOption");
-  chai_.add(chaiscript::fun(&GameState::setDialogCallback),
-            "gameSetDialogCallback");
+  ADD_FUNCTION(showDialog);
+  ADD_FUNCTION(addDialogOption);
+  ADD_FUNCTION(setDialogCallback);
 
-  chai_.add(chaiscript::fun(&GameState::setCharacterPosition),
-            "gameSetCharacterPosition");
-  chai_.add(chaiscript::fun(&GameState::setSpritePosition),
-            "gameSetSpritePosition");
-  chai_.add(chaiscript::fun(&GameState::clearEvents), "gameClearEvents");
-  chai_.add(chaiscript::fun(&GameState::registerTileEvent),
-            "gameRegisterTileEvent");
+  ADD_FUNCTION(clearEvents);
+  ADD_FUNCTION(registerTileEvent);
+
+  ADD_TYPE(entities::Sprite, "Sprite");
+  ADD_METHOD(entities::Sprite, id);
+  ADD_METHOD(entities::Sprite, hp);
+  ADD_METHOD(entities::Sprite, damage);
+  ADD_METHOD(entities::Sprite, heal);
+  ADD_METHOD(entities::Sprite, startJump);
+  ADD_METHOD(entities::Sprite, move);
+  ADD_METHOD(entities::Sprite, setMaxHp);
+  ADD_METHOD(entities::Sprite, width);
+  ADD_METHOD(entities::Sprite, height);
+  ADD_METHOD(entities::Sprite, jumping);
+  ADD_METHOD(entities::Sprite, setCollisionCallback);
+  ADD_METHOD(entities::Sprite, addItem);
+  ADD_METHOD(entities::Sprite, removeItem);
+
+  ADD_TYPE(entities::Item, "Item");
+  ADD_METHOD(entities::Item, held);
+  ADD_METHOD(entities::Item, hold);
+  ADD_METHOD(entities::Item, drop);
+
+  ADD_FUNCTION(getHero);
+  ADD_FUNCTION(getSprite);
+  ADD_FUNCTION(getNpc);
+  ADD_FUNCTION(getItem);
 }
 
 sf::Vector2f& camera() { return camera_; }
@@ -145,6 +150,8 @@ void setHero(std::unique_ptr<entities::Sprite> hero) {
 }
 
 const std::unique_ptr<entities::Sprite>& hero() { return hero_; }
+
+entities::Sprite* getHero() { return hero_.get(); }
 
 void setHeroMoveSpeed(int amount, int total) {
   moveSpeed_ = (float)amount / (float)total;
@@ -225,6 +232,7 @@ void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
   if (!mover->collisionFunc) {
     return;
   }
+  LOG(INFO) << "C++ " << mover->hp();
   mover->collisionFunc(other->id);
 }
 
@@ -270,15 +278,6 @@ bool setSpritePosition(entities::Id spriteId, int x, int y) {
   return true;
 }
 
-bool setCharacterPosition(int x, int y) {
-  sf::Vector2f p = map()->mapToPixel(x, y);
-
-  hero_->setPosition(p);
-  camera_.x = p.x - SCREEN_WIDTH / 2;
-  camera_.y = p.y - SCREEN_HEIGHT / 2;
-  return true;
-}
-
 bool setCharacterMoveSpeed(int amount, int total) {
   moveSpeed_ = (float)amount / (float)total;
   return true;
@@ -286,31 +285,6 @@ bool setCharacterMoveSpeed(int amount, int total) {
 
 bool setCharacterMaxHp(int hp) {
   hero_->setMaxHp(hp);
-  return true;
-}
-
-bool damageCharacter(int amount) {
-  hero_->damage(amount);
-  return true;
-}
-
-bool healCharacter(int amount) {
-  hero_->heal(amount);
-  return true;
-}
-
-bool addItemToInventory(entities::Id itemId) {
-  auto item = findSprite<entities::Item>(itemId, entities::SpriteType::ITEM);
-  if (item == nullptr) {
-    return false;
-  }
-  if (item->held()) {
-    LOG(ERROR) << "Item " << itemId << " is already held";
-    return false;
-  }
-  item->hold();
-  hero()->addItem(itemId);
-  LOG(INFO) << hero()->heldItems().size() << " held items";
   return true;
 }
 
@@ -359,19 +333,16 @@ T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
   return sprite;
 }
 
-bool setHeroCollisionCallback(entities::CollisionCallback callback) {
-  hero()->collisionFunc = callback;
-  return true;
+entities::Sprite* getSprite(unsigned int spriteId) {
+  return findSprite<entities::Sprite>(spriteId);
 }
 
-bool setSpriteCollisionCallback(unsigned int spriteId,
-                                entities::CollisionCallback callback) {
-  auto sprite = findSprite<entities::Sprite>(spriteId);
-  if (sprite == nullptr) {
-    return false;
-  }
-  sprite->collisionFunc = callback;
-  return true;
+entities::Npc* getNpc(unsigned int npcId) {
+  return findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
+}
+
+entities::Item* getItem(unsigned int itemId) {
+  return findSprite<entities::Item>(itemId, entities::SpriteType::ITEM);
 }
 
 bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback) {
@@ -380,61 +351,6 @@ bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback) {
     return false;
   }
   npc->callbackFunc = callback;
-  return true;
-}
-
-bool moveNpc(unsigned int npcId, int dx, int dy) {
-  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
-  if (npc == nullptr) {
-    return false;
-  }
-  auto pos = npc->getDimensions();
-  pos.left += dx;
-  pos.top += dy;
-  if (positionWalkable(npc, pos)) {
-    npc->setDimensions(pos);
-    return true;
-  }
-  return false;
-}
-
-bool setNpcMaxHp(unsigned int npcId, int hp) {
-  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
-  if (npc == nullptr) {
-    return false;
-  }
-  npc->setMaxHp(hp);
-  return true;
-}
-
-bool damageNpc(unsigned int npcId, int amount) {
-  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
-  if (npc == nullptr) {
-    return false;
-  }
-  npc->damage(amount);
-  return true;
-}
-
-bool healNpc(unsigned int npcId, int amount) {
-  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
-  if (npc == nullptr) {
-    return false;
-  }
-  npc->heal(amount);
-  return true;
-}
-
-bool jumpNpc(unsigned int npcId, int magnitude) {
-  if (magnitude < 0 || magnitude > 100) {
-    LOG(WARNING) << "Jump magnitude must be between 0 and 100, inclusive";
-    return false;
-  }
-  auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
-  if (npc == nullptr) {
-    return false;
-  }
-  npc->startJump((float)magnitude / 100.0);
   return true;
 }
 

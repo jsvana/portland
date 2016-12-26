@@ -142,6 +142,10 @@ class Sprite {
     return true;
   }
 
+  void setCollisionCallback(const CollisionCallback func) {
+    collisionFunc = func;
+  }
+
   /**
    * Returns whether or not sprite is active
    * @return Whether or not sprite is active

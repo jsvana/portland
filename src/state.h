@@ -112,6 +112,13 @@ int ticks();
 const std::unique_ptr<entities::Sprite>& hero();
 
 /**
+ * API wrapper for hero()
+ *
+ * @return Pointer to hero
+ */
+entities::Sprite* getHero();
+
+/**
  * Gets the hero's move speed
  *
  * @return Hero's move speed
@@ -201,6 +208,12 @@ bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
  */
 bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim);
 
+/**
+ * Attempts to run collision callback on `mover` against `other`
+ *
+ * @param mover Sprite to run callback on
+ * @param other Sprite to run callback against
+ */
 void dispatchCollision(entities::Sprite* mover, entities::Sprite* other);
 
 /**
@@ -248,62 +261,12 @@ bool popMap();
 bool loadCharacter(std::string path, int tile, int initX, int initY);
 
 /**
- * Sets the character position
- *
- * @param x New x position
- * @param y New y position
- * @return Whether the operation is successful
- */
-bool setCharacterPosition(int x, int y);
-
-/**
- * Sets the sprite position
- *
- * @param x New x position
- * @param y New y position
- * @return Whether the operation is successful
- */
-bool setSpritePosition(entities::Id spriteId, int x, int y);
-
-/**
  * Sets the character move speed
  *
  * @param speed New move speed
  * @return Whether the operation is successful
  */
 bool setCharacterMoveSpeed(int amount, int total);
-
-/**
- * Sets the character's max HP
- *
- * @param hp New max HP
- * @return Whether the operation is successful
- */
-bool setCharacterMaxHp(int hp);
-
-/**
- * Lowers the character's HP
- *
- * @param amount Amount to lower HP by
- * @return Whether the operation is successful
- */
-bool damageCharacter(int amount);
-
-/**
- * Raises the character's HP
- *
- * @param amount Amount to raise HP by
- * @return Whether the operation is successful
- */
-bool healCharacter(int amount);
-
-/**
- * Adds an item to the hero's inventory
- *
- * @param itemId ID of item to add
- * @return Whether the operation is successful
- */
-bool addItemToInventory(entities::Id itemId);
 
 /**
  * Adds a new item and sets its tile index and position
@@ -338,6 +301,30 @@ template <typename T>
 T* findSprite(entities::Id spriteId);
 
 /**
+ * API wrapper to get a sprite
+ *
+ * @param spriteId ID of sprite to get
+ * @return Found sprite or nullptr
+ */
+entities::Sprite* getSprite(unsigned int spriteId);
+
+/**
+ * API wrapper to get an NPC
+ *
+ * @param npcId ID of NPC to get
+ * @return Found NPC or nullptr
+ */
+entities::Npc* getNpc(unsigned int npcId);
+
+/**
+ * API wrapper to get an item
+ *
+ * @param npcId ID of item to get
+ * @return Found item or nullptr
+ */
+entities::Item* getItem(unsigned int itemId);
+
+/**
  * Finds a sprite with the given ID or returns nullptr
  *
  * @template T Type of sprite to cast to
@@ -349,24 +336,6 @@ template <typename T>
 T* findSprite(entities::Id spriteId, const entities::SpriteType type);
 
 /**
- * Sets the hero collision callback function
- *
- * @param callback ChaiScript callback function
- * @return Whether the operation is successful
- */
-bool setHeroCollisionCallback(entities::CollisionCallback callback);
-
-/**
- * Sets a sprite collision callback function
- *
- * @param spriteId ID of sprite to set callback for
- * @param callback ChaiScript callback function
- * @return Whether the operation is successful
- */
-bool setSpriteCollisionCallback(entities::Id spriteId,
-                                entities::CollisionCallback callback);
-
-/**
  * Sets an NPC callback function
  *
  * @param npcId ID of NPC to set callback for
@@ -374,52 +343,6 @@ bool setSpriteCollisionCallback(entities::Id spriteId,
  * @return Whether the operation is successful
  */
 bool setNpcCallback(entities::Id npcId, entities::SpriteCallback callback);
-
-/**
- * Moves an NPC
- *
- * @param npcId ID of NPC to move
- * @param dx Distance to move NPC x coordinate
- * @param dy Distance to move NPC y coordinate
- * @return Whether the operation is successful
- */
-bool moveNpc(entities::Id npcId, int x, int y);
-
-/**
- * Sets an NPC's max HP
- *
- * @param npcId ID of NPC to set max HP for
- * @param hp New max HP
- * @return Whether the operation is successful
- */
-bool setNpcMaxHp(entities::Id npcId, int hp);
-
-/**
- * Lowers an NPC's HP
- *
- * @param npcId ID of NPC to damage
- * @param amount Amount to lower HP by
- * @return Whether the operation is successful
- */
-bool damageNpc(entities::Id npcId, int amount);
-
-/**
- * Raises an NPC's HP
- *
- * @param npcId ID of NPC to heal
- * @param amount Amount to raise HP by
- * @return Whether the operation is successful
- */
-bool healNpc(entities::Id npcId, int amount);
-
-/**
- * Makes an NPC jump
- *
- * @param npcId ID of NPC to jump
- * @param magnitude Magnitude of the jump, from 0 to 100
- * @return Whether the operation is successful
- */
-bool jumpNpc(entities::Id npcId, int magnitude);
 
 /**
  * Queues a dialog to be shown
