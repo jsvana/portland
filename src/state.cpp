@@ -25,6 +25,8 @@ int velocityY_ = 0;
 unsigned int lastId = 1;
 
 std::unordered_map<std::string, bool> flags_;
+std::unordered_map<std::string, std::list<FlagChangeCallback>>
+    flagChangeCallbacks_;
 
 // Stack is used to mimick maps_
 std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
@@ -88,6 +90,7 @@ void initApi() {
 
   ADD_FUNCTION(getFlag);
   ADD_FUNCTION(setFlag);
+  ADD_FUNCTION(addFlagChangeCallback);
 }
 
 sf::Vector2f& camera() { return camera_; }
@@ -383,7 +386,12 @@ bool clearEvents() {
   return true;
 }
 
-void setFlag(const std::string& flag, bool value) { flags_[flag] = value; }
+void setFlag(const std::string& flag, bool value) {
+  flags_[flag] = value;
+  for (auto& callback : flagChangeCallbacks(flag)) {
+    callback(value);
+  }
+}
 
 bool getFlag(const std::string& flag) {
   const auto iter = flags_.find(flag);
@@ -391,6 +399,20 @@ bool getFlag(const std::string& flag) {
     return false;
   }
   return iter->second;
+}
+
+const std::list<FlagChangeCallback> flagChangeCallbacks(
+    const std::string& flag) {
+  const auto iter = flagChangeCallbacks_.find(flag);
+  if (iter == flagChangeCallbacks_.end()) {
+    return std::list<FlagChangeCallback>();
+  }
+  return iter->second;
+}
+
+void addFlagChangeCallback(const std::string& flag,
+                           const FlagChangeCallback& func) {
+  flagChangeCallbacks_[flag].push_back(func);
 }
 
 }  // namespace GameState

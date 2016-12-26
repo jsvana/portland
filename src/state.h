@@ -21,6 +21,7 @@ namespace GameState {
 
 typedef std::function<void(int)> DialogCallback;
 typedef std::function<void()> TileCallback;
+typedef std::function<void(bool)> FlagChangeCallback;
 
 const int GRAVITY = 2;
 
@@ -402,4 +403,11 @@ void setFlag(const std::string& flag, bool value);
  * @return Value of flag or false if not set
  */
 bool getFlag(const std::string& flag);
-}
+
+const std::list<FlagChangeCallback> flagChangeCallbacks(
+    const std::string& flag);
+
+void addFlagChangeCallback(const std::string& flag,
+                           const FlagChangeCallback& func);
+
+}  // namespace GameState

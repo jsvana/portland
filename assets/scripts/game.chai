@@ -15,12 +15,18 @@ def init() {
   getHero().setCollisionCallback(heroCollision);
 
   registerTileEvent(9, 6, showSign);
+  addFlagChangeCallback("hit_enemy", flagChange);
 }
 
 def update() {
   if (mod(ticks(), UPDATE_INTERVAL) == 0) {
     getSprite(1).startJump(1);
   }
+}
+
+def flagChange(newVal) {
+  print("hit_enemy changed");
+  print(newVal);
 }
 
 def heroCollision(otherId) {
