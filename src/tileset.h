@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util.h"
+
 #include <json.hpp>
 
 #include <SFML/Graphics.hpp>
@@ -35,7 +37,7 @@ class Tileset {
   const TileId FLIPPED_DIAGONALLY = 0x20000000;
 
   // Update interval for the tileset
-  const unsigned int FRAME_TICKS_INTERVAL = 24;
+  const util::Tick FRAME_TICKS_INTERVAL = 24;
 
   sf::Time time_;
 
@@ -46,7 +48,7 @@ class Tileset {
   int tileHeight_;
   int tileCount_;
   int columns_;
-  unsigned int lastTicks_;
+  util::Tick lastTicks_;
 
   // Number representing the first tile number in the tileset
   // (used to find tileset ownership for tiles)

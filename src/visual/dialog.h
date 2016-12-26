@@ -14,6 +14,8 @@
 
 namespace visual {
 
+typedef std::function<void(int)> DialogCallback;
+
 /**
  * Class to load, render, and handle input for in-game dialogs
  */
@@ -28,7 +30,7 @@ class Dialog {
   const unsigned int VISIBLE_LINES = 3;
 
   // Indicator animation constants
-  const unsigned int FRAME_TICKS_INTERVAL = 24;
+  const util::Tick FRAME_TICKS_INTERVAL = 24;
   const int BOUNCE_DISTANCE = 4;
 
   // Kind of a hack. Contains the background of the dialog
@@ -79,7 +81,7 @@ class Dialog {
 
  public:
   // ChaiScript function to call after dialog is complete
-  std::function<void(int)> callbackFunc;
+  DialogCallback callbackFunc;
 
   Dialog(std::string message);
 
@@ -168,13 +170,15 @@ class Dialog {
 
 namespace DialogManager {
 
+typedef unsigned int Id;
+
 /**
  * Queues a new dialog to be shown.
  *
  * @param dialog Dialog to show
  * @return UID of dialog for fetching results and getting status
  */
-unsigned int queueDialog(Dialog* dialog);
+Id queueDialog(Dialog* dialog);
 
 /**
  * Gets a specific dialog object by its UID
@@ -182,7 +186,7 @@ unsigned int queueDialog(Dialog* dialog);
  * @param uid UID of dialog
  * @return Found dialog object or nullptr if not found
  */
-Dialog* getDialogByUid(unsigned int uid);
+Dialog* getDialogByUid(const Id uid);
 
 /**
  * Wrapper to add a dialog option by UID
@@ -191,7 +195,7 @@ Dialog* getDialogByUid(unsigned int uid);
  * @param option Option to add
  * @return Whether operation was successful
  */
-bool addDialogOption(unsigned int uid, std::string option);
+bool addDialogOption(const Id uid, std::string option);
 
 /**
  * Wrapper to set a dialog's callback function by UID
@@ -200,7 +204,7 @@ bool addDialogOption(unsigned int uid, std::string option);
  * @param callback Callback function
  * @return Whether operation was successful
  */
-bool setDialogCallback(unsigned int uid, std::function<void(int)> callback);
+bool setDialogCallback(const Id uid, visual::DialogCallback callback);
 
 /**
  * Gets the most recently closed dialog or nullptr if there isn't one
@@ -221,7 +225,7 @@ void clearClosedDialog();
  * @param uid UID of dialog to get choice from
  * @return Dialog's choice
  */
-int dialogChoice(unsigned int uid);
+int dialogChoice(const Id uid);
 
 void handleEvent(sf::Event& event);
 
@@ -239,6 +243,7 @@ bool update(sf::Time& time);
  * @param window Window to render to
  */
 void render(sf::RenderTarget& window);
-}
+
+}  // namespace DialogManager
 
 }  // namespace visual

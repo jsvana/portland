@@ -19,7 +19,6 @@
 
 namespace GameState {
 
-typedef std::function<void(int)> DialogCallback;
 typedef std::function<void()> TileCallback;
 typedef std::function<void(bool)> FlagChangeCallback;
 
@@ -96,7 +95,7 @@ int mod(int a, int b);
  *
  * @param ticks Current game ticks
  */
-void setTicks(unsigned int ticks);
+void setTicks(util::Tick ticks);
 
 /**
  * Gets the current game ticks
@@ -351,7 +350,7 @@ bool setNpcCallback(entities::Id npcId, entities::SpriteCallback callback);
  * @param message Message to show in dialog
  * @return Dialog ID
  */
-unsigned int showDialog(std::string message);
+visual::DialogManager::Id showDialog(std::string message);
 
 /**
  * Adds an option to the given dialog
@@ -359,7 +358,7 @@ unsigned int showDialog(std::string message);
  * @param option Option to add to dialog
  * @return Whether the operation is successful
  */
-bool addDialogOption(unsigned int uid, std::string option);
+bool addDialogOption(visual::DialogManager::Id uid, std::string option);
 
 /**
  * Sets the ChaiScript callback for the given dialog
@@ -368,7 +367,8 @@ bool addDialogOption(unsigned int uid, std::string option);
  * @param callback ChaiScript callback function
  * @return Whether the operation is successful
  */
-bool setDialogCallback(unsigned int uid, DialogCallback callback);
+bool setDialogCallback(visual::DialogManager::Id uid,
+                       visual::DialogCallback callback);
 
 /**
  * Adds a tile event to a tile to run when the character hits the

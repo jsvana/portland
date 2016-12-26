@@ -5,6 +5,8 @@
 
 namespace util {
 
+typedef unsigned int Tick;
+
 enum class Direction : int {
   LEFT = 0,
   RIGHT = 1,

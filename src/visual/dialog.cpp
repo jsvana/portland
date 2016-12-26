@@ -192,19 +192,19 @@ void Dialog::render(sf::RenderTarget& window) {
 namespace DialogManager {
 
 std::deque<std::unique_ptr<Dialog>> dialogs;
-std::deque<unsigned int> uids;
-std::unordered_map<unsigned int, int> choices;
+std::deque<Id> uids;
+std::unordered_map<Id, int> choices;
 std::unique_ptr<Dialog> closedDialog_;
-unsigned int nextUid = 0;
+Id nextUid = 0;
 
-unsigned int queueDialog(Dialog* dialog) {
+Id queueDialog(Dialog* dialog) {
   nextUid += 1;
   dialogs.push_back(std::unique_ptr<Dialog>(dialog));
   uids.push_back(nextUid);
   return nextUid;
 }
 
-Dialog* getDialogByUid(unsigned int uid) {
+Dialog* getDialogByUid(const Id uid) {
   for (unsigned int i = 0; i < dialogs.size(); i++) {
     if (uids[i] == uid) {
       return dialogs[i].get();
@@ -214,7 +214,7 @@ Dialog* getDialogByUid(unsigned int uid) {
   return nullptr;
 }
 
-bool addDialogOption(unsigned int uid, std::string option) {
+bool addDialogOption(const Id uid, std::string option) {
   const auto& dialog = getDialogByUid(uid);
   if (!dialog) {
     return false;
@@ -223,7 +223,7 @@ bool addDialogOption(unsigned int uid, std::string option) {
   return true;
 }
 
-bool setDialogCallback(unsigned int uid, std::function<void(int)> callback) {
+bool setDialogCallback(const Id uid, visual::DialogCallback callback) {
   const auto& dialog = getDialogByUid(uid);
   if (!dialog) {
     return false;
@@ -236,7 +236,7 @@ const std::unique_ptr<Dialog>& closedDialog() { return closedDialog_; }
 
 void clearClosedDialog() { closedDialog_.release(); }
 
-int dialogChoice(unsigned int uid) { return choices[uid]; }
+int dialogChoice(const Id uid) { return choices[uid]; }
 
 void handleEvent(sf::Event& event) {
   if (dialogs.empty()) {

@@ -13,7 +13,7 @@ bool initialized_ = false;
 sf::Vector2f camera_;
 sf::FloatRect cameraBounds_;
 
-unsigned int ticks_ = 0;
+util::Tick ticks_ = 0;
 
 std::unique_ptr<entities::Sprite> hero_;
 float moveSpeed_;
@@ -21,8 +21,6 @@ float moveSpeed_;
 // Jumping stuff
 bool jumping_ = false;
 int velocityY_ = 0;
-
-unsigned int lastId = 1;
 
 std::unordered_map<std::string, bool> flags_;
 std::unordered_map<std::string, std::list<FlagChangeCallback>>
@@ -149,7 +147,7 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
 
 int mod(int a, int b) { return a % b; }
 
-void setTicks(unsigned int ticks) { ticks_ = ticks; }
+void setTicks(util::Tick ticks) { ticks_ = ticks; }
 
 int ticks() { return (int)(ticks_ % INT_MAX); }
 
@@ -240,7 +238,6 @@ void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
   if (!mover->collisionFunc) {
     return;
   }
-  LOG(INFO) << "C++ " << mover->hp();
   mover->collisionFunc(other->id);
 }
 
@@ -297,7 +294,7 @@ bool setCharacterMaxHp(int hp) {
 }
 
 template <typename T>
-unsigned int addSprite(const std::string& path, int tile, int x, int y) {
+entities::Id addSprite(const std::string& path, int tile, int x, int y) {
   sprites().push_back(std::make_unique<T>(path));
   auto item = sprites().back().get();
   item->setPosition(x * GameState::map()->tileWidth(),
@@ -363,17 +360,18 @@ bool setNpcCallback(const entities::Id npcId,
   return true;
 }
 
-unsigned int showDialog(std::string message) {
+visual::DialogManager::Id showDialog(std::string message) {
   auto dialog = new visual::Dialog(message);
   dialog->setPosition(0, SCREEN_HEIGHT - dialog->pixelHeight());
   return visual::DialogManager::queueDialog(dialog);
 }
 
-bool addDialogOption(unsigned int uid, std::string option) {
+bool addDialogOption(visual::DialogManager::Id uid, std::string option) {
   return visual::DialogManager::addDialogOption(uid, option);
 }
 
-bool setDialogCallback(unsigned int uid, DialogCallback callback) {
+bool setDialogCallback(visual::DialogManager::Id uid,
+                       visual::DialogCallback callback) {
   return visual::DialogManager::setDialogCallback(uid, callback);
 }
 
