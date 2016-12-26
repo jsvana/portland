@@ -9,6 +9,10 @@
 #include <unordered_map>
 #include <vector>
 
+namespace map {
+
+typedef unsigned int TileId;
+
 /**
  * Container for all the various tile properties
  */
@@ -16,7 +20,7 @@ struct TileProperties {
   bool ladder;
   bool walkable;
 
-  std::vector<unsigned int> animationTiles;
+  std::vector<TileId> animationTiles;
   int frame;
 };
 
@@ -26,9 +30,9 @@ struct TileProperties {
 class Tileset {
  private:
   // Constants set by Tiled to represent reflections and rotations
-  const unsigned int FLIPPED_HORIZONTALLY = 0x80000000;
-  const unsigned int FLIPPED_VERTICALLY = 0x40000000;
-  const unsigned int FLIPPED_DIAGONALLY = 0x20000000;
+  const TileId FLIPPED_HORIZONTALLY = 0x80000000;
+  const TileId FLIPPED_VERTICALLY = 0x40000000;
+  const TileId FLIPPED_DIAGONALLY = 0x20000000;
 
   // Update interval for the tileset
   const unsigned int FRAME_TICKS_INTERVAL = 24;
@@ -46,12 +50,12 @@ class Tileset {
 
   // Number representing the first tile number in the tileset
   // (used to find tileset ownership for tiles)
-  unsigned int firstGid_;
+  TileId firstGid_;
 
   std::string name_;
 
   // Map of tile ID to tile properties
-  std::unordered_map<unsigned int, TileProperties> tiles_;
+  std::unordered_map<TileId, TileProperties> tiles_;
 
   sf::Texture texture_;
   sf::Sprite tile_;
@@ -72,7 +76,7 @@ class Tileset {
    * @param tile Tile to remove flags from
    * @return Tile without flags
    */
-  unsigned int removeFlags(unsigned int tile);
+  TileId removeFlags(TileId tile);
 
  public:
   Tileset(const std::string& basePath, const nlohmann::json& tilesetData);
@@ -84,7 +88,7 @@ class Tileset {
    * @param t Tile to find properties for
    * @return Found TileProperties
    */
-  const TileProperties& tile(unsigned int t) const {
+  const TileProperties& tile(const TileId t) const {
     auto res = tiles_.find(t);
     if (res == tiles_.end()) {
       return defaultTile_;
@@ -98,7 +102,7 @@ class Tileset {
    * @param tileIdx Tile to find animation for
    * @return Current tile index for animation
    */
-  unsigned int tileFor(unsigned int tileIdx) const {
+  const TileId tileFor(const TileId tileIdx) const {
     auto t = tile(tileIdx);
     if (t.animationTiles.empty()) {
       return tileIdx;
@@ -126,7 +130,7 @@ class Tileset {
    * @param tile Tile to check
    * @return Whether the tileset contains the tile
    */
-  bool contains(unsigned int tile);
+  bool contains(TileId tile);
 
   /**
    * Checks if the given tile is walkable
@@ -134,7 +138,7 @@ class Tileset {
    * @param tile Tile to check
    * @return Whether the tile is walkable
    */
-  bool walkable(unsigned int tile);
+  bool walkable(TileId tile);
 
   /**
    * Checks if the given tile is a ladder
@@ -142,7 +146,7 @@ class Tileset {
    * @param tile Tile to check
    * @return Whether the tile is a ladder
    */
-  bool ladder(unsigned int tile);
+  bool ladder(TileId tile);
 
   /**
    * Animate tiles in the tileset
@@ -160,5 +164,7 @@ class Tileset {
    * @param x X coordinate of render point
    * @param y Y coordinate of render point
    */
-  void renderTile(sf::RenderTarget& window, unsigned int tile, int x, int y);
+  void renderTile(sf::RenderTarget& window, TileId tile, int x, int y);
 };
+
+}  // namespace map

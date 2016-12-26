@@ -5,6 +5,8 @@
 #include <iostream>
 #include <string>
 
+namespace map {
+
 Tileset::Tileset(const std::string& basePath,
                  const nlohmann::json& tilesetData) {
   load(basePath, tilesetData);
@@ -52,7 +54,7 @@ bool Tileset::load(const std::string& basePath,
             auto animation =
                 (*animationList).get<std::vector<nlohmann::json>>();
             for (auto& obj : animation) {
-              unsigned int tileId = obj["tileid"].get<unsigned int>();
+              const auto tileId = obj["tileid"].get<TileId>();
               t.animationTiles.push_back(tileId);
             }
           }
@@ -73,22 +75,22 @@ bool Tileset::load(const std::string& basePath,
   return true;
 }
 
-unsigned int Tileset::removeFlags(unsigned int tile) {
+TileId Tileset::removeFlags(TileId tile) {
   tile &= ~(FLIPPED_HORIZONTALLY | FLIPPED_VERTICALLY | FLIPPED_DIAGONALLY);
   return tile;
 }
 
-bool Tileset::contains(unsigned int tile) {
+bool Tileset::contains(TileId tile) {
   tile = removeFlags(tile);
   return tile >= firstGid_ && tile < firstGid_ + tileCount_;
 }
 
-bool Tileset::walkable(unsigned int tile) {
+bool Tileset::walkable(TileId tile) {
   tile = removeFlags(tile);
   return tiles_[tile - firstGid_].walkable;
 }
 
-bool Tileset::ladder(unsigned int tile) {
+bool Tileset::ladder(TileId tile) {
   tile = removeFlags(tile);
   return tiles_[tile - firstGid_].ladder;
 }
@@ -105,8 +107,7 @@ bool Tileset::update(sf::Time& time) {
   return true;
 }
 
-void Tileset::renderTile(sf::RenderTarget& window, unsigned int tile, int x,
-                         int y) {
+void Tileset::renderTile(sf::RenderTarget& window, TileId tile, int x, int y) {
   if (tile == 0) {
     return;
   }
@@ -145,3 +146,5 @@ void Tileset::renderTile(sf::RenderTarget& window, unsigned int tile, int x,
 
   window.draw(tile_);
 }
+
+}  // namespace map

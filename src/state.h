@@ -146,7 +146,7 @@ std::vector<std::unique_ptr<entities::Sprite>>& sprites();
  *
  * @return Topmost map
  */
-const std::unique_ptr<Map>& map();
+const std::unique_ptr<map::Map>& map();
 
 /**
  * Gets a reference to the ChaiScript state
@@ -307,7 +307,7 @@ T* findSprite(entities::Id spriteId);
  * @param spriteId ID of sprite to get
  * @return Found sprite or nullptr
  */
-entities::Sprite* getSprite(unsigned int spriteId);
+entities::Sprite* getSprite(const entities::Id spriteId);
 
 /**
  * API wrapper to get an NPC
@@ -315,7 +315,7 @@ entities::Sprite* getSprite(unsigned int spriteId);
  * @param npcId ID of NPC to get
  * @return Found NPC or nullptr
  */
-entities::Npc* getNpc(unsigned int npcId);
+entities::Npc* getNpc(const entities::Id npcId);
 
 /**
  * API wrapper to get an item
@@ -323,7 +323,7 @@ entities::Npc* getNpc(unsigned int npcId);
  * @param npcId ID of item to get
  * @return Found item or nullptr
  */
-entities::Item* getItem(unsigned int itemId);
+entities::Item* getItem(const entities::Id itemId);
 
 /**
  * Finds a sprite with the given ID or returns nullptr

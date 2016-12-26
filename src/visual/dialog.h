@@ -32,7 +32,7 @@ class Dialog {
   const int BOUNCE_DISTANCE = 4;
 
   // Kind of a hack. Contains the background of the dialog
-  std::unique_ptr<Map> map_;
+  std::unique_ptr<map::Map> map_;
 
   // Dialog message to display
   std::string message_;

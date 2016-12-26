@@ -11,6 +11,8 @@
 #include <string>
 #include <vector>
 
+namespace map {
+
 Map::Map(const std::string& path) : path_(path) { load(path); }
 
 bool Map::load(const std::string& path) {
@@ -49,16 +51,8 @@ bool Map::load(const std::string& path) {
 }
 
 void Map::ensurePointInMap(sf::Vector2f& p) {
-  if (p.x < 0) {
-    p.x = 0;
-  } else if (p.x >= mapWidth_) {
-    p.x = mapWidth_ - 1;
-  }
-  if (p.y < 0) {
-    p.y = 0;
-  } else if (p.y >= mapHeight_) {
-    p.y = mapHeight_ - 1;
-  }
+  util::clamp<float>(p.x, 0, mapWidth_ - 1);
+  util::clamp<float>(p.y, 0, mapHeight_ - 1);
 }
 
 sf::Vector2f Map::mapToPixel(int x, int y) {
@@ -77,16 +71,16 @@ sf::Vector2f Map::pixelToMap(int x, int y) {
   return mapPosition;
 }
 
-std::set<unsigned int> Map::hitTiles(int x, int y, int w, int h) {
+std::set<TileId> Map::hitTiles(int x, int y, int w, int h) {
   auto topLeft = pixelToMap(x, y);
   auto bottomRight = pixelToMap(x + w - 1, y + h - 1);
 
   // Only add the top nonzero tile
-  std::set<unsigned int> tiles;
+  std::set<TileId> tiles;
   for (int i = topLeft.y; i <= bottomRight.y; i++) {
     for (int j = topLeft.x; j <= bottomRight.x; j++) {
       for (int k = (int)layers_.size() - 1; k >= 0; k--) {
-        unsigned int tile = layers_[k].tileAt(j, i);
+        const auto tile = layers_[k].tileAt(j, i);
         if (tile != 0) {
           tiles.insert(tile);
           break;
@@ -104,7 +98,7 @@ float Map::positionOfTileAbove(sf::FloatRect dim) {
   for (int i = topLeft.y; i >= 0; i--) {
     for (int j = topLeft.x; j <= topRight.x; j++) {
       for (int k = (int)layers_.size() - 1; k >= 0; k--) {
-        unsigned int tile = layers_[k].tileAt(j, i);
+        const auto tile = layers_[k].tileAt(j, i);
         if (tile == 0 || walkable(tile)) {
           continue;
         }
@@ -125,7 +119,7 @@ float Map::positionOfTileBelow(sf::FloatRect dim) {
   for (int i = bottomLeft.y; i < mapHeight_; i++) {
     for (int j = bottomLeft.x; j <= bottomRight.x; j++) {
       for (int k = (int)layers_.size() - 1; k >= 0; k--) {
-        unsigned int tile = layers_[k].tileAt(j, i);
+        const auto tile = layers_[k].tileAt(j, i);
         if (tile == 0 || walkable(tile)) {
           continue;
         }
@@ -141,7 +135,7 @@ float Map::positionOfTileBelow(sf::FloatRect dim) {
 bool Map::isLadder(sf::FloatRect dim) {
   auto pos = pixelToMap(dim.left, dim.top);
   for (int i = (int)layers_.size() - 1; i >= 0; i--) {
-    unsigned int tile = layers_[i].tileAt(pos.x, pos.y);
+    const auto tile = layers_[i].tileAt(pos.x, pos.y);
     if (tile != 0 && ladder(tile)) {
       return true;
     }
@@ -155,8 +149,8 @@ bool Map::positionWalkable(int x, int y, int w, int h) {
     return false;
   }
 
-  std::set<unsigned int> tiles = hitTiles(x, y, w, h);
-  for (unsigned int tile : tiles) {
+  std::set<TileId> tiles = hitTiles(x, y, w, h);
+  for (const auto tile : tiles) {
     if (tile == 0) {
       continue;
     }
@@ -167,7 +161,7 @@ bool Map::positionWalkable(int x, int y, int w, int h) {
   return true;
 }
 
-Tileset* Map::tilesetForTile(unsigned int tile) {
+Tileset* Map::tilesetForTile(const TileId tile) {
   for (const auto& tileset : tilesets_) {
     if (tileset->contains(tile)) {
       return tileset.get();
@@ -177,7 +171,7 @@ Tileset* Map::tilesetForTile(unsigned int tile) {
   return nullptr;
 }
 
-bool Map::ladder(unsigned int tile) {
+bool Map::ladder(const TileId tile) {
   const auto& tileset = tilesetForTile(tile);
   if (!tileset) {
     return false;
@@ -185,7 +179,7 @@ bool Map::ladder(unsigned int tile) {
   return tileset->ladder(tile);
 }
 
-bool Map::walkable(unsigned int tile) {
+bool Map::walkable(const TileId tile) {
   const auto& tileset = tilesetForTile(tile);
   if (!tileset) {
     return false;
@@ -216,7 +210,7 @@ void Map::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
   for (auto& layer : layers_) {
     for (int i = yStart; i < yEnd; i++) {
       for (int j = xStart; j < xEnd; j++) {
-        unsigned int tile = layer.tiles[i][j];
+        const TileId tile = layer.tiles[i][j];
         if (tile == 0) {
           continue;
         }
@@ -237,7 +231,7 @@ MapLayer::MapLayer(const nlohmann::json& layerData) {
   auto data = layerData["data"].get<std::vector<int>>();
   auto data_iter = data.begin();
   for (int i = 0; i < height; i++) {
-    std::vector<unsigned int> row;
+    std::vector<TileId> row;
     for (int j = 0; j < width; j++) {
       row.push_back(*data_iter);
       data_iter++;
@@ -245,3 +239,5 @@ MapLayer::MapLayer(const nlohmann::json& layerData) {
     tiles.push_back(row);
   }
 }
+
+}  // namespace map

@@ -4,7 +4,7 @@ namespace visual {
 
 Dialog::Dialog(std::string message) : message_(message) {
   font_.loadFromFile("assets/fonts/arcade.ttf");
-  map_ = std::unique_ptr<Map>(new Map("assets/maps/dialog.json"));
+  map_ = std::make_unique<map::Map>("assets/maps/dialog.json");
   map_->setPosition(position_.x, position_.y);
 
   indicatorOffset_ = 0;

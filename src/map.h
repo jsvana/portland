@@ -10,12 +10,14 @@
 #include <set>
 #include <string>
 
+namespace map {
+
 /**
  * Class to load and contain a map layer
  */
 class MapLayer {
  public:
-  std::vector<std::vector<unsigned int>> tiles;
+  std::vector<std::vector<TileId>> tiles;
 
   MapLayer(const nlohmann::json& layerData);
 
@@ -26,7 +28,7 @@ class MapLayer {
    * @param y Y coordinate of tile
    * @return Tile number of tile at point
    */
-  unsigned int tileAt(int x, int y) { return tiles[y][x]; }
+  TileId tileAt(int x, int y) { return tiles[y][x]; }
 
   /**
    * Gets the tile at a given sf::Vector2f
@@ -34,7 +36,7 @@ class MapLayer {
    * @param p Location of tile
    * @return Tile number of tile at point
    */
-  unsigned int tileAt(sf::Vector2f p) { return tileAt(p.x, p.y); }
+  TileId tileAt(sf::Vector2f p) { return tileAt(p.x, p.y); }
 };
 
 /**
@@ -86,7 +88,7 @@ class Map {
    * @param h Height of rectangle
    * @return Set of hit tiles
    */
-  std::set<unsigned int> hitTiles(int x, int y, int w, int h);
+  std::set<TileId> hitTiles(int x, int y, int w, int h);
 
   /**
    * Takes a rectangle in screen space and returns a list of tiles in
@@ -95,7 +97,7 @@ class Map {
    * @param rect Rectangle to check
    * @return Set of hit tiles
    */
-  std::set<unsigned int> hitTiles(sf::FloatRect rect) {
+  std::set<TileId> hitTiles(sf::FloatRect rect) {
     return hitTiles(rect.left, rect.top, rect.width, rect.height);
   }
 
@@ -106,7 +108,7 @@ class Map {
    * @param tile Tile to get tileset for
    * @return Tileset for tile or nullptr if not found
    */
-  Tileset* tilesetForTile(unsigned int tile);
+  Tileset* tilesetForTile(TileId tile);
 
   /**
    * Checks if tile is walkable
@@ -114,7 +116,7 @@ class Map {
    * @param tile Tile to check
    * @return Whether tile is walkable
    */
-  bool walkable(unsigned int tile);
+  bool walkable(TileId tile);
 
   /**
    * Checks if tile is a ladder
@@ -122,7 +124,7 @@ class Map {
    * @param tile Tile to check
    * @return Whether tile is a ladder
    */
-  bool ladder(unsigned int tile);
+  bool ladder(TileId tile);
 
  public:
   Map(const std::string& path);
@@ -229,7 +231,7 @@ class Map {
    *
    * @param t Unique tile number to calculate point for
    */
-  sf::Vector2f tileNumberToPoint(unsigned int t) {
+  sf::Vector2f tileNumberToPoint(TileId t) {
     sf::Vector2f p(t % mapWidth_, t / mapWidth_);
     return mapToPixel(p);
   }
@@ -309,3 +311,5 @@ class Map {
    */
   void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };
+
+}  // namespace map

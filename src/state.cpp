@@ -31,7 +31,7 @@ std::unordered_map<std::string, std::list<FlagChangeCallback>>
 // Stack is used to mimick maps_
 std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 
-std::stack<std::unique_ptr<Map>> maps_;
+std::stack<std::unique_ptr<map::Map>> maps_;
 
 std::unordered_map<int, TileCallback> tileEvents_;
 
@@ -177,7 +177,7 @@ std::vector<std::unique_ptr<entities::Sprite>>& sprites() {
 
 void popSprites() { sprites_.pop(); }
 
-const std::unique_ptr<Map>& map() { return maps_.top(); }
+const std::unique_ptr<map::Map>& map() { return maps_.top(); }
 
 chaiscript::ChaiScript& chai() { return chai_; }
 
@@ -249,7 +249,7 @@ void markInitialized() { initialized_ = true; }
 bool initialized() { return initialized_; }
 
 bool loadMap(std::string path) {
-  maps_.push(std::make_unique<Map>(path));
+  maps_.push(std::make_unique<map::Map>(path));
   sprites_.emplace();
   sprites().emplace_back();
 
@@ -304,21 +304,21 @@ unsigned int addSprite(const std::string& path, int tile, int x, int y) {
                     y * GameState::map()->tileHeight());
   item->setTile(tile);
 
-  unsigned int spriteId = sprites().size() - 1;
+  const auto spriteId = sprites().size() - 1;
   item->id = spriteId;
   return spriteId;
 }
 
-unsigned int addItem(const std::string& path, int tile, int x, int y) {
+entities::Id addItem(const std::string& path, int tile, int x, int y) {
   return addSprite<entities::Item>(path, tile, x, y);
 }
 
-unsigned int addNpc(const std::string& path, int tile, int x, int y) {
+entities::Id addNpc(const std::string& path, int tile, int x, int y) {
   return addSprite<entities::Npc>(path, tile, x, y);
 }
 
 template <typename T>
-T* findSprite(unsigned int spriteId) {
+T* findSprite(const entities::Id spriteId) {
   if (spriteId >= sprites().size()) {
     LOG(WARNING) << "Bad sprite ID: " << spriteId;
     return nullptr;
@@ -327,7 +327,7 @@ T* findSprite(unsigned int spriteId) {
 }
 
 template <typename T>
-T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
+T* findSprite(const entities::Id spriteId, const entities::SpriteType type) {
   auto sprite = findSprite<T>(spriteId);
   if (!sprite) {
     return nullptr;
@@ -341,19 +341,20 @@ T* findSprite(unsigned int spriteId, const entities::SpriteType type) {
   return sprite;
 }
 
-entities::Sprite* getSprite(unsigned int spriteId) {
+entities::Sprite* getSprite(const entities::Id spriteId) {
   return findSprite<entities::Sprite>(spriteId);
 }
 
-entities::Npc* getNpc(unsigned int npcId) {
+entities::Npc* getNpc(const entities::Id npcId) {
   return findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
 }
 
-entities::Item* getItem(unsigned int itemId) {
+entities::Item* getItem(const entities::Id itemId) {
   return findSprite<entities::Item>(itemId, entities::SpriteType::ITEM);
 }
 
-bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback) {
+bool setNpcCallback(const entities::Id npcId,
+                    entities::SpriteCallback callback) {
   auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
   if (npc == nullptr) {
     return false;
