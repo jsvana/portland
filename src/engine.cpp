@@ -46,12 +46,12 @@ void run() {
   sf::RenderTexture target;
   target.create(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-  while (window.isOpen() && running_) {
 #ifdef __APPLE__
-    // See SFML bug #1132
-    window.display();
+  // See SFML bug #1132
+  window.display();
 #endif
 
+  while (window.isOpen() && running_) {
     sf::Time elapsed = clock.restart();
 
     sf::Event event;
@@ -85,13 +85,9 @@ void run() {
 
     rendered.setScale(scale, scale);
 
-    // Note that we cannot call window.display here on OSX because of
-    // SFML bug #1132.
     window.clear(sf::Color::Black);
     window.draw(rendered);
-#ifndef __APPLE__
     window.display();
-#endif
   }
 }
 
