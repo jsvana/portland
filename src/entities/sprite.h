@@ -105,6 +105,13 @@ class Sprite {
   }
 
   /**
+   * Gets the sprite's held items
+   *
+   * @return Held items
+   */
+  const std::set<Id>& heldItems() { return heldItems_; }
+
+  /**
    * Adds an item to the user's held item set
    *
    * @param itemId ID of item to add

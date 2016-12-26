@@ -310,6 +310,7 @@ bool addItemToInventory(entities::Id itemId) {
   }
   item->hold();
   hero()->addItem(itemId);
+  LOG(INFO) << hero()->heldItems().size() << " held items";
   return true;
 }
 
