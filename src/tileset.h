@@ -90,7 +90,7 @@ class Tileset {
    * @param t Tile to find properties for
    * @return Found TileProperties
    */
-  const TileProperties& tile(const TileId t) const {
+  const TileProperties& tile(const TileId t) {
     auto res = tiles_.find(t);
     if (res == tiles_.end()) {
       return defaultTile_;
@@ -104,7 +104,7 @@ class Tileset {
    * @param tileIdx Tile to find animation for
    * @return Current tile index for animation
    */
-  const TileId tileFor(const TileId tileIdx) const {
+  TileId tileFor(const TileId tileIdx) {
     auto t = tile(tileIdx);
     if (t.animationTiles.empty()) {
       return tileIdx;
