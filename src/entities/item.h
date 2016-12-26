@@ -16,6 +16,8 @@ namespace entities {
  */
 class Item : public Sprite {
  private:
+  bool held_ = false;
+
   /**
    * Loads sprite from given path
    *
@@ -25,11 +27,19 @@ class Item : public Sprite {
   bool load(const std::string& path);
 
  public:
-  unsigned int id;
-
   Item(const std::string& path) : Sprite(path, SpriteType::ITEM) {}
 
   bool phased() { return true; }
+
+  void drop() {
+    held_ = false;
+    activate();
+  }
+  void hold() {
+    held_ = true;
+    deactivate();
+  }
+  bool held() { return held_; }
 
   /**
    * Animates item

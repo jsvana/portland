@@ -124,7 +124,7 @@ int heroMoveSpeed();
  *
  * @return Next sprite ID
  */
-unsigned int allocateSpriteId();
+entities::Id allocateSpriteId();
 
 /**
  * Gets a reference to the topmost sprite map
@@ -257,6 +257,15 @@ bool loadCharacter(std::string path, int tile, int initX, int initY);
 bool setCharacterPosition(int x, int y);
 
 /**
+ * Sets the sprite position
+ *
+ * @param x New x position
+ * @param y New y position
+ * @return Whether the operation is successful
+ */
+bool setSpritePosition(entities::Id spriteId, int x, int y);
+
+/**
  * Sets the character move speed
  *
  * @param speed New move speed
@@ -289,6 +298,14 @@ bool damageCharacter(int amount);
 bool healCharacter(int amount);
 
 /**
+ * Adds an item to the hero's inventory
+ *
+ * @param itemId ID of item to add
+ * @return Whether the operation is successful
+ */
+bool addItemToInventory(entities::Id itemId);
+
+/**
  * Adds a new item and sets its tile index and position
  *
  * @param path Path to item definition
@@ -297,7 +314,7 @@ bool healCharacter(int amount);
  * @param initY Initial y position
  * @return Item ID
  */
-unsigned int addItem(const std::string& path, int tile, int x, int y);
+entities::Id addItem(const std::string& path, int tile, int x, int y);
 
 /**
  * Adds a new NPC and sets its tile index and position
@@ -308,7 +325,7 @@ unsigned int addItem(const std::string& path, int tile, int x, int y);
  * @param initY Initial y position
  * @return NPC ID
  */
-unsigned int addNpc(const std::string& path, int tile, int x, int y);
+entities::Id addNpc(const std::string& path, int tile, int x, int y);
 
 /**
  * Finds a sprite with the given ID or returns nullptr
@@ -318,7 +335,7 @@ unsigned int addNpc(const std::string& path, int tile, int x, int y);
  * @return Found sprite or nullptr
  */
 template <typename T>
-T* findSprite(unsigned int spriteId);
+T* findSprite(entities::Id spriteId);
 
 /**
  * Finds a sprite with the given ID or returns nullptr
@@ -329,7 +346,7 @@ T* findSprite(unsigned int spriteId);
  * @return Found sprite or nullptr
  */
 template <typename T>
-T* findSprite(unsigned int spriteId, const entities::SpriteType type);
+T* findSprite(entities::Id spriteId, const entities::SpriteType type);
 
 /**
  * Sets the hero collision callback function
@@ -346,7 +363,7 @@ bool setHeroCollisionCallback(entities::CollisionCallback callback);
  * @param callback ChaiScript callback function
  * @return Whether the operation is successful
  */
-bool setSpriteCollisionCallback(unsigned int spriteId,
+bool setSpriteCollisionCallback(entities::Id spriteId,
                                 entities::CollisionCallback callback);
 
 /**
@@ -356,7 +373,7 @@ bool setSpriteCollisionCallback(unsigned int spriteId,
  * @param callback ChaiScript callback function
  * @return Whether the operation is successful
  */
-bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback);
+bool setNpcCallback(entities::Id npcId, entities::SpriteCallback callback);
 
 /**
  * Moves an NPC
@@ -366,7 +383,7 @@ bool setNpcCallback(unsigned int npcId, entities::SpriteCallback callback);
  * @param dy Distance to move NPC y coordinate
  * @return Whether the operation is successful
  */
-bool moveNpc(unsigned int npcId, int x, int y);
+bool moveNpc(entities::Id npcId, int x, int y);
 
 /**
  * Sets an NPC's max HP
@@ -375,7 +392,7 @@ bool moveNpc(unsigned int npcId, int x, int y);
  * @param hp New max HP
  * @return Whether the operation is successful
  */
-bool setNpcMaxHp(unsigned int npcId, int hp);
+bool setNpcMaxHp(entities::Id npcId, int hp);
 
 /**
  * Lowers an NPC's HP
@@ -384,7 +401,7 @@ bool setNpcMaxHp(unsigned int npcId, int hp);
  * @param amount Amount to lower HP by
  * @return Whether the operation is successful
  */
-bool damageNpc(unsigned int npcId, int amount);
+bool damageNpc(entities::Id npcId, int amount);
 
 /**
  * Raises an NPC's HP
@@ -393,7 +410,7 @@ bool damageNpc(unsigned int npcId, int amount);
  * @param amount Amount to raise HP by
  * @return Whether the operation is successful
  */
-bool healNpc(unsigned int npcId, int amount);
+bool healNpc(entities::Id npcId, int amount);
 
 /**
  * Makes an NPC jump
@@ -402,7 +419,7 @@ bool healNpc(unsigned int npcId, int amount);
  * @param magnitude Magnitude of the jump, from 0 to 100
  * @return Whether the operation is successful
  */
-bool jumpNpc(unsigned int npcId, int magnitude);
+bool jumpNpc(entities::Id npcId, int magnitude);
 
 /**
  * Queues a dialog to be shown

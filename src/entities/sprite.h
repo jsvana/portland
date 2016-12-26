@@ -4,14 +4,18 @@
 
 #include <json.hpp>
 
+#include <glog/logging.h>
 #include <SFML/Graphics.hpp>
 
+#include <set>
 #include <string>
 
 namespace entities {
 
+typedef unsigned int Id;
+
 typedef std::function<void()> SpriteCallback;
-typedef std::function<void(unsigned int)> CollisionCallback;
+typedef std::function<void(Id)> CollisionCallback;
 
 enum class SpriteType : int {
   HERO = 0,
@@ -46,7 +50,12 @@ class Sprite {
   bool jumping_ = false;
   float velocityY_ = 0;
 
+  // Whether or not this sprite is updated, rendered, etc
+  bool active_ = true;
+
   sf::Time time_;
+
+  std::set<Id> heldItems_;
 
   // Ticks at last frame transition
   unsigned long lastTicks_ = 0;
@@ -75,7 +84,7 @@ class Sprite {
   // API function to call when sprite collides with another sprite
   CollisionCallback collisionFunc;
 
-  unsigned int id;
+  Id id;
 
   Sprite(const std::string& path) : Sprite(path, SpriteType::HERO) {}
 
@@ -94,6 +103,53 @@ class Sprite {
     dim.height = dim.height * scale_;
     return dim;
   }
+
+  /**
+   * Adds an item to the user's held item set
+   *
+   * @param itemId ID of item to add
+   * @return Whether or not operation was successful
+   */
+  bool addItem(Id itemId) {
+    if (heldItems_.find(itemId) != heldItems_.end()) {
+      LOG(ERROR) << "Sprite " << id << " is already holding " << itemId;
+      return false;
+    }
+    heldItems_.insert(itemId);
+    return true;
+  }
+
+  /**
+   * Removes an item from the user's held item set
+   *
+   * @param itemId ID of item to remove
+   * @return Whether or not operation was successful
+   */
+  bool removeItem(Id itemId) {
+    auto iter = heldItems_.find(itemId);
+    if (iter == heldItems_.end()) {
+      LOG(ERROR) << "Sprite " << id << " is not holding " << itemId;
+      return false;
+    }
+    heldItems_.erase(iter);
+    return true;
+  }
+
+  /**
+   * Returns whether or not sprite is active
+   * @return Whether or not sprite is active
+   */
+  bool active() { return active_; }
+
+  /**
+   * Activates sprite (enables updates, renders, etc)
+   */
+  void activate() { active_ = true; }
+
+  /**
+   * Deactivates sprite (disables updates, renders, etc)
+   */
+  void deactivate() { active_ = false; }
 
   /**
    * Sets dimensions of sprite after scaling

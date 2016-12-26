@@ -33,14 +33,8 @@ std::unordered_map<int, TileCallback> tileEvents_;
 
 chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
-std::string helloWorld(const std::string& t_name) {
-  return "Hello " + t_name + "!";
-}
-
 void initApi() {
   chai_.add(chaiscript::fun(&mod), "mod");
-
-  chai_.add(chaiscript::fun(&helloWorld), "helloWorld");
 
   chai_.add(chaiscript::fun(&GameState::initialized), "gameInitialized");
   chai_.add(chaiscript::fun(&GameState::ticks), "gameTicks");
@@ -55,7 +49,8 @@ void initApi() {
   chai_.add(chaiscript::fun(&GameState::damageCharacter),
             "gameDamageCharacter");
   chai_.add(chaiscript::fun(&GameState::healCharacter), "gameHealCharacter");
-
+  chai_.add(chaiscript::fun(&GameState::addItemToInventory),
+            "gameAddItemToInventory");
   chai_.add(chaiscript::fun(&GameState::addItem), "gameAddItem");
 
   chai_.add(chaiscript::fun(&GameState::setHeroCollisionCallback),
@@ -78,6 +73,8 @@ void initApi() {
 
   chai_.add(chaiscript::fun(&GameState::setCharacterPosition),
             "gameSetCharacterPosition");
+  chai_.add(chaiscript::fun(&GameState::setSpritePosition),
+            "gameSetSpritePosition");
   chai_.add(chaiscript::fun(&GameState::clearEvents), "gameClearEvents");
   chai_.add(chaiscript::fun(&GameState::registerTileEvent),
             "gameRegisterTileEvent");
@@ -89,10 +86,7 @@ entities::Sprite* spriteCollision(
     const std::unique_ptr<entities::Sprite>& sprite,
     const sf::FloatRect& collisionRect) {
   for (const auto& s : sprites()) {
-    if (s->phased()) {
-      continue;
-    }
-    if (s->id == sprite->id) {
+    if (!s || !s->active() || s->phased() || s->id == sprite->id) {
       continue;
     }
 
@@ -205,7 +199,7 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
 
   // Check sprite walkability
   for (const auto& s : sprites()) {
-    if (s->id == sprite->id) {
+    if (!s || !s->active() || s->id == sprite->id) {
       continue;
     }
     sf::FloatRect intersection;
@@ -241,6 +235,7 @@ bool initialized() { return initialized_; }
 bool loadMap(std::string path) {
   maps_.push(std::make_unique<Map>(path));
   sprites_.emplace();
+  sprites().emplace_back();
 
   return true;
 }
@@ -260,6 +255,18 @@ bool loadCharacter(std::string path, int tile, int initX, int initY) {
   // IDs will start at 1, the hero gets 0
   hero_->id = 0;
 
+  return true;
+}
+
+bool setSpritePosition(entities::Id spriteId, int x, int y) {
+  auto sprite = findSprite<entities::Sprite>(spriteId);
+  if (sprite == nullptr) {
+    return false;
+  }
+
+  sf::Vector2f p = map()->mapToPixel(x, y);
+
+  sprite->setPosition(p);
   return true;
 }
 
@@ -292,6 +299,20 @@ bool healCharacter(int amount) {
   return true;
 }
 
+bool addItemToInventory(entities::Id itemId) {
+  auto item = findSprite<entities::Item>(itemId, entities::SpriteType::ITEM);
+  if (item == nullptr) {
+    return false;
+  }
+  if (item->held()) {
+    LOG(ERROR) << "Item " << itemId << " is already held";
+    return false;
+  }
+  item->hold();
+  hero()->addItem(itemId);
+  return true;
+}
+
 template <typename T>
 unsigned int addSprite(const std::string& path, int tile, int x, int y) {
   sprites().push_back(std::make_unique<T>(path));
@@ -300,7 +321,7 @@ unsigned int addSprite(const std::string& path, int tile, int x, int y) {
                     y * GameState::map()->tileHeight());
   item->setTile(tile);
 
-  unsigned int spriteId = sprites().size();
+  unsigned int spriteId = sprites().size() - 1;
   item->id = spriteId;
   return spriteId;
 }

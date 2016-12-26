@@ -81,6 +81,9 @@ void Sprite::zeroVelocity(bool stopJump) {
 }
 
 void Sprite::update(sf::Time& time) {
+  if (!active()) {
+    return;
+  }
   time_ += time;
   if (time_ >= sf::milliseconds(500)) {
     int limit = textures_.size();
@@ -101,6 +104,9 @@ void Sprite::update(sf::Time& time) {
 }
 
 void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
+  if (!active()) {
+    return;
+  }
   int tile = tile_;
   if (!multiFile_) {
     tile += frame_;

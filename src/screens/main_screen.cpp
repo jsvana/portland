@@ -101,6 +101,9 @@ bool MainScreen::update(sf::Time& time) {
   GameState::hero()->update(time_);
   heroHealth_.setValue(GameState::hero()->hp());
   for (const auto& sprite : GameState::sprites()) {
+    if (!sprite || !sprite->active()) {
+      continue;
+    }
     sprite->update(time_);
   }
 
@@ -193,6 +196,9 @@ bool MainScreen::update(sf::Time& time) {
   }
 
   for (const auto& sprite : GameState::sprites()) {
+    if (!sprite || !sprite->active()) {
+      continue;
+    }
     auto dim = updateGravity(sprite);
     if (GameState::positionWalkable(sprite, dim)) {
       sprite->setDimensions(dim);
@@ -205,6 +211,9 @@ bool MainScreen::update(sf::Time& time) {
 void MainScreen::render(sf::RenderTarget& window) {
   GameState::map()->render(window, GameState::camera());
   for (const auto& sprite : GameState::sprites()) {
+    if (!sprite || !sprite->active()) {
+      continue;
+    }
     sprite->render(window, GameState::camera());
   }
   GameState::hero()->render(window, GameState::camera());

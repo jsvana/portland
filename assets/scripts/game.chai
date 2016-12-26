@@ -29,6 +29,8 @@ def update() {
 def heroCollision(otherId) {
   if (otherId == 1) {
     gameDamageCharacter(1);
+  } else if (otherId == 2) {
+    gameAddItemToInventory(otherId);
   }
 }
 
