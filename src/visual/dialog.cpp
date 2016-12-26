@@ -181,10 +181,10 @@ void Dialog::render(sf::RenderTarget& window) {
   for (auto& choiceText : choicesText_) {
     window.draw(choiceText);
   }
-  if (moreIndicator_ != nullptr) {
+  if (moreIndicator_) {
     window.draw(*moreIndicator_);
   }
-  if (choiceIndicator_ != nullptr) {
+  if (choiceIndicator_) {
     window.draw(*choiceIndicator_);
   }
 }

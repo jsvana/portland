@@ -273,7 +273,7 @@ bool loadCharacter(std::string path, int tile, int initX, int initY) {
 
 bool setSpritePosition(entities::Id spriteId, int x, int y) {
   auto sprite = findSprite<entities::Sprite>(spriteId);
-  if (sprite == nullptr) {
+  if (!sprite) {
     return false;
   }
 
@@ -353,7 +353,7 @@ entities::Item* getItem(const entities::Id itemId) {
 bool setNpcCallback(const entities::Id npcId,
                     entities::SpriteCallback callback) {
   auto npc = findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
-  if (npc == nullptr) {
+  if (!npc) {
     return false;
   }
   npc->callbackFunc = callback;
