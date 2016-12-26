@@ -25,7 +25,12 @@ def update() {
 
 def heroCollision(otherId) {
   if (otherId == 1) {
-    getHero().damage(1);
+    if (getFlag("hit_enemy")) {
+      print("already hit enemy");
+    } else {
+      getHero().damage(10);
+      setFlag("hit_enemy", true);
+    }
   } else if (otherId == 2) {
     var item = getItem(otherId);
     if (item.held()) {

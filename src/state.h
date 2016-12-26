@@ -386,4 +386,20 @@ bool registerTileEvent(int x, int y, TileCallback callback);
  * @return Whether the operation is successful
  */
 bool clearEvents();
+
+/**
+ * Set a global boolean game flag
+ *
+ * @param flag Flag to set
+ * @param value Value of flag
+ */
+void setFlag(const std::string& flag, bool value);
+
+/**
+ * Get a global boolean game flag
+ *
+ * @param flag Flag to get
+ * @return Value of flag or false if not set
+ */
+bool getFlag(const std::string& flag);
 }

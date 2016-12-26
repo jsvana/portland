@@ -24,6 +24,8 @@ int velocityY_ = 0;
 
 unsigned int lastId = 1;
 
+std::unordered_map<std::string, bool> flags_;
+
 // Stack is used to mimick maps_
 std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 
@@ -83,6 +85,9 @@ void initApi() {
   ADD_FUNCTION(getSprite);
   ADD_FUNCTION(getNpc);
   ADD_FUNCTION(getItem);
+
+  ADD_FUNCTION(getFlag);
+  ADD_FUNCTION(setFlag);
 }
 
 sf::Vector2f& camera() { return camera_; }
@@ -376,6 +381,16 @@ bool registerTileEvent(int x, int y, TileCallback callback) {
 bool clearEvents() {
   clearTileEvents();
   return true;
+}
+
+void setFlag(const std::string& flag, bool value) { flags_[flag] = value; }
+
+bool getFlag(const std::string& flag) {
+  const auto iter = flags_.find(flag);
+  if (iter == flags_.end()) {
+    return false;
+  }
+  return iter->second;
 }
 
 }  // namespace GameState
