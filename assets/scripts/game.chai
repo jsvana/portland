@@ -16,6 +16,8 @@ def init() {
 
   registerTileEvent(9, 6, showSign);
   addFlagChangeCallback("hit_enemy", flagChange);
+  setValue("hero_money", 0);
+  addValueChangeCallback("hero_money", moneyChange);
 }
 
 def update() {
@@ -26,6 +28,11 @@ def update() {
 
 def flagChange(newVal) {
   print("hit_enemy changed");
+  print(newVal);
+}
+
+def moneyChange(newVal) {
+  print("new money value");
   print(newVal);
 }
 
@@ -44,6 +51,7 @@ def heroCollision(otherId) {
     }
     item.hold();
     getHero().addItem(otherId);
+    setValue("hero_money", getValue("hero_money") + 10);
   }
 }
 

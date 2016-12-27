@@ -21,6 +21,7 @@ namespace GameState {
 
 typedef std::function<void()> TileCallback;
 typedef std::function<void(bool)> FlagChangeCallback;
+typedef std::function<void(int)> ValueChangeCallback;
 
 const int GRAVITY = 2;
 
@@ -392,7 +393,7 @@ bool clearEvents();
  * Set a global boolean game flag
  *
  * @param flag Flag to set
- * @param value Value of flag
+ * @param value New value
  */
 void setFlag(const std::string& flag, bool value);
 
@@ -404,10 +405,56 @@ void setFlag(const std::string& flag, bool value);
  */
 bool getFlag(const std::string& flag);
 
+/**
+ * Gets the list of callbacks attached to a flag change
+ *
+ * @param flag Flag to find callbacks for
+ * @return List of callbacks (empty if no callbacks found)
+ */
 const std::list<FlagChangeCallback> flagChangeCallbacks(
     const std::string& flag);
 
+/**
+ * Attaches a callback to fire when the given flag changes
+ *
+ * @param flag Flag to attach change callback to
+ * @param func Change callback
+ */
 void addFlagChangeCallback(const std::string& flag,
                            const FlagChangeCallback& func);
+
+/**
+ * Set a global integer game value
+ *
+ * @param key Value key to set
+ * @param value New value
+ */
+void setValue(const std::string& key, const int value);
+
+/**
+ * Get a global integer game value
+ *
+ * @param key Key to get
+ * @return Value or 0 if not set
+ */
+int getValue(const std::string& key);
+
+/**
+ * Gets the list of callbacks attached to a value change
+ *
+ * @param key Value key to find callbacks for
+ * @return List of callbacks (empty if no callbacks found)
+ */
+const std::list<ValueChangeCallback> valueChangeCallbacks(
+    const std::string& key);
+
+/**
+ * Attaches a callback to fire when the given value changes
+ *
+ * @param key Value key to attach change callback to
+ * @param func Change callback
+ */
+void addValueChangeCallback(const std::string& key,
+                            const ValueChangeCallback& func);
 
 }  // namespace GameState

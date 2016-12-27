@@ -26,6 +26,10 @@ std::unordered_map<std::string, bool> flags_;
 std::unordered_map<std::string, std::list<FlagChangeCallback>>
     flagChangeCallbacks_;
 
+std::unordered_map<std::string, int> values_;
+std::unordered_map<std::string, std::list<ValueChangeCallback>>
+    valueChangeCallbacks_;
+
 // Stack is used to mimick maps_
 std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 
@@ -89,6 +93,10 @@ void initApi() {
   ADD_FUNCTION(getFlag);
   ADD_FUNCTION(setFlag);
   ADD_FUNCTION(addFlagChangeCallback);
+
+  ADD_FUNCTION(getValue);
+  ADD_FUNCTION(setValue);
+  ADD_FUNCTION(addValueChangeCallback);
 }
 
 sf::Vector2f& camera() { return camera_; }
@@ -412,6 +420,35 @@ const std::list<FlagChangeCallback> flagChangeCallbacks(
 void addFlagChangeCallback(const std::string& flag,
                            const FlagChangeCallback& func) {
   flagChangeCallbacks_[flag].push_back(func);
+}
+
+void setValue(const std::string& key, const int value) {
+  values_[key] = value;
+  for (auto& callback : valueChangeCallbacks(key)) {
+    callback(value);
+  }
+}
+
+int getValue(const std::string& key) {
+  const auto iter = values_.find(flag);
+  if (iter == values_.end()) {
+    return 0;
+  }
+  return iter->second;
+}
+
+const std::list<ValueChangeCallback> valueChangeCallbacks(
+    const std::string& key) {
+  const auto iter = valueChangeCallbacks_.find(key);
+  if (iter == valueChangeCallbacks_.end()) {
+    return std::list<ValueChangeCallback>();
+  }
+  return iter->second;
+}
+
+void addValueChangeCallback(const std::string& key,
+                            const ValueChangeCallback& func) {
+  valueChangeCallbacks_[key].push_back(func);
 }
 
 }  // namespace GameState
