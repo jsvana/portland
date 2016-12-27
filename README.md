@@ -12,7 +12,7 @@ There are two defined methods that will be called in the game's script: `init()`
 
 For interactions, there are a few functions:
 
-```ChaiScript
+```c++
 // Loads a new map and pushes it on the map stack
 loadMap(string path);
 
@@ -68,7 +68,9 @@ To get an integer or boolean you must use:
 
 Build configuration uses [bfg9000](https://github.com/jimporter/bfg9000):
 
-   pip install bfg9000
+```
+pip install bfg9000
+```
 
 Packages: `ninja`, `sfml`, and `google-glog`.
 
@@ -76,13 +78,17 @@ Packages: `ninja`, `sfml`, and `google-glog`.
 
 ### Linux/Mac
 
-    $ ./scripts/run
+```
+$ ./scripts/run
+```
 
 ### Windows
 
 Ensure that run.bat is correctly pointing to all required libraries
 
-    $ ./scripts/run.bat
+```
+$ ./scripts/run.bat
+```
 
 ## Credits
 
