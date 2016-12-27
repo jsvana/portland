@@ -430,7 +430,7 @@ void setValue(const std::string& key, const int value) {
 }
 
 int getValue(const std::string& key) {
-  const auto iter = values_.find(flag);
+  const auto iter = values_.find(key);
   if (iter == values_.end()) {
     return 0;
   }
