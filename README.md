@@ -4,64 +4,92 @@ A basic sidescrolling platformer (metroidvania).
 
 ## Scripting
 
-This game has a Lua API. You can see how it works by looking in [assets/scripts/game.lua].
+This game has a ChaiScript API. You can see how it works by looking in [assets/scripts/game.chai](assets/scripts/game.chai).
 
-    TODO(jsvana): fill out Lua API docs
+### Quick Start
 
-### Lua Console
+There are two defined methods that will be called in the game's script: `init()` and `update()` (neither take arguments). In each of these you can interact with the world and add event callbacks.
+
+For interactions, there are a few functions:
+
+```ChaiScript
+// Loads a new map and pushes it on the map stack
+loadMap(string path);
+
+// Loads a character and moves the camera to the character's position.
+loadCharacter(string path, int x, int y, int tile);
+
+// Creates an event to trigger on hitting the tile.
+registerTileEvent(int x, int y, func callback);
+
+// Get and set global game flags.
+getFlag(string flag);
+setFlag(string flag, bool value);
+
+// Get and set global game values.
+getValue(string key);
+setValue(string key, int value);
+
+// Add callbacks to fire when flags and values change.
+addFlagChangeCallback(string flag, func callback);
+addValueChangeCallback(string key, func callback);
+
+// Get various game sprites. Returned objects should support all expected methods and properties.
+getHero();
+getSprite(int id);
+getNpc(int id);
+getItem(int id);
+```
+
+### ChaiScript Console
 
 The game also supports mutating game state from an in-game console. To use the console, open it with Ctrl-C.
 
-To run a Lua statement:
+To run a ChaiScript statement:
 
-    > run x = "foo"
+    > run global x = "foo";
 
-To get a top-level Lua value as a string:
+To get a top-level ChaiScript value as a string:
 
     > get x
     -> foo
 
 To get an integer or boolean you must use:
 
-    > run x = 5
+    > run x = 5;
     > geti x
     -> 5
 
-    > run x = true
+    > run x = true;
     > getb x
     -> 5
 
-These are necessary because we cannot peak at the type of the Lua value in C++.
-
 ## Dependencies
 
-### OSX
+Build configuration uses [bfg9000](https://github.com/jimporter/bfg9000):
 
-Xcode (Tested with 6.1.1)
+   pip install bfg9000
 
-`brew install cmake sfml glog`
-
-### Linux
-
-Packages: `cmake`, `sfml`, and `google-glog`
+Packages: `ninja`, `sfml`, and `google-glog`.
 
 ## Build and run
 
-# Linux/Mac
+### Linux/Mac
 
     $ ./scripts/run
 
-# Windows
+### Windows
+
 Ensure that run.bat is correctly pointing to all required libraries
 
     $ ./scripts/run.bat
 
 ## Credits
 
-Borrowed from [Will Ushers SDL2 Tutorials](http://www.willusher.io/sdl2%20tutorials/2014/03/06/lesson-0-cmake/)
+Thanks to:
 
-Thanks to @nlohmann for [json](https://github.com/nlohmann/json)
+- [@lefticus](https://github.com/lefticus) for [ChaiScript](https://github.com/ChaiScript/ChaiScript)
 
-Thanks to @jeremyong for [Selene](https://github.com/jeremyong/Selene)
+- [@nlohmann](https://github.com/nlohmann) for [json](https://github.com/nlohmann/json)
 
-Thanks to [The Chayed - KIIRA](http://opengameart.org/users/the-chayed-kiira) for the tileset
+- [The Chayed - KIIRA](http://opengameart.org/users/the-chayed-kiira) for the tileset
