@@ -14,7 +14,8 @@ def init() {
 
   getHero().setCollisionCallback(heroCollision);
 
-  registerTileEvent(9, 6, showSign);
+  registerTileEvent(9, 6, showSign, /*clearOnFire = */true);
+  registerTileEvent(11, 3, randomCallback, /*clearOnFire = */false);
   addFlagChangeCallback("hit_enemy", flagChange);
   setValue("hero_money", 0);
   addValueChangeCallback("hero_money", moneyChange);
@@ -56,7 +57,11 @@ def heroCollision(otherId) {
 }
 
 def showSign() {
-  var id = showDialog("Are you reading this sign?");
+  showDialog("Are you reading this sign?");
+}
+
+def randomCallback() {
+  print("touching lava!");
 }
 
 def dialogCallback(choice) {

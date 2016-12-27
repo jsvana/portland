@@ -14,6 +14,7 @@
 #include <memory>
 #include <stack>
 #include <string>
+#include <tuple>
 #include <unordered_map>
 #include <vector>
 
@@ -160,8 +161,9 @@ chaiscript::ChaiScript& chai();
  *
  * @param id Tile ID to add callback to
  * @param callback Name of ChaiScript callback function
+ * @param clearOnFire If true, remove this callback after it is first triggered
  */
-void addTileEvent(int id, TileCallback callback);
+void addTileEvent(int id, TileCallback callback, bool clearOnFire);
 
 /**
  * Checks if given tile ID has an event
@@ -176,7 +178,7 @@ bool tileHasEvent(int id);
  * @param id Tile ID to get callback function for
  * @return ChaiScript callback function name
  */
-const TileCallback& tileCallback(int id);
+const std::tuple<TileCallback, bool>& tileCallback(int id);
 
 /**
  * Clears an event for a specific tile
@@ -378,9 +380,10 @@ bool setDialogCallback(visual::DialogManager::Id uid,
  * @param x X coordinate of tile
  * @param y Y coordinate of tile
  * @param callback Name of ChaiScript callback function to run on contact
+ * @param clearOnFire If true, remove this callback after it is first triggered
  * @return Whether the operation is successful
  */
-bool registerTileEvent(int x, int y, TileCallback callback);
+bool registerTileEvent(int x, int y, TileCallback callback, bool clearOnFire);
 
 /**
  * Clears all registered tile events

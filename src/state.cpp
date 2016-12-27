@@ -35,7 +35,7 @@ std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 
 std::stack<std::unique_ptr<map::Map>> maps_;
 
-std::unordered_map<int, TileCallback> tileEvents_;
+std::unordered_map<int, std::tuple<TileCallback, bool>> tileEvents_;
 
 chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
@@ -187,11 +187,15 @@ const std::unique_ptr<map::Map>& map() { return maps_.top(); }
 
 chaiscript::ChaiScript& chai() { return chai_; }
 
-void addTileEvent(int id, TileCallback callback) { tileEvents_[id] = callback; }
+void addTileEvent(int id, TileCallback callback, bool clearOnFire) {
+  tileEvents_[id] = std::make_tuple(callback, clearOnFire);
+}
 
 bool tileHasEvent(int id) { return tileEvents_.find(id) != tileEvents_.end(); }
 
-const TileCallback& tileCallback(int id) { return tileEvents_[id]; }
+const std::tuple<TileCallback, bool>& tileCallback(int id) {
+  return tileEvents_[id];
+}
 
 void clearTileEvent(int id) { tileEvents_.erase(id); }
 
@@ -203,9 +207,11 @@ void runTileEvent() {
     return;
   }
 
-  TileCallback callback = tileCallback(tileNumber);
-  callback();
-  clearTileEvent(tileNumber);
+  auto p = tileCallback(tileNumber);
+  std::get<TileCallback>(p)();
+  if (std::get<bool>(p)) {
+    clearTileEvent(tileNumber);
+  }
 }
 
 bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
@@ -383,8 +389,8 @@ bool setDialogCallback(visual::DialogManager::Id uid,
   return visual::DialogManager::setDialogCallback(uid, callback);
 }
 
-bool registerTileEvent(int x, int y, TileCallback callback) {
-  addTileEvent(map()->mapPointToTileNumber(x, y), callback);
+bool registerTileEvent(int x, int y, TileCallback callback, bool clearOnFire) {
+  addTileEvent(map()->mapPointToTileNumber(x, y), callback, clearOnFire);
   return true;
 }
 
