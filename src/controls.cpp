@@ -10,14 +10,11 @@ std::unordered_map<util::Direction, std::vector<sf::Keyboard::Key>>
 std::vector<sf::Keyboard::Key> jumpKeys;
 
 void init() {
-  directionKeys[util::Direction::UP].push_back(sf::Keyboard::Up);
-  directionKeys[util::Direction::UP].push_back(sf::Keyboard::W);
-  directionKeys[util::Direction::DOWN].push_back(sf::Keyboard::Down);
-  directionKeys[util::Direction::DOWN].push_back(sf::Keyboard::S);
-  directionKeys[util::Direction::LEFT].push_back(sf::Keyboard::Left);
-  directionKeys[util::Direction::LEFT].push_back(sf::Keyboard::A);
-  directionKeys[util::Direction::RIGHT].push_back(sf::Keyboard::Right);
-  directionKeys[util::Direction::RIGHT].push_back(sf::Keyboard::D);
+  directionKeys[util::Direction::UP] = {sf::Keyboard::Up, sf::Keyboard::W};
+  directionKeys[util::Direction::DOWN] = {sf::Keyboard::Down, sf::Keyboard::S};
+  directionKeys[util::Direction::LEFT] = {sf::Keyboard::Left, sf::Keyboard::A};
+  directionKeys[util::Direction::RIGHT] = {sf::Keyboard::Right,
+                                           sf::Keyboard::D};
 
   jumpKeys.push_back(sf::Keyboard::Up);
   jumpKeys.push_back(sf::Keyboard::W);
