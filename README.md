@@ -99,3 +99,7 @@ Thanks to:
 - [@nlohmann](https://github.com/nlohmann) for [json](https://github.com/nlohmann/json)
 
 - [The Chayed - KIIRA](http://opengameart.org/users/the-chayed-kiira) for the tileset
+
+## License
+
+[MIT](LICENSE)
