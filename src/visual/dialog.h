@@ -26,8 +26,8 @@ class Dialog {
   const int TEXT_PADDING = 10;
 
   // TODO(jsvana): make these dynamic based on size of dialog
-  const unsigned int LINE_LENGTH = 31;
-  const unsigned int VISIBLE_LINES = 3;
+  const unsigned int LINE_LENGTH = 25;
+  const unsigned int VISIBLE_LINES = 2;
 
   // Indicator animation constants
   const util::Tick FRAME_TICKS_INTERVAL = 24;
@@ -37,7 +37,7 @@ class Dialog {
   std::unique_ptr<map::Map> map_;
 
   // Dialog message to display
-  std::string message_;
+  const std::string message_;
 
   // Choices in dialog
   std::vector<std::string> choices_;
@@ -72,6 +72,8 @@ class Dialog {
   // Used for debouncing input
   unsigned int selectFrames_;
 
+  std::deque<sf::Text> buildLines(const std::string& message);
+
   /**
    * Changes dialog text position, shows and hides indicators, and shows
    * options
@@ -83,7 +85,7 @@ class Dialog {
   // ChaiScript function to call after dialog is complete
   DialogCallback callbackFunc;
 
-  Dialog(std::string message);
+  Dialog(const std::string& message);
 
   /**
    * Add options to the dialog
@@ -114,37 +116,28 @@ class Dialog {
    * @param x New x coordinate of dialog
    * @param y New y coordinate of dialog
    */
-  void setPosition(int x, int y);
-
-  /**
-   * Sets dialog position with a sf::Vector2f
-   *
-   * @param position Point of new dialog position
-   */
-  void setPosition(sf::Vector2f position);
+  void setPosition(const int x, const int y);
 
   /**
    * Gets dialog width in pixels
    *
    * @return Dialog width in pixels
    */
-  int pixelWidth() { return map_->pixelWidth(); }
+  int pixelWidth() const { return map_->pixelWidth(); }
 
   /**
    * Gets dialog height in pixels
    *
    * @return Dialog height in pixels
    */
-  int pixelHeight() { return map_->pixelHeight(); }
+  int pixelHeight() const { return map_->pixelHeight(); }
 
   /**
    * Sets dialog text color
    *
    * @param color New dialog text color
    */
-  // TODO(jsvana): Actually set all the colors
-  // and the default color here
-  void setColor(sf::Color color) {
+  void setColor(const sf::Color color) {
     for (auto& line : lines_) {
       line.setColor(color);
     }
@@ -158,7 +151,7 @@ class Dialog {
    * @param time Amount of time since last update
    * @return Whether dialog is still open or not
    */
-  bool update(sf::Time& time);
+  bool update(const sf::Time& time);
 
   /**
    * Renders the dialog
@@ -235,7 +228,7 @@ void handleEvent(sf::Event& event);
  * @param time Amount of time since last update
  * @return Whether dialogs are cleared
  */
-bool update(sf::Time& time);
+bool update(const sf::Time& time);
 
 /**
  * Renders the first dialog in the queue

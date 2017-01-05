@@ -57,7 +57,8 @@ def heroCollision(otherId) {
 }
 
 def showSign() {
-  showDialog("Are you reading this sign?");
+  /*showDialog("Are you reading this sign?");*/
+  showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");
 }
 
 def randomCallback() {

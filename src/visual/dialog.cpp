@@ -2,7 +2,8 @@
 
 namespace visual {
 
-Dialog::Dialog(std::string message) : message_(message) {
+Dialog::Dialog(const std::string& message)
+    : message_(message), lines_(buildLines(message_)) {
   font_.loadFromFile("assets/fonts/arcade.ttf");
   map_ = std::make_unique<map::Map>("assets/maps/dialog.json");
   map_->setPosition(position_.x, position_.y);
@@ -12,8 +13,18 @@ Dialog::Dialog(std::string message) : message_(message) {
   selectedChoice_ = -1;
 
   // Split the message into lines
-  std::string tmp(message);
-  while (tmp.length() > 0) {
+
+  reflowText();
+
+  // Debounce input at the start
+  selectFrames_ = FRAME_DEBOUNCE_DELAY;
+}
+
+std::deque<sf::Text> Dialog::buildLines(const std::string& message) {
+  std::deque<sf::Text> lines;
+  std::string tmp = message;
+
+  while (!tmp.empty()) {
     std::string line;
     if (tmp.length() > LINE_LENGTH) {
       // Split on last space
@@ -36,13 +47,10 @@ Dialog::Dialog(std::string message) : message_(message) {
 
     text.setColor(sf::Color::White);
 
-    lines_.push_back(text);
+    lines.push_back(text);
   }
 
-  reflowText();
-
-  // Debounce input at the start
-  selectFrames_ = FRAME_DEBOUNCE_DELAY;
+  return lines;
 }
 
 void Dialog::addOptions(const std::vector<std::string>& choices) {
@@ -55,7 +63,7 @@ void Dialog::addOptions(const std::vector<std::string>& choices) {
   reflowText();
 }
 
-void Dialog::setPosition(int x, int y) {
+void Dialog::setPosition(const int x, const int y) {
   position_.x = x;
   position_.y = y;
 
@@ -152,7 +160,7 @@ void Dialog::handleEvent(sf::Event& event) {
   }
 }
 
-bool Dialog::update(sf::Time& time) {
+bool Dialog::update(const sf::Time& time) {
   if (selectFrames_ > 0) {
     selectFrames_ -= 1;
   }
@@ -245,7 +253,7 @@ void handleEvent(sf::Event& event) {
   dialogs.front()->handleEvent(event);
 }
 
-bool update(sf::Time& time) {
+bool update(const sf::Time& time) {
   if (dialogs.empty()) {
     return false;
   }
