@@ -11,7 +11,8 @@
 namespace visual {
 
 namespace Console {
-const unsigned int MAX_HISTORY = 3;
+
+const std::size_t MAX_HISTORY = 3;
 const float MARGIN = 2;
 const float PADDING = 2;
 const int FONT_SIZE = 8;

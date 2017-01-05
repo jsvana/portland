@@ -90,7 +90,7 @@ void initialize() {
   prompt_.setString(">");
   prompt_.setColor(sf::Color::White);
 
-  auto size = prompt_.getGlobalBounds();
+  const auto size = prompt_.getGlobalBounds();
   command_.setFont(font_);
   command_.setCharacterSize(FONT_SIZE);
   command_.setPosition(MARGIN + 2 * size.width, MARGIN);
@@ -180,7 +180,7 @@ void render(sf::RenderTarget& window) {
   window.draw(prompt_);
   window.draw(command_);
 
-  auto size = command_.getGlobalBounds();
+  const auto size = command_.getGlobalBounds();
 
   if (cursor_) {
     sf::RectangleShape cursor;
@@ -191,7 +191,7 @@ void render(sf::RenderTarget& window) {
   }
 
   float y = MARGIN + 2 * promptSize.height + PADDING;
-  for (unsigned int i = 0; i < outputs_.size(); i++) {
+  for (std::size_t i = 0; i < std::min(outputs_.size(), MAX_HISTORY); i++) {
     outputs_[i].setPosition(MARGIN, y);
     window.draw(outputs_[i]);
     y += 2 * outputs_[i].getGlobalBounds().height + PADDING;
