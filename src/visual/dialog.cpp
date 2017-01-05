@@ -1,5 +1,7 @@
 #include "dialog.h"
 
+#include <algorithm>
+
 namespace visual {
 
 Dialog::Dialog(const std::string& message)
@@ -10,7 +12,7 @@ Dialog::Dialog(const std::string& message)
 
   indicatorOffset_ = 0;
   lineIndex_ = 0;
-  selectedChoice_ = -1;
+  selectedChoice_ = 0;
 
   // Split the message into lines
 
@@ -89,40 +91,37 @@ void Dialog::reflowText() {
   }
 
   // Reposition all visible lines
-  unsigned int i = 0;
-  for (auto& line : lines_) {
-    line.setPosition(TEXT_PADDING, y);
-    y += line.getGlobalBounds().height;
-    if (i == VISIBLE_LINES) {
-      break;
-    }
-    i += 1;
+  for (std::size_t i = 0; i < VISIBLE_LINES; i++) {
+    lines_[i].setPosition(TEXT_PADDING, y);
+    y += lines_[i].getGlobalBounds().height;
   }
 
   // Position and show choices and choice indicator
-  if (lines_.size() == VISIBLE_LINES - 1) {
-    if (!choiceIndicator_) {
-      choiceIndicator_ = std::make_unique<sf::Text>();
-      choiceIndicator_->setFont(font_);
+  if (lines_.size() != VISIBLE_LINES - 1) {
+    return;
+  }
+
+  if (!choiceIndicator_) {
+    choiceIndicator_ = std::make_unique<sf::Text>();
+    choiceIndicator_->setFont(font_);
+  }
+  int offset = 0;
+  int padding = 10;
+  for (std::size_t i = 0; i < choices_.size(); i++) {
+    sf::Text choiceText;
+    choiceText.setFont(font_);
+    choiceText.setString(choices_[i]);
+    choiceText.setColor(sf::Color::White);
+    const auto dim = choiceText.getGlobalBounds();
+    offset += dim.width + padding;
+    if (i == selectedChoice_) {
+      choiceIndicator_->setPosition(position_.x + pixelWidth() - offset -
+                                        dim.width - indicatorOffset_ + 2,
+                                    position_.y + pixelHeight() - dim.height);
     }
-    int offset = 0;
-    int padding = 10;
-    for (unsigned int i = 0; i < choices_.size(); i++) {
-      sf::Text choiceText;
-      choiceText.setFont(font_);
-      choiceText.setString(choices_[i]);
-      choiceText.setColor(sf::Color::White);
-      auto dim = choiceText.getGlobalBounds();
-      offset += dim.width + padding;
-      if (i == (unsigned int)selectedChoice_) {
-        choiceIndicator_->setPosition(position_.x + pixelWidth() - offset -
-                                          dim.width - indicatorOffset_ + 2,
-                                      position_.y + pixelHeight() - dim.height);
-      }
-      choiceText.setPosition(position_.x + pixelWidth() - offset,
-                             position_.y + pixelHeight() - dim.height);
-      choicesText_.push_back(choiceText);
-    }
+    choiceText.setPosition(position_.x + pixelWidth() - offset,
+                           position_.y + pixelHeight() - dim.height);
+    choicesText_.push_back(choiceText);
   }
 }
 
@@ -135,7 +134,6 @@ void Dialog::handleEvent(sf::Event& event) {
           break;
         }
         selectedChoice_ = (selectedChoice_ - 1) % choices_.size();
-        reflowText();
         break;
       case sf::Keyboard::Right:
       case sf::Keyboard::D:
@@ -143,7 +141,6 @@ void Dialog::handleEvent(sf::Event& event) {
           break;
         }
         selectedChoice_ = (selectedChoice_ + 1) % choices_.size();
-        reflowText();
         break;
       case sf::Keyboard::Return:
         lineIndex_ += 1;
@@ -152,11 +149,11 @@ void Dialog::handleEvent(sf::Event& event) {
         } else {
           completed_ = true;
         }
-        reflowText();
         break;
       default:
-        break;
+        return;
     }
+    reflowText();
   }
 }
 
@@ -178,13 +175,8 @@ bool Dialog::update(const sf::Time& time) {
 
 void Dialog::render(sf::RenderTarget& window) {
   map_->render(window, camera_);
-  unsigned int i = 0;
-  for (auto& line : lines_) {
-    window.draw(line);
-    i += 1;
-    if (i == VISIBLE_LINES) {
-      break;
-    }
+  for (std::size_t i = 0; i < std::min(VISIBLE_LINES, lines_.size()); i++) {
+    window.draw(lines_[i]);
   }
   for (auto& choiceText : choicesText_) {
     window.draw(choiceText);
@@ -213,16 +205,15 @@ Id queueDialog(Dialog* dialog) {
 }
 
 Dialog* getDialogByUid(const Id uid) {
-  for (unsigned int i = 0; i < dialogs.size(); i++) {
+  for (std::size_t i = 0; i < dialogs.size(); i++) {
     if (uids[i] == uid) {
       return dialogs[i].get();
-      ;
     }
   }
   return nullptr;
 }
 
-bool addDialogOption(const Id uid, std::string option) {
+bool addDialogOption(const Id uid, const std::string& option) {
   const auto& dialog = getDialogByUid(uid);
   if (!dialog) {
     return false;

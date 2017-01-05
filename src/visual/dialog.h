@@ -27,7 +27,7 @@ class Dialog {
 
   // TODO(jsvana): make these dynamic based on size of dialog
   const unsigned int LINE_LENGTH = 25;
-  const unsigned int VISIBLE_LINES = 2;
+  const std::size_t VISIBLE_LINES = 2;
 
   // Indicator animation constants
   const util::Tick FRAME_TICKS_INTERVAL = 24;
@@ -50,7 +50,7 @@ class Dialog {
   // "No")
   std::vector<sf::Text> choicesText_;
 
-  int selectedChoice_;
+  std::size_t selectedChoice_;
 
   bool completed_ = false;
 
@@ -188,7 +188,7 @@ Dialog* getDialogByUid(const Id uid);
  * @param option Option to add
  * @return Whether operation was successful
  */
-bool addDialogOption(const Id uid, std::string option);
+bool addDialogOption(const Id uid, const std::string& option);
 
 /**
  * Wrapper to set a dialog's callback function by UID
