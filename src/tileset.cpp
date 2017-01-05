@@ -95,7 +95,7 @@ bool Tileset::ladder(TileId tile) {
   return tiles_[tile - firstGid_].ladder;
 }
 
-bool Tileset::update(sf::Time& time) {
+bool Tileset::update(const sf::Time& time) {
   time_ += time;
   if (time_ >= sf::milliseconds(500)) {
     for (auto& tile : tiles_) {

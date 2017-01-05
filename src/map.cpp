@@ -26,11 +26,11 @@ bool Map::load(const std::string& path) {
   fileData << mapfile.rdbuf();
   mapfile.close();
 
-  auto mapBasePath = path.substr(0, path.find_last_of("/"));
-  auto mapData = nlohmann::json::parse(fileData.str());
+  const auto mapBasePath = path.substr(0, path.find_last_of("/"));
+  const auto mapData = nlohmann::json::parse(fileData.str());
 
-  auto tilesets = mapData["tilesets"].get<std::vector<nlohmann::json>>();
-  for (auto& tileset : tilesets) {
+  const auto tilesets = mapData["tilesets"].get<std::vector<nlohmann::json>>();
+  for (const auto& tileset : tilesets) {
     tilesets_.push_back(std::make_unique<Tileset>(mapBasePath, tileset));
   }
 
@@ -42,8 +42,8 @@ bool Map::load(const std::string& path) {
   mapPixelWidth_ = mapWidth_ * tileWidth_;
   mapPixelHeight_ = mapHeight_ * tileHeight_;
 
-  auto layers = mapData["layers"].get<std::vector<nlohmann::json>>();
-  for (auto& layer : layers) {
+  const auto layers = mapData["layers"].get<std::vector<nlohmann::json>>();
+  for (const auto& layer : layers) {
     layers_.push_back(MapLayer(layer));
   }
 
@@ -55,7 +55,7 @@ void Map::ensurePointInMap(sf::Vector2f& p) {
   util::clamp<float>(p.y, 0, mapHeight_ - 1);
 }
 
-sf::Vector2f Map::mapToPixel(int x, int y) {
+sf::Vector2f Map::mapToPixel(const int x, const int y) {
   sf::Vector2f pixelPosition(x, y);
   ensurePointInMap(pixelPosition);
   pixelPosition.x *= tileWidth_;
@@ -63,7 +63,7 @@ sf::Vector2f Map::mapToPixel(int x, int y) {
   return pixelPosition;
 }
 
-sf::Vector2f Map::pixelToMap(int x, int y) {
+sf::Vector2f Map::pixelToMap(const int x, const int y) {
   sf::Vector2f mapPosition(x, y);
   mapPosition.x = (int)(mapPosition.x / tileWidth_);
   mapPosition.y = (int)(mapPosition.y / tileHeight_);
@@ -71,7 +71,8 @@ sf::Vector2f Map::pixelToMap(int x, int y) {
   return mapPosition;
 }
 
-std::set<TileId> Map::hitTiles(int x, int y, int w, int h) {
+std::set<TileId> Map::hitTiles(const int x, const int y, const int w,
+                               const int h) {
   auto topLeft = pixelToMap(x, y);
   auto bottomRight = pixelToMap(x + w - 1, y + h - 1);
 
@@ -91,7 +92,7 @@ std::set<TileId> Map::hitTiles(int x, int y, int w, int h) {
   return tiles;
 }
 
-float Map::positionOfTileAbove(sf::FloatRect dim) {
+float Map::positionOfTileAbove(const sf::FloatRect dim) {
   auto topLeft = pixelToMap(dim.left, dim.top);
   auto topRight = pixelToMap(dim.left + dim.width - 1, dim.top);
 
@@ -111,7 +112,7 @@ float Map::positionOfTileAbove(sf::FloatRect dim) {
   return 0;
 }
 
-float Map::positionOfTileBelow(sf::FloatRect dim) {
+float Map::positionOfTileBelow(const sf::FloatRect dim) {
   auto bottomLeft = pixelToMap(dim.left, dim.top + dim.height - 1);
   auto bottomRight =
       pixelToMap(dim.left + dim.width - 1, dim.top + dim.height - 1);
@@ -132,7 +133,7 @@ float Map::positionOfTileBelow(sf::FloatRect dim) {
   return std::numeric_limits<float>::max();
 }
 
-bool Map::isLadder(sf::FloatRect dim) {
+bool Map::isLadder(const sf::FloatRect dim) {
   auto pos = pixelToMap(dim.left, dim.top);
   for (int i = (int)layers_.size() - 1; i >= 0; i--) {
     const auto tile = layers_[i].tileAt(pos.x, pos.y);
@@ -143,7 +144,7 @@ bool Map::isLadder(sf::FloatRect dim) {
   return false;
 }
 
-bool Map::positionWalkable(int x, int y, int w, int h) {
+bool Map::positionWalkable(const int x, const int y, const int w, const int h) {
   // Default bounds detection
   if (x < 0 || y < 0 || x + w > mapPixelWidth_ || y + h > mapPixelHeight_) {
     return false;
@@ -187,7 +188,7 @@ bool Map::walkable(const TileId tile) {
   return tileset->walkable(tile);
 }
 
-bool Map::update(sf::Time& time) {
+bool Map::update(const sf::Time& time) {
   for (const auto& tileset : tilesets_) {
     tileset->update(time);
   }
@@ -195,7 +196,7 @@ bool Map::update(sf::Time& time) {
   return true;
 }
 
-void Map::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
+void Map::render(sf::RenderTarget& window, const sf::Vector2f cameraPos) {
   int xStart, xEnd;
   int yStart, yEnd;
   xStart = 0;

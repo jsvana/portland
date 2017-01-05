@@ -28,7 +28,7 @@ class MapLayer {
    * @param y Y coordinate of tile
    * @return Tile number of tile at point
    */
-  TileId tileAt(int x, int y) { return tiles[y][x]; }
+  TileId tileAt(const int x, const int y) { return tiles[y][x]; }
 
   /**
    * Gets the tile at a given sf::Vector2f
@@ -36,7 +36,7 @@ class MapLayer {
    * @param p Location of tile
    * @return Tile number of tile at point
    */
-  TileId tileAt(sf::Vector2f p) { return tileAt(p.x, p.y); }
+  TileId tileAt(const sf::Vector2f p) { return tileAt(p.x, p.y); }
 };
 
 /**
@@ -88,7 +88,7 @@ class Map {
    * @param h Height of rectangle
    * @return Set of hit tiles
    */
-  std::set<TileId> hitTiles(int x, int y, int w, int h);
+  std::set<TileId> hitTiles(const int x, const int y, const int w, const int h);
 
   /**
    * Takes a rectangle in screen space and returns a list of tiles in
@@ -97,7 +97,7 @@ class Map {
    * @param rect Rectangle to check
    * @return Set of hit tiles
    */
-  std::set<TileId> hitTiles(sf::FloatRect rect) {
+  std::set<TileId> hitTiles(const sf::FloatRect rect) {
     return hitTiles(rect.left, rect.top, rect.width, rect.height);
   }
 
@@ -108,7 +108,7 @@ class Map {
    * @param tile Tile to get tileset for
    * @return Tileset for tile or nullptr if not found
    */
-  Tileset* tilesetForTile(TileId tile);
+  Tileset* tilesetForTile(const TileId tile);
 
   /**
    * Checks if tile is walkable
@@ -116,7 +116,7 @@ class Map {
    * @param tile Tile to check
    * @return Whether tile is walkable
    */
-  bool walkable(TileId tile);
+  bool walkable(const TileId tile);
 
   /**
    * Checks if tile is a ladder
@@ -124,7 +124,7 @@ class Map {
    * @param tile Tile to check
    * @return Whether tile is a ladder
    */
-  bool ladder(TileId tile);
+  bool ladder(const TileId tile);
 
  public:
   Map(const std::string& path);
@@ -135,7 +135,7 @@ class Map {
    * @param x New x coordinate of map
    * @param y New y coordinate of map
    */
-  void setPosition(int x, int y) {
+  void setPosition(const int x, const int y) {
     position_.x = x;
     position_.y = y;
   }
@@ -145,7 +145,7 @@ class Map {
    *
    * @param pos New map position
    */
-  void setPosition(sf::Vector2f pos) { setPosition(pos.x, pos.y); }
+  void setPosition(const sf::Vector2f pos) { setPosition(pos.x, pos.y); }
 
   /**
    * Finds position of the next not walkable tile above the rect
@@ -153,7 +153,7 @@ class Map {
    * @param dim Rectangle to test
    * @return Position of next not walkable tile
    */
-  float positionOfTileAbove(sf::FloatRect dim);
+  float positionOfTileAbove(const sf::FloatRect dim);
 
   /**
    * Finds position of the next not walkable tile below the rect
@@ -161,7 +161,7 @@ class Map {
    * @param dim Rectangle to test
    * @return Position of next not walkable tile
    */
-  float positionOfTileBelow(sf::FloatRect dim);
+  float positionOfTileBelow(const sf::FloatRect dim);
 
   /**
    * Gets map position
@@ -177,7 +177,7 @@ class Map {
    * @param y Y coordinate to map
    * @return Mapped point
    */
-  sf::Vector2f pixelToMap(int x, int y);
+  sf::Vector2f pixelToMap(const int x, const int y);
 
   /**
    * Converts a point in pixel space to tile space
@@ -185,7 +185,7 @@ class Map {
    * @param p Point to map
    * @return Mapped point
    */
-  sf::Vector2f pixelToMap(sf::Vector2f p) { return pixelToMap(p.x, p.y); }
+  sf::Vector2f pixelToMap(const sf::Vector2f p) { return pixelToMap(p.x, p.y); }
 
   /**
    * Converts a point in tile space to pixel space
@@ -194,7 +194,7 @@ class Map {
    * @param y Y coordinate to map
    * @return Mapped point
    */
-  sf::Vector2f mapToPixel(int x, int y);
+  sf::Vector2f mapToPixel(const int x, const int y);
 
   /**
    * Converts a point in tile space to pixel space
@@ -202,7 +202,7 @@ class Map {
    * @param p Point to map
    * @return Mapped point
    */
-  sf::Vector2f mapToPixel(sf::Vector2f p) { return mapToPixel(p.x, p.y); }
+  sf::Vector2f mapToPixel(const sf::Vector2f p) { return mapToPixel(p.x, p.y); }
 
   /**
    * Calculates unique number for each (x, y) coordinate
@@ -211,7 +211,9 @@ class Map {
    * @param y Y coordinate of point
    * @return Unique number for point
    */
-  int mapPointToTileNumber(int x, int y) { return y * mapWidth_ + x; }
+  int mapPointToTileNumber(const int x, const int y) {
+    return y * mapWidth_ + x;
+  }
 
   /**
    * Calculates unique number for each (x, y) coordinate in
@@ -220,9 +222,10 @@ class Map {
    * @param p Point to calculate number for
    * @return Unique number for point
    */
-  int pointToTileNumber(sf::Vector2f p) {
-    p = pixelToMap(p.x, p.y);
-    return mapPointToTileNumber(p.x, p.y);
+  int pointToTileNumber(const sf::Vector2f p) {
+    auto newPoint = p;
+    newPoint = pixelToMap(p.x, p.y);
+    return mapPointToTileNumber(newPoint.x, newPoint.y);
   }
 
   /**
@@ -231,7 +234,7 @@ class Map {
    *
    * @param t Unique tile number to calculate point for
    */
-  sf::Vector2f tileNumberToPoint(TileId t) {
+  sf::Vector2f tileNumberToPoint(const TileId t) {
     sf::Vector2f p(t % mapWidth_, t / mapWidth_);
     return mapToPixel(p);
   }
@@ -246,7 +249,7 @@ class Map {
    * @param h Height of rectangle to check
    * @return Whether the rect is walkable
    */
-  bool positionWalkable(int x, int y, int w, int h);
+  bool positionWalkable(const int x, const int y, const int w, const int h);
 
   /**
    * Determines whether or not a position as specified by a rectangle
@@ -255,7 +258,7 @@ class Map {
    * @param rect Rectangle to check
    * @return Whether the rect is walkable
    */
-  bool positionWalkable(sf::FloatRect rect) {
+  bool positionWalkable(const sf::FloatRect rect) {
     return positionWalkable(rect.left, rect.top, rect.width, rect.height);
   }
 
@@ -266,7 +269,7 @@ class Map {
    * @param rect Rectangle to check
    * @return Whether the rect is a ladder
    */
-  bool isLadder(sf::FloatRect rect);
+  bool isLadder(const sf::FloatRect rect);
 
   /**
    * Gets width of map in pixels
@@ -301,7 +304,7 @@ class Map {
    *
    * @param time Time since last update
    */
-  bool update(sf::Time& time);
+  bool update(const sf::Time& time);
 
   /**
    * Renders map relative to the given camera position
@@ -309,7 +312,7 @@ class Map {
    * @param window Window to render to
    * @param cameraPos Position of camera to render map relative to
    */
-  void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
+  void render(sf::RenderTarget& window, const sf::Vector2f cameraPos);
 };
 
 }  // namespace map

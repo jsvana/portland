@@ -156,7 +156,7 @@ class Tileset {
    * @param time Time since last update
    * @return Always returns true
    */
-  bool update(sf::Time& time);
+  bool update(const sf::Time& time);
 
   /**
    * Renders the given tile at the specified point
