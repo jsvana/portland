@@ -8,4 +8,4 @@ ninja
 
 popd >/dev/null
 
-./build/becoming_portland
+./build/portland

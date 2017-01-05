@@ -72,6 +72,11 @@ class Dialog {
   // Used for debouncing input
   unsigned int selectFrames_;
 
+  /**
+   * Builds the list of sf::Text objects containing the split dialog message
+   * @param message Message to put into lines
+   * @return Generated sf::Text lines
+   */
   std::deque<sf::Text> buildLines(const std::string& message);
 
   /**

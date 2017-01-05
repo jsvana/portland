@@ -1,9 +1,9 @@
 # -*- python -*-
 
-project("becoming_portland")
+project("portland")
 
 executable(
-    "becoming_portland",
+    "portland",
     files=find_files("src", "*.cpp"),
     compile_options=[
       "-Wall",
