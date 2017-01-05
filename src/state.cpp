@@ -58,6 +58,8 @@ void initApi() {
   ADD_FUNCTION(addNpc);
   ADD_FUNCTION(setNpcCallback);
 
+  ADD_FUNCTION(addProjectile);
+
   ADD_FUNCTION(showDialog);
   ADD_FUNCTION(addDialogOption);
   ADD_FUNCTION(setDialogCallback);
@@ -72,6 +74,10 @@ void initApi() {
   ADD_METHOD(entities::Sprite, heal);
   ADD_METHOD(entities::Sprite, startJump);
   ADD_METHOD(entities::Sprite, move);
+  ADD_METHOD(entities::Sprite, getDimensions);
+  ADD_METHOD(entities::Sprite, setDimensions);
+  ADD_METHOD(entities::Sprite, getPosition);
+  ADD_METHOD(entities::Sprite, setPosition);
   ADD_METHOD(entities::Sprite, setMaxHp);
   ADD_METHOD(entities::Sprite, width);
   ADD_METHOD(entities::Sprite, height);
@@ -79,16 +85,29 @@ void initApi() {
   ADD_METHOD(entities::Sprite, setCollisionCallback);
   ADD_METHOD(entities::Sprite, addItem);
   ADD_METHOD(entities::Sprite, removeItem);
+  ADD_METHOD(entities::Sprite, activate);
+  ADD_METHOD(entities::Sprite, deactivate);
 
   ADD_TYPE(entities::Item, "Item");
   ADD_METHOD(entities::Item, held);
   ADD_METHOD(entities::Item, hold);
   ADD_METHOD(entities::Item, drop);
 
+  ADD_TYPE(sf::Vector2f, "Vector2f");
+  ADD_METHOD(sf::Vector2f, x);
+  ADD_METHOD(sf::Vector2f, y);
+
+  ADD_TYPE(sf::FloatRect, "FloatRect");
+  ADD_METHOD(sf::FloatRect, left);
+  ADD_METHOD(sf::FloatRect, top);
+  ADD_METHOD(sf::FloatRect, width);
+  ADD_METHOD(sf::FloatRect, height);
+
   ADD_FUNCTION(getHero);
   ADD_FUNCTION(getSprite);
   ADD_FUNCTION(getNpc);
   ADD_FUNCTION(getItem);
+  ADD_FUNCTION(getProjectile);
 
   ADD_FUNCTION(getFlag);
   ADD_FUNCTION(setFlag);
@@ -252,7 +271,7 @@ void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
   if (!mover->collisionFunc) {
     return;
   }
-  mover->collisionFunc(other->id);
+  mover->collisionFunc(mover->id, other->id);
 }
 
 void markInitialized() { initialized_ = true; }
@@ -292,8 +311,7 @@ bool setSpritePosition(entities::Id spriteId, int x, int y) {
   }
 
   sf::Vector2f p = map()->mapToPixel(x, y);
-
-  sprite->setPosition(p);
+  sprite->setPosition(p.x, p.y);
   return true;
 }
 
@@ -328,6 +346,16 @@ entities::Id addNpc(const std::string& path, int tile, int x, int y) {
   return addSprite<entities::Npc>(path, tile, x, y);
 }
 
+entities::Id addProjectile(const std::string& path, int tile, int x, int y,
+                           float speed, float maxDistance) {
+  const auto id = addSprite<entities::Projectile>(path, tile, x, y);
+  auto projectile =
+      findSprite<entities::Projectile>(id, entities::SpriteType::PROJECTILE);
+  projectile->setSpeed(speed);
+  projectile->setMaxDistance(maxDistance);
+  return id;
+}
+
 template <typename T>
 T* findSprite(const entities::Id spriteId) {
   if (spriteId >= sprites().size()) {
@@ -358,6 +386,11 @@ entities::Sprite* getSprite(const entities::Id spriteId) {
 
 entities::Npc* getNpc(const entities::Id npcId) {
   return findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);
+}
+
+entities::Projectile* getProjectile(const entities::Id projectileId) {
+  return findSprite<entities::Projectile>(projectileId,
+                                          entities::SpriteType::PROJECTILE);
 }
 
 entities::Item* getItem(const entities::Id itemId) {

@@ -80,7 +80,7 @@ void Sprite::zeroVelocity(bool stopJump) {
   jumping_ = !stopJump;
 }
 
-void Sprite::update(sf::Time& time) {
+void Sprite::update(const sf::Time& time) {
   if (!active()) {
     return;
   }

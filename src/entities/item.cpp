@@ -7,6 +7,6 @@
 
 namespace entities {
 
-void Item::update(sf::Time& time) { Sprite::update(time); }
+void Item::update(const sf::Time& time) { Sprite::update(time); }
 
 }  // namespace entities

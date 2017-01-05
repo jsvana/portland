@@ -3,6 +3,7 @@
 #include "constants.h"
 #include "entities/item.h"
 #include "entities/npc.h"
+#include "entities/projectile.h"
 #include "entities/sprite.h"
 #include "map.h"
 #include "visual/dialog.h"
@@ -294,6 +295,21 @@ entities::Id addItem(const std::string& path, int tile, int x, int y);
 entities::Id addNpc(const std::string& path, int tile, int x, int y);
 
 /**
+ * Adds a new projectile and sets its tile index, position, speed, and max
+ * distance
+ *
+ * @param path Path to NPC definition
+ * @param tile Tile index of NPC
+ * @param initX Initial x position
+ * @param initY Initial y position
+ * @param speed Projectile speed
+ * @param maxDistance Maximum distance projectile may travel
+ * @return Projectile ID
+ */
+entities::Id addProjectile(const std::string& path, int tile, int x, int y,
+                           float speed, float maxDistance);
+
+/**
  * Finds a sprite with the given ID or returns nullptr
  *
  * @template T Type of sprite to cast to
@@ -326,6 +342,14 @@ entities::Npc* getNpc(const entities::Id npcId);
  * @return Found item or nullptr
  */
 entities::Item* getItem(const entities::Id itemId);
+
+/**
+ * API wrapper to get a projectile
+ *
+ * @param npcId ID of projectile to get
+ * @return Found projectile or nullptr
+ */
+entities::Projectile* getProjectile(const entities::Id projectileId);
 
 /**
  * Finds a sprite with the given ID or returns nullptr

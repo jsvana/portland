@@ -15,12 +15,13 @@ namespace entities {
 typedef unsigned int Id;
 
 typedef std::function<void()> SpriteCallback;
-typedef std::function<void(Id)> CollisionCallback;
+typedef std::function<void(Id, Id)> CollisionCallback;
 
 enum class SpriteType : int {
   HERO = 0,
   ITEM = 1,
   NPC = 2,
+  PROJECTILE = 3,
 };
 
 /**
@@ -192,19 +193,9 @@ class Sprite {
    * @param x New x coordinate of sprite
    * @param y New y coordinate of sprite
    */
-  void setPosition(int x, int y) {
+  void setPosition(const float x, const float y) {
     dimensions_.left = x;
     dimensions_.top = y;
-  }
-
-  /**
-   * Sets position of sprite
-   *
-   * @param position New position of sprite
-   */
-  void setPosition(sf::Vector2f position) {
-    dimensions_.left = position.x;
-    dimensions_.top = position.y;
   }
 
   /**
@@ -213,7 +204,7 @@ class Sprite {
    * @param dx Distance to move x coordinate
    * @param dy Distance to move y coordinate
    */
-  void move(int dx, int dy) {
+  void move(const float dx, const float dy) {
     dimensions_.left += dx;
     dimensions_.top += dy;
   }
@@ -370,7 +361,7 @@ class Sprite {
    *
    * @param time Amount of time since last update
    */
-  virtual void update(sf::Time& time);
+  virtual void update(const sf::Time& time);
 
   /**
    * Renders sprite relative to cameraPos

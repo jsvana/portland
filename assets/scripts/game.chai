@@ -1,4 +1,6 @@
-global UPDATE_INTERVAL = 500
+global UPDATE_INTERVAL = 500;
+global PROJECTILE_SPEED = 3;
+global PROJECTILE_MAX_DISTANCE = 100;
 
 def init() {
   if (initialized()) {
@@ -27,6 +29,21 @@ def update() {
   }
 }
 
+def fireProjectile(direction) {
+  var dim = getHero().getDimensions();
+  var id = addProjectile("assets/sprites/ammo.json", 25, 0, 0, PROJECTILE_SPEED * direction, PROJECTILE_MAX_DISTANCE)
+  var projectile = getSprite(id);
+  projectile.setPosition(dim.left + dim.width / 2, dim.top + dim.height / 2);
+  projectile.setCollisionCallback(projectileCollision);
+}
+
+def projectileCollision(projectileId, otherId) {
+  if (otherId == getHero().id) {
+    return;
+  }
+  getSprite(projectileId).deactivate();
+}
+
 def flagChange(newVal) {
   print("hit_enemy changed");
   print(newVal);
@@ -37,7 +54,7 @@ def moneyChange(newVal) {
   print(newVal);
 }
 
-def heroCollision(otherId) {
+def heroCollision(heroId, otherId) {
   if (otherId == 1) {
     if (getFlag("hit_enemy")) {
       print("already hit enemy");
@@ -57,8 +74,8 @@ def heroCollision(otherId) {
 }
 
 def showSign() {
-  /*showDialog("Are you reading this sign?");*/
-  showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");
+  /*showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");*/
+  fireProjectile(1);
 }
 
 def randomCallback() {

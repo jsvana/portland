@@ -46,7 +46,7 @@ class Item : public Sprite {
    *
    * @param time Amount of time since last update
    */
-  void update(sf::Time& time);
+  void update(const sf::Time& time);
 };
 
 }  // namespace entities
