@@ -53,6 +53,7 @@ class Sprite {
 
   // Whether or not this sprite is updated, rendered, etc
   bool active_ = true;
+  bool needsCleanup_ = false;
 
   sf::Time time_;
 
@@ -162,6 +163,20 @@ class Sprite {
    * Deactivates sprite (disables updates, renders, etc)
    */
   void deactivate() { active_ = false; }
+
+  /**
+   * Returns whether or not sprite needs to be cleaned up
+   * @return Whether or not sprite needs to be cleaned up
+   */
+  bool needsCleanup() { return needsCleanup_; }
+
+  /**
+   * Let the engine know that this sprite needs to be destroyed
+   */
+  void markNeedsCleanup() {
+    deactivate();
+    needsCleanup_ = true;
+  }
 
   /**
    * Sets dimensions of sprite after scaling

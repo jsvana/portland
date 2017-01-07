@@ -53,12 +53,12 @@ sf::FloatRect MainScreen::updateGravity(
   dim = sprite->getDimensions();
   float top = dim.top + jumpDelta.y;
   if (util::clamp<float>(top, above, below)) {
-      sprite->zeroVelocity(true);
+    sprite->zeroVelocity(true);
   }
   if ((int)top == (int)below) {
-      sprite->allowJump();
+    sprite->allowJump();
   } else {
-      sprite->forbidJump();
+    sprite->forbidJump();
   }
   dim.top = top;
   return dim;
@@ -99,6 +99,12 @@ bool MainScreen::update(sf::Time& time) {
     }
     sprite->update(time_);
   }
+  auto old_len = GameState::sprites().size();
+  GameState::sprites().erase(
+      std::remove_if(
+          GameState::sprites().begin(), GameState::sprites().end(),
+          [](const auto& sprite) { return sprite && sprite->needsCleanup(); }),
+      GameState::sprites().end());
 
   if (visual::Console::visible()) {
     visual::Console::update(time);

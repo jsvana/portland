@@ -51,7 +51,7 @@ def projectileCollision(projectileId, otherId) {
   if (otherId == getHero().id) {
     return;
   }
-  getSprite(projectileId).deactivate();
+  getSprite(projectileId).markNeedsCleanup();
 }
 
 def flagChange(newVal) {
