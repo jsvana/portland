@@ -118,14 +118,6 @@ class Map {
    */
   bool walkable(const TileId tile);
 
-  /**
-   * Checks if tile is a ladder
-   *
-   * @param tile Tile to check
-   * @return Whether tile is a ladder
-   */
-  bool ladder(const TileId tile);
-
  public:
   Map(const std::string& path);
 
@@ -261,15 +253,6 @@ class Map {
   bool positionWalkable(const sf::FloatRect rect) {
     return positionWalkable(rect.left, rect.top, rect.width, rect.height);
   }
-
-  /**
-   * Determines whether or not a position as specified by a rectangle
-   * is a ladder
-   *
-   * @param rect Rectangle to check
-   * @return Whether the rect is a ladder
-   */
-  bool isLadder(const sf::FloatRect rect);
 
   /**
    * Gets width of map in pixels

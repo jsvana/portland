@@ -46,28 +46,21 @@ bool MainScreen::fixMovement(const std::unique_ptr<entities::Sprite>& sprite,
 sf::FloatRect MainScreen::updateGravity(
     const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
-  if (GameState::map()->isLadder(dim)) {
-    sprite->zeroVelocity(/*stopJump = */ true);
-  } else {
-    sprite->updateVelocity();
-    float below = GameState::densePositionBelow(sprite);
-    float above = GameState::densePositionAbove(sprite);
-
-    sf::Vector2f jumpDelta(0, sprite->velocity());
-    dim = sprite->getDimensions();
-    float top = dim.top;
-    top += jumpDelta.y;
-    bool clamped = util::clamp<float>(top, above, below);
-    if (clamped) {
+  sprite->updateVelocity();
+  const float below = GameState::densePositionBelow(sprite);
+  const float above = GameState::densePositionAbove(sprite);
+  sf::Vector2f jumpDelta(0, sprite->velocity());
+  dim = sprite->getDimensions();
+  float top = dim.top + jumpDelta.y;
+  if (util::clamp<float>(top, above, below)) {
       sprite->zeroVelocity(true);
-    }
-    if ((int)top == (int)below) {
-      sprite->allowJump();
-    } else {
-      sprite->forbidJump();
-    }
-    dim.top = top;
   }
+  if ((int)top == (int)below) {
+      sprite->allowJump();
+  } else {
+      sprite->forbidJump();
+  }
+  dim.top = top;
   return dim;
 }
 
@@ -130,16 +123,6 @@ bool MainScreen::update(sf::Time& time) {
   }
   if (controls::directionPressed(util::Direction::RIGHT)) {
     moveDelta.x += GameState::heroMoveSpeed();
-  }
-  if (controls::directionPressed(util::Direction::DOWN) &&
-      GameState::map()->isLadder(GameState::hero()->getDimensions())) {
-    // TODO(jsvana): fix this? somehow it's broken
-    moveDelta.y += GameState::heroMoveSpeed();
-  }
-  if (controls::directionPressed(util::Direction::UP) &&
-      GameState::map()->isLadder(GameState::hero()->getDimensions()) &&
-      !GameState::hero()->jumping()) {
-    moveDelta.y -= GameState::heroMoveSpeed();
   }
   fixMovement(GameState::hero(), moveDelta);
 

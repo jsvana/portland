@@ -133,17 +133,6 @@ float Map::positionOfTileBelow(const sf::FloatRect dim) {
   return std::numeric_limits<float>::max();
 }
 
-bool Map::isLadder(const sf::FloatRect dim) {
-  auto pos = pixelToMap(dim.left, dim.top);
-  for (int i = (int)layers_.size() - 1; i >= 0; i--) {
-    const auto tile = layers_[i].tileAt(pos.x, pos.y);
-    if (tile != 0 && ladder(tile)) {
-      return true;
-    }
-  }
-  return false;
-}
-
 bool Map::positionWalkable(const int x, const int y, const int w, const int h) {
   // Default bounds detection
   if (x < 0 || y < 0 || x + w > mapPixelWidth_ || y + h > mapPixelHeight_) {
@@ -170,14 +159,6 @@ Tileset* Map::tilesetForTile(const TileId tile) {
   }
   LOG(ERROR) << "Could not find tileset for " << tile;
   return nullptr;
-}
-
-bool Map::ladder(const TileId tile) {
-  const auto& tileset = tilesetForTile(tile);
-  if (!tileset) {
-    return false;
-  }
-  return tileset->ladder(tile);
 }
 
 bool Map::walkable(const TileId tile) {

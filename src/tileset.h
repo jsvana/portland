@@ -19,7 +19,6 @@ typedef unsigned int TileId;
  * Container for all the various tile properties
  */
 struct TileProperties {
-  bool ladder;
   bool walkable;
 
   std::vector<TileId> animationTiles;
@@ -141,14 +140,6 @@ class Tileset {
    * @return Whether the tile is walkable
    */
   bool walkable(TileId tile);
-
-  /**
-   * Checks if the given tile is a ladder
-   *
-   * @param tile Tile to check
-   * @return Whether the tile is a ladder
-   */
-  bool ladder(TileId tile);
 
   /**
    * Animate tiles in the tileset

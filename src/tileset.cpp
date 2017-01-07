@@ -37,10 +37,8 @@ bool Tileset::load(const std::string& basePath,
       TileProperties t;
       auto res = (*properties).find(std::to_string(i));
       if (res == (*properties).end()) {
-        t.ladder = false;
         t.walkable = true;
       } else {
-        t.ladder = (*res)["ladder"].get<bool>();
         t.walkable = (*res)["walkable"].get<bool>();
       }
 
@@ -88,11 +86,6 @@ bool Tileset::contains(TileId tile) {
 bool Tileset::walkable(TileId tile) {
   tile = removeFlags(tile);
   return tiles_[tile - firstGid_].walkable;
-}
-
-bool Tileset::ladder(TileId tile) {
-  tile = removeFlags(tile);
-  return tiles_[tile - firstGid_].ladder;
 }
 
 bool Tileset::update(const sf::Time& time) {
