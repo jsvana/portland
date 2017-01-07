@@ -13,6 +13,7 @@
 
 #include <iterator>
 #include <memory>
+#include <queue>
 #include <stack>
 #include <string>
 #include <tuple>
@@ -237,6 +238,9 @@ void markInitialized();
  * @return Whether or not game has been initialized
  */
 bool initialized();
+
+void queueMove(const util::Direction dir);
+std::queue<util::Direction>& moves();
 
 /**
  * Loads a new map and pushes it onto the stack

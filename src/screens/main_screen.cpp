@@ -118,17 +118,16 @@ bool MainScreen::update(sf::Time& time) {
   auto startDim = GameState::hero()->getDimensions();
 
   sf::Vector2f moveDelta;
-  if (controls::directionPressed(util::Direction::LEFT)) {
-    moveDelta.x -= GameState::heroMoveSpeed();
-  }
-  if (controls::directionPressed(util::Direction::RIGHT)) {
-    moveDelta.x += GameState::heroMoveSpeed();
+  while (!GameState::moves().empty()) {
+    const auto dir = GameState::moves().front();
+    GameState::moves().pop();
+    if (dir == util::Direction::LEFT) {
+      moveDelta.x -= GameState::heroMoveSpeed();
+    } else if (dir == util::Direction::RIGHT) {
+      moveDelta.x += GameState::heroMoveSpeed();
+    }
   }
   fixMovement(GameState::hero(), moveDelta);
-
-  if (controls::jumpPressed()) {
-    GameState::hero()->startJump(1);
-  }
 
   // Change character direction
   if (moveDelta.x > 0) {

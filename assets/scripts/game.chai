@@ -24,6 +24,16 @@ def init() {
 }
 
 def update() {
+  // TODO(jsvana): add input handling here
+  if (directionPressed(DIRECTION_LEFT)) {
+    queueMove(DIRECTION_LEFT);
+  }
+  if (directionPressed(DIRECTION_RIGHT)) {
+    queueMove(DIRECTION_RIGHT);
+  }
+  if (jumpPressed()) {
+    getHero().startJump(1);
+  }
   if (mod(ticks(), UPDATE_INTERVAL) == 0) {
     getSprite(1).startJump(1);
   }

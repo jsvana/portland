@@ -1,5 +1,6 @@
 #include "state.h"
 
+#include "controls.h"
 #include "quadtree.h"
 
 #include <glog/logging.h>
@@ -21,6 +22,8 @@ float moveSpeed_;
 // Jumping stuff
 bool jumping_ = false;
 int velocityY_ = 0;
+
+std::queue<util::Direction> queuedMoves_;
 
 std::unordered_map<std::string, bool> flags_;
 std::unordered_map<std::string, std::list<FlagChangeCallback>>
@@ -116,6 +119,15 @@ void initApi() {
   ADD_FUNCTION(getValue);
   ADD_FUNCTION(setValue);
   ADD_FUNCTION(addValueChangeCallback);
+
+  chai_.add_global_const(chaiscript::const_var(util::Direction::LEFT),
+                         "DIRECTION_LEFT");
+  chai_.add_global_const(chaiscript::const_var(util::Direction::RIGHT),
+                         "DIRECTION_RIGHT");
+  ADD_FUNCTION(queueMove);
+
+  ADD_METHOD(controls, directionPressed);
+  ADD_METHOD(controls, jumpPressed);
 }
 
 sf::Vector2f& camera() { return camera_; }
@@ -277,6 +289,10 @@ void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
 void markInitialized() { initialized_ = true; }
 
 bool initialized() { return initialized_; }
+
+void queueMove(const util::Direction dir) { queuedMoves_.push(dir); }
+
+std::queue<util::Direction>& moves() { return queuedMoves_; }
 
 bool loadMap(std::string path) {
   maps_.push(std::make_unique<map::Map>(path));
