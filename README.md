@@ -79,6 +79,7 @@ Packages: `ninja`, `sfml`, and `google-glog`.
 ### Linux/Mac
 
 ```
+$ 9k build
 $ ./scripts/run
 ```
 
