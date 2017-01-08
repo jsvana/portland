@@ -9,6 +9,7 @@
 
 #include <set>
 #include <string>
+#include <unordered_map>
 
 namespace entities {
 
@@ -71,6 +72,8 @@ class Sprite {
 
   util::Direction direction_;
   util::Direction visualDirection_;
+
+  std::unordered_map<std::string, int> values_;
 
   /**
    * Loads sprite from given path
@@ -389,6 +392,22 @@ class Sprite {
    * @return Whether or not sprite can occupy the same space as another sprite
    */
   virtual bool phased() { return false; }
+
+  /**
+  * Set a sprite integer value
+  *
+  * @param key Value key to set
+  * @param value New value
+  */
+  void setValue(const std::string& key, const int value);
+
+  /**
+  * Get a sprite integer value
+  *
+  * @param key Key to get
+  * @return Value or 0 if not set
+  */
+  int getValue(const std::string& key);
 
   /**
    * Animates sprite

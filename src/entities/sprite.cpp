@@ -80,6 +80,18 @@ void Sprite::zeroVelocity(bool stopJump) {
   jumping_ = !stopJump;
 }
 
+void Sprite::setValue(const std::string& key, const int value) {
+  values_[key] = value;
+}
+
+int Sprite::getValue(const std::string& key) {
+  const auto iter = values_.find(key);
+  if (iter == values_.end()) {
+    return 0;
+  }
+  return iter->second;
+}
+
 void Sprite::update(const sf::Time& time) {
   if (!active()) {
     return;

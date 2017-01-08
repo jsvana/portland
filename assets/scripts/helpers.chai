@@ -12,3 +12,16 @@ def fireFromSprite(sprite, direction, projectile, tile) {
   projectile.setPosition(dim.left + dim.width / 2, dim.top + dim.height / 2 - pDim.height / 2);
   return id;
 }
+
+def randomMove(id) {
+  if (randomNumber(0, 10) >= 4) {
+    return;
+  }
+  var sign;
+  if (randomNumber(0, 1) == 1) {
+    sign = 1;
+  } else {
+    sign = -1;
+  }
+  getSprite(id).move(randomNumber(0, 10) * sign, 0);
+}
