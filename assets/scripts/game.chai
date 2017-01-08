@@ -28,6 +28,9 @@ def init() {
 
   var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
   addMovementFunc(id, randomMovement);
+  var npc = getSprite(id);
+  npc.setMaxHp(10);
+  npc.fullHeal();
   id = addItem("assets/sprites/item.json", 2, 14, 6);
   skipMovementFunc(id);
 
@@ -86,6 +89,13 @@ def projectileCollision(projectileId, otherId) {
     return;
   }
   getSprite(projectileId).markNeedsCleanup();
+  if (otherId != 1) {
+    return;
+  }
+  var enemy = getSprite(otherId);
+  print(enemy.hp());
+  enemy.damage(5);
+  print(enemy.hp());
   getHero().setFlag("firing", false);
 }
 

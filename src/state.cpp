@@ -87,6 +87,7 @@ void initApi() {
   ADD_METHOD(entities::Sprite, hp);
   ADD_METHOD(entities::Sprite, damage);
   ADD_METHOD(entities::Sprite, heal);
+  ADD_METHOD(entities::Sprite, fullHeal);
   ADD_METHOD(entities::Sprite, startJump);
   ADD_METHOD(entities::Sprite, move);
   ADD_METHOD(entities::Sprite, getDimensions);
@@ -205,6 +206,29 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   float spriteBelow = positionOfSpriteBelow(sprite);
   float tileBelow = map()->positionOfTileBelow(sprite->getDimensions());
   return std::min<float>(spriteBelow, tileBelow);
+}
+
+void dispatchCollisions() {
+  for (std::size_t i = 1; i < sprites().size(); i++) {
+    const auto sprite1 = sprites()[i].get();
+    if (!sprite1->active()) {
+      continue;
+    }
+    const auto dim1 = sprite1->getDimensions();
+    for (std::size_t j = i + 1; j < sprites().size(); j++) {
+      const auto sprite2 = sprites()[j].get();
+      if (!sprite2->active()) {
+        continue;
+      }
+      if (dim1.intersects(sprite2->getDimensions())) {
+        LOG(INFO) << "collision";
+        dispatchCollision(sprite1, sprite2);
+      }
+    }
+    if (dim1.intersects(hero()->getDimensions())) {
+      dispatchCollision(sprite1, hero().get());
+    }
+  }
 }
 
 int mod(int a, int b) { return a % b; }
@@ -329,10 +353,12 @@ bool positionWalkable(entities::Sprite* sprite, sf::FloatRect dim) {
 }
 
 void dispatchCollision(entities::Sprite* mover, entities::Sprite* other) {
-  if (!mover->collisionFunc) {
-    return;
+  if (mover->collisionFunc) {
+    mover->collisionFunc(mover->id, other->id);
   }
-  mover->collisionFunc(mover->id, other->id);
+  if (other->collisionFunc) {
+    other->collisionFunc(other->id, mover->id);
+  }
 }
 
 void markInitialized() { initialized_ = true; }

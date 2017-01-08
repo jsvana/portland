@@ -86,6 +86,11 @@ float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite);
 float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite);
 
 /**
+ * Check all entities for collisions and dispatch appropriately
+ */
+void dispatchCollisions();
+
+/**
  * API wrapper from mod
  *
  * @param a Number to mod

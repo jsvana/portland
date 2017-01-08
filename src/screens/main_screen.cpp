@@ -119,6 +119,8 @@ bool MainScreen::update(sf::Time& time) {
           [](const auto& sprite) { return sprite && sprite->needsCleanup(); }),
       GameState::sprites().end());
 
+  GameState::dispatchCollisions();
+
   if (visual::Console::visible()) {
     visual::Console::update(time);
     return true;
