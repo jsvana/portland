@@ -66,29 +66,27 @@ To get an integer or boolean you must use:
 
 ## Dependencies
 
-Build configuration uses [bfg9000](https://github.com/jimporter/bfg9000):
+Build configuration uses CMake.
 
-```
-pip install bfg9000
-```
-
-Packages: `ninja`, `sfml`, and `google-glog`.
+Packages: `sfml`
 
 ## Build and run
 
 ### Linux/Mac
 
 ```
-$ 9k build
+$ mkdir build
+$ cd build && cmake .. && cd ..
 $ ./scripts/run
 ```
 
 ### Windows
 
-Ensure that run.bat is correctly pointing to all required libraries
+Download [SFML](http://www.sfml-dev.org/download.php) and make sure you have MSBuild.
 
 ```
-$ ./scripts/run.bat
+$ mkdir build
+$ ./scripts/run.bat <path\to\extracted\sfml\root>
 ```
 
 ## Credits
