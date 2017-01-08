@@ -7,8 +7,6 @@
 #include "../visual/console.h"
 #include "pause_menu.h"
 
-#include <glog/logging.h>
-
 #include <functional>
 #include <iostream>
 #include <set>

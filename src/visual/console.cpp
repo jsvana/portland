@@ -1,8 +1,7 @@
 #include "console.h"
 
 #include "../constants.h"
-
-#include <glog/logging.h>
+#include "../log.h"
 
 #include <deque>
 
@@ -37,7 +36,7 @@ std::string runCommand(std::string command) {
     return "Done";
   } else if (command.find("run ") == 0) {
     command = command.substr(4);
-    LOG(INFO) << "Running ChaiScript string: " << command;
+    logger::info("Running ChaiScript string: " + command);
     std::string val;
     try {
       GameState::chai().eval(command);

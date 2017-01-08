@@ -1,9 +1,7 @@
 #include "state.h"
 
 #include "controls.h"
-#include "quadtree.h"
-
-#include <glog/logging.h>
+#include "log.h"
 
 #include <limits.h>
 
@@ -60,6 +58,11 @@ void initApi() {
 
   ADD_FUNCTION(initialized);
   ADD_FUNCTION(ticks);
+
+  ADD_FUNCTION(debug);
+  ADD_FUNCTION(info);
+  ADD_FUNCTION(warning);
+  ADD_FUNCTION(error);
 
   ADD_FUNCTION(loadMap);
   ADD_FUNCTION(popMap);
@@ -154,6 +157,11 @@ void initApi() {
   ADD_METHOD(controls, attackPressed);
 }
 
+void debug(const std::string& msg) { logger::debug("[SCRIPT] " + msg); }
+void info(const std::string& msg) { logger::info("[SCRIPT] " + msg); }
+void warning(const std::string& msg) { logger::warning("[SCRIPT] " + msg); }
+void error(const std::string& msg) { logger::error("[SCRIPT] " + msg); }
+
 sf::Vector2f& camera() { return camera_; }
 
 entities::Sprite* spriteCollision(
@@ -221,7 +229,6 @@ void dispatchCollisions() {
         continue;
       }
       if (dim1.intersects(sprite2->getDimensions())) {
-        LOG(INFO) << "collision";
         dispatchCollision(sprite1, sprite2);
       }
     }
@@ -456,7 +463,7 @@ entities::Id addProjectile(const std::string& path, int tile, int x, int y,
 template <typename T>
 T* findSprite(const entities::Id spriteId) {
   if (spriteId >= sprites().size()) {
-    LOG(WARNING) << "Bad sprite ID: " << spriteId;
+    logger::warning("Bad sprite ID: " + spriteId);
     return nullptr;
   }
   return static_cast<T*>(sprites()[spriteId].get());
@@ -469,9 +476,10 @@ T* findSprite(const entities::Id spriteId, const entities::SpriteType type) {
     return nullptr;
   }
   if (sprites()[spriteId]->type() != type) {
-    LOG(WARNING) << "ID " << spriteId << " is incorrect type "
-                 << static_cast<int>(type) << " (wanted type "
-                 << static_cast<int>(sprites()[spriteId]->type()) << ")";
+    logger::warning(
+        "ID " + std::to_string(spriteId) + " is incorrect type " +
+        std::to_string(static_cast<int>(type)) + " (wanted type " +
+        std::to_string(static_cast<int>(sprites()[spriteId]->type())) + ")");
     return nullptr;
   }
   return sprite;
@@ -505,7 +513,6 @@ bool setNpcCallback(const entities::Id npcId,
 }
 
 visual::DialogManager::Id showDialog(std::string message) {
-  LOG(INFO) << "Dialog running? " << (dialogRunning() ? "yes" : "no");
   auto dialog = new visual::Dialog(message);
   dialog->setPosition(0, SCREEN_HEIGHT - dialog->pixelHeight());
   return visual::DialogManager::queueDialog(dialog);

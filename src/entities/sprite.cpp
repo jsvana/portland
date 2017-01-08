@@ -1,7 +1,5 @@
 #include "sprite.h"
 
-#include <glog/logging.h>
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -20,7 +18,7 @@ bool Sprite::load(const std::string& path) {
   std::ifstream spritefile(path);
 
   if (!spritefile.is_open()) {
-    LOG(ERROR) << "Unable to load spritefile: " << path;
+    logger::error("Unable to load spritefile: " + path);
     return false;
   }
 

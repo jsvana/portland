@@ -46,6 +46,34 @@ void updateCamera();
 sf::Vector2f& camera();
 
 /**
+ * API wrapper around debug log
+ *
+ * @param msg Message to log
+ */
+void debug(const std::string& msg);
+
+/**
+ * API wrapper around info log
+ *
+ * @param msg Message to log
+ */
+void info(const std::string& msg);
+
+/**
+ * API wrapper around warning log
+ *
+ * @param msg Message to log
+ */
+void warning(const std::string& msg);
+
+/**
+ * API wrapper around error log
+ *
+ * @param msg Message to log
+ */
+void error(const std::string& msg);
+
+/**
  * Finds a sprite that collides with the given rectangle
  *
  * @param collisionRect Rectangle to check
