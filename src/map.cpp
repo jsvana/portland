@@ -133,7 +133,8 @@ float Map::positionOfTileBelow(const sf::FloatRect dim) {
   return std::numeric_limits<float>::max();
 }
 
-bool Map::positionWalkable(const float x, const float y, const float w, const float h) {
+bool Map::positionWalkable(const float x, const float y, const float w,
+                           const float h) {
   // Default bounds detection
   if (x < 0 || y < 0 || x + w > mapPixelWidth_ || y + h > mapPixelHeight_) {
     return false;

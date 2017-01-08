@@ -88,8 +88,9 @@ class Map {
    * @param h Height of rectangle
    * @return Set of hit tiles
    */
-  std::set<TileId> hitTiles(const float x, const float y, const float w, const float h);
- 
+  std::set<TileId> hitTiles(const float x, const float y, const float w,
+                            const float h);
+
   /**
    * Takes a rectangle in screen space and returns a list of tiles in
    * map space that the rectangle is touching
@@ -247,7 +248,8 @@ class Map {
    * @param h Height of rectangle to check
    * @return Whether the rect is walkable
    */
-  bool positionWalkable(const float x, const float y, const float w, const float h);
+  bool positionWalkable(const float x, const float y, const float w,
+                        const float h);
 
   /**
    * Determines whether or not a position as specified by a rectangle

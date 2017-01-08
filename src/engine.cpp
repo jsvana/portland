@@ -61,8 +61,8 @@ void run() {
         return;
       } else if (event.type == sf::Event::Resized) {
         const auto windowSize = window.getSize();
-        window.setView(
-            sf::View(sf::FloatRect(0.f, 0.f, (float)windowSize.x, (float)windowSize.y)));
+        window.setView(sf::View(
+            sf::FloatRect(0.f, 0.f, (float)windowSize.x, (float)windowSize.y)));
       }
 
       screens.top()->handleEvent(event);
