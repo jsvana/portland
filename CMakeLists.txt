@@ -31,11 +31,7 @@ include_directories(
   "vendor/json"
 )
 
-set(PLATFORM_LIBRARIES pthread dl)
-
-if (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
-  set(PLATFORM_LIBRARIES ${SDL2MAIN_LIBRARY})
-endif()
+set(PLATFORM_LIBRARIES dl)
 
 file(GLOB_RECURSE portland_sources src/*.cpp)
 add_executable(portland ${portland_sources})

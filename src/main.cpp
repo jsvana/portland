@@ -5,7 +5,7 @@
 
 #include "screens/opening.h"
 
-int main(int, char* argv[]) {
+int main(int, char**) {
   logger::init("portland.log");
 
   if (!Engine::init()) {
