@@ -217,6 +217,12 @@ class Map {
   int pointToTileNumber(const sf::Vector2f p) {
     auto newPoint = p;
     newPoint = pixelToMap(p.x, p.y);
+    if ((int)p.x % tileWidth_ >= tileWidth_ / 2) {
+      ++newPoint.x;
+    }
+    if ((int)p.y % tileHeight_ >= tileHeight_ / 2) {
+      ++newPoint.y;
+    }
     return mapPointToTileNumber(newPoint.x, newPoint.y);
   }
 
