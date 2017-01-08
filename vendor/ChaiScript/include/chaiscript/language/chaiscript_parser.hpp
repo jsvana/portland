@@ -21,8 +21,8 @@
 #include "../dispatchkit/boxed_value.hpp"
 #include "chaiscript_common.hpp"
 
-#pragma warning(disable : 4602)
 #if defined(CHAISCRIPT_MSVC) && defined(max) && defined(min)
+#pragma warning(disable : 4602)
 #pragma push_macro("max") // Why Microsoft? why? This is worse than bad
 #undef max
 #pragma push_macro("min")
@@ -36,7 +36,7 @@ namespace chaiscript
   namespace parser
   {
     /// \brief Classes and functions internal to the parsing process. Not supported for the end user.
-    namespace detail 
+    namespace detail
     {
       enum Alphabet
       {   symbol_alphabet = 0
@@ -386,7 +386,7 @@ namespace chaiscript
       void build_match(size_t t_match_start, std::string t_text = "") {
         bool is_deep = false;
 
-        Parse_Location filepos = [&]()->Parse_Location{ 
+        Parse_Location filepos = [&]()->Parse_Location{
           //so we want to take everything to the right of this and make them children
           if (t_match_start != m_match_stack.size()) {
             is_deep = true;
@@ -395,7 +395,7 @@ namespace chaiscript
                 m_match_stack[t_match_start]->location.start.line,
                 m_match_stack[t_match_start]->location.start.column,
                 m_position.line,
-                m_position.col 
+                m_position.col
               );
           } else {
             return Parse_Location(
@@ -411,7 +411,7 @@ namespace chaiscript
         std::vector<AST_NodePtr> new_children;
 
         if (is_deep) {
-          new_children.assign(std::make_move_iterator(m_match_stack.begin() + static_cast<int>(t_match_start)), 
+          new_children.assign(std::make_move_iterator(m_match_stack.begin() + static_cast<int>(t_match_start)),
                               std::make_move_iterator(m_match_stack.end()));
           m_match_stack.erase(m_match_stack.begin() + static_cast<int>(t_match_start), m_match_stack.end());
         }
@@ -897,8 +897,8 @@ namespace chaiscript
                 in_quote = !in_quote;
               } else if (*m_position == '}' && !in_quote) {
                 --in_interpolation;
-              } 
-              
+              }
+
               if (prev_char == '\\') {
                 prev_char = 0;
               } else {
@@ -1290,7 +1290,7 @@ namespace chaiscript
       bool is_operator(const std::string &t_s) const {
         return std::any_of(m_operator_matches.begin(), m_operator_matches.end(),
             [t_s](const std::vector<std::string> &opers) {
-              return std::any_of(opers.begin(), opers.end(), 
+              return std::any_of(opers.begin(), opers.end(),
                 [t_s](const std::string &s) {
                   return s == t_s;
                 });
@@ -1665,7 +1665,7 @@ namespace chaiscript
             if (Keyword("else", true)) {
               if (Keyword("if")) {
                 const AST_NodePtr back(m_match_stack.back());
-                m_match_stack.back() = 
+                m_match_stack.back() =
                   chaiscript::make_shared<AST_Node, eval::If_AST_Node>("else if", back->location, back->children);
                 m_match_stack.back()->annotation = back->annotation;
                 if (!Char('(')) {
@@ -1783,7 +1783,7 @@ namespace chaiscript
           m_match_stack.push_back(chaiscript::make_shared<AST_Node, eval::Noop_AST_Node>());
         }
 
-        return true; 
+        return true;
       }
 
       /// Reads a for block from input
@@ -2243,7 +2243,7 @@ namespace chaiscript
                   case(AST_Node_Type::Bitwise_Or) :
                   case(AST_Node_Type::Comparison) :
                     assert(m_match_stack.size() > 1);
-                    m_match_stack.erase(advance_copy(m_match_stack.begin(), m_match_stack.size() - 2), 
+                    m_match_stack.erase(advance_copy(m_match_stack.begin(), m_match_stack.size() - 2),
                                         advance_copy(m_match_stack.begin(), m_match_stack.size() - 1));
                     build_match<eval::Binary_Operator_AST_Node>(prev_stack_top, oper->text);
                     break;

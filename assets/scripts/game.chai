@@ -23,7 +23,7 @@ def init() {
   }
   loadMap("assets/maps/main.json");
   loadCharacter("assets/sprites/hero.json", 0, 1, 6);
-  setCharacterMoveSpeed(200, 100);
+  setCharacterMoveSpeed(2.0);
   getHero().setMaxHp(100);
 
   var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
