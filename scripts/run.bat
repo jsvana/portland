@@ -28,7 +28,7 @@ call :CopyDll "sfml-graphics-d-2.dll"
 call :CopyDll "sfml-system-d-2.dll"
 call :CopyDll "sfml-window-d-2.dll"
 
-rem .\build\Debug\portland.exe
+.\build\Debug\portland.exe
 
 :CopyDll
 set dll_path="%SFML_ROOT%\bin\%~1"

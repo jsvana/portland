@@ -91,7 +91,7 @@ void Dialog::reflowText() {
   }
 
   // Reposition all visible lines
-  for (std::size_t i = 0; i < VISIBLE_LINES; i++) {
+  for (std::size_t i = 0; i < std::min(VISIBLE_LINES, lines_.size()); i++) {
     lines_[i].setPosition(TEXT_PADDING, y);
     y += (float)lines_[i].getGlobalBounds().height;
   }
