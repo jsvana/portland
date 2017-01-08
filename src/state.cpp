@@ -86,6 +86,7 @@ void initApi() {
   ADD_METHOD(entities::Sprite, height);
   ADD_METHOD(entities::Sprite, jumping);
   ADD_METHOD(entities::Sprite, setCollisionCallback);
+  ADD_METHOD(entities::Sprite, setCleanupCallback);
   ADD_METHOD(entities::Sprite, addItem);
   ADD_METHOD(entities::Sprite, removeItem);
   ADD_METHOD(entities::Sprite, activate);
@@ -130,7 +131,10 @@ void initApi() {
 
   ADD_FUNCTION(directionPressed);
   ADD_FUNCTION(queueMove);
+
   ADD_METHOD(controls, jumpPressed);
+  ADD_METHOD(controls, actionPressed);
+  ADD_METHOD(controls, attackPressed);
 }
 
 sf::Vector2f& camera() { return camera_; }

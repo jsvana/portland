@@ -8,6 +8,8 @@ std::unordered_map<util::Direction, std::vector<sf::Keyboard::Key>>
     directionKeys;
 
 std::vector<sf::Keyboard::Key> jumpKeys;
+std::vector<sf::Keyboard::Key> actionKeys;
+std::vector<sf::Keyboard::Key> attackKeys;
 
 void init() {
   directionKeys[util::Direction::UP] = {sf::Keyboard::Up, sf::Keyboard::W};
@@ -16,9 +18,9 @@ void init() {
   directionKeys[util::Direction::RIGHT] = {sf::Keyboard::Right,
                                            sf::Keyboard::D};
 
-  jumpKeys.push_back(sf::Keyboard::Up);
-  jumpKeys.push_back(sf::Keyboard::W);
-  jumpKeys.push_back(sf::Keyboard::Space);
+  jumpKeys = {sf::Keyboard::Up, sf::Keyboard::W, sf::Keyboard::Space};
+  actionKeys = {sf::Keyboard::Return};
+  attackKeys = {sf::Keyboard::C};
 }
 
 void setDirectionKeys(const util::Direction direction,
@@ -41,5 +43,9 @@ bool directionPressed(util::Direction direction) {
 }
 
 bool jumpPressed() { return anyKeyPressed(jumpKeys); }
+
+bool actionPressed() { return anyKeyPressed(actionKeys); }
+
+bool attackPressed() { return anyKeyPressed(attackKeys); }
 
 }  // namespace controls

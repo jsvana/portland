@@ -16,6 +16,7 @@ typedef unsigned int Id;
 
 typedef std::function<void()> SpriteCallback;
 typedef std::function<void(Id, Id)> CollisionCallback;
+typedef std::function<void(Id)> CleanupCallback;
 
 enum class SpriteType : int {
   HERO = 0,
@@ -86,6 +87,9 @@ class Sprite {
   // API function to call when sprite collides with another sprite
   CollisionCallback collisionFunc;
 
+  // API function to call when sprite is marked for cleanup
+  CleanupCallback cleanupFunc;
+
   Id id;
 
   Sprite(const std::string& path) : Sprite(path, SpriteType::HERO) {}
@@ -144,9 +148,21 @@ class Sprite {
     return true;
   }
 
+  /**
+   * Sets the collision callback
+   *
+   * @param New collision callback
+   */
   void setCollisionCallback(const CollisionCallback func) {
     collisionFunc = func;
   }
+
+  /**
+   * Sets the cleanup callback
+   *
+   * @param New cleanup callback
+   */
+  void setCleanupCallback(const CleanupCallback func) { cleanupFunc = func; }
 
   /**
    * Returns whether or not sprite is active
@@ -176,6 +192,9 @@ class Sprite {
   void markNeedsCleanup() {
     deactivate();
     needsCleanup_ = true;
+    if (cleanupFunc) {
+      cleanupFunc(id);
+    }
   }
 
   /**

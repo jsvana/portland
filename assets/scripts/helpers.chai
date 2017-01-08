@@ -1,4 +1,4 @@
-def fireFromSprite(sprite, direction, projectile, tile, collisionCallback) {
+def fireFromSprite(sprite, direction, projectile, tile) {
   var dir;
   if (direction == DIRECTION_LEFT) {
     dir = -1;
@@ -8,6 +8,7 @@ def fireFromSprite(sprite, direction, projectile, tile, collisionCallback) {
   var dim = sprite.getDimensions();
   var id = addProjectile(projectile, tile, 0, 0, PROJECTILE_SPEED * dir, PROJECTILE_MAX_DISTANCE)
   var projectile = getSprite(id);
-  projectile.setPosition(dim.left + dim.width / 2, dim.top + dim.height / 2);
-  projectile.setCollisionCallback(collisionCallback);
+  var pDim = projectile.getDimensions();
+  projectile.setPosition(dim.left + dim.width / 2, dim.top + dim.height / 2 - pDim.height / 2);
+  return id;
 }

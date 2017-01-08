@@ -26,7 +26,6 @@ def init() {
 }
 
 def update() {
-  // TODO(jsvana): add input handling here
   if (directionPressed(DIRECTION_LEFT)) {
     queueMove(DIRECTION_LEFT);
   }
@@ -36,6 +35,17 @@ def update() {
   if (jumpPressed()) {
     getHero().startJump(1);
   }
+
+  if (attackPressed()) {
+    if (!getFlag("hero_firing")) {
+      setFlag("hero_firing", true);
+      var id = fireFromSprite(getHero(), DIRECTION_RIGHT, "assets/sprites/ammo.json", 25);
+      var projectile = getSprite(id);
+      projectile.setCollisionCallback(projectileCollision);
+      projectile.setCleanupCallback(projectileCleanup);
+    }
+  }
+
   if (mod(ticks(), UPDATE_INTERVAL) == 0) {
     getSprite(1).startJump(1);
   }
@@ -46,6 +56,11 @@ def projectileCollision(projectileId, otherId) {
     return;
   }
   getSprite(projectileId).markNeedsCleanup();
+  setFlag("hero_firing", false);
+}
+
+def projectileCleanup(projectileId) {
+  setFlag("hero_firing", false);
 }
 
 def flagChange(newVal) {
@@ -78,8 +93,7 @@ def heroCollision(heroId, otherId) {
 }
 
 def showSign() {
-  /*showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");*/
-  fireFromSprite(getHero(), DIRECTION_RIGHT, "assets/sprites/ammo.json", 25, projectileCollision);
+  showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");
 }
 
 def randomCallback() {

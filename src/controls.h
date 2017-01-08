@@ -17,4 +17,8 @@ bool directionPressed(util::Direction direction);
 
 bool jumpPressed();
 
+bool actionPressed();
+
+bool attackPressed();
+
 }  // namespace controls
