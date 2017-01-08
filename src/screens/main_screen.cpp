@@ -183,7 +183,7 @@ bool MainScreen::update(sf::Time& time) {
   }
 
   for (const auto& sprite : GameState::sprites()) {
-    if (!sprite || !sprite->active()) {
+    if (!sprite || !sprite->active() || sprite->phased()) {
       continue;
     }
     auto dim = updateGravity(sprite);
