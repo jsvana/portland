@@ -1,15 +1,9 @@
 @echo off
 
-setx SDL2DIR "C:\Program Files\sdl2\SDL2-2.0.4"
-setx SDL2IMAGEDIR "C:\Program Files\sdl2\SDL2_image-2.0.1"
-setx SDL2TTFDIR "C:\Program Files\sdl2\SDL2_ttf-2.0.14"
-setx LUA_DIR "C:\Program Files\lua-5.2.3"
-setx VisualStudioVersion "14.0"
-
 pushd build
 
-cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+cmake -G"Visual Studio 14" -DSFML_ROOT="C:\Users\jsvana\Documents\SFML-2.4.1" ..
 
 popd
 
-msbuild ./build/becoming_portland.vcxproj /p:Platform=x64
+msbuild ./build/portland.vcxproj

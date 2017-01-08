@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.0)
 project(portland)
 
+cmake_policy(SET CMP0054 NEW)
+
 # Use our modified FindSDL2* modules
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${portland_SOURCE_DIR}/cmake")
 
