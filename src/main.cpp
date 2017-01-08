@@ -1,18 +1,15 @@
 #include "constants.h"
 #include "engine.h"
+#include "log.h"
 #include "util.h"
 
 #include "screens/opening.h"
 
-#include <glog/logging.h>
-
 int main(int, char* argv[]) {
-  // Set up logging
-  FLAGS_logtostderr = 1;
-  google::InitGoogleLogging(argv[0]);
+  logger::init("portland.log");
 
   if (!Engine::init()) {
-    LOG(ERROR) << "Error loading engine";
+    logger::error("Error loading engine");
     Engine::cleanup();
     return 1;
   }
@@ -21,9 +18,11 @@ int main(int, char* argv[]) {
 
   Engine::run();
 
-  LOG(INFO) << "Thanks for playing!";
+  logger::info("Thanks for playing!");
 
   Engine::cleanup();
+
+  logger::cleanup();
 
   return 0;
 }

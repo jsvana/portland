@@ -43,5 +43,4 @@ target_link_libraries(
   portland
   ${SFML_LIBRARIES}
   ${PLATFORM_LIBRARIES}
-  glog
 )

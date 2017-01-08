@@ -2,10 +2,10 @@
 
 #include "constants.h"
 #include "controls.h"
+#include "log.h"
 #include "state.h"
 #include "util.h"
 
-#include <glog/logging.h>
 #include <SFML/Graphics.hpp>
 
 namespace Engine {
@@ -20,10 +20,10 @@ bool init() {
   int scale =
       std::min(desktop.width / SCREEN_WIDTH, desktop.height / SCREEN_HEIGHT);
 
-  LOG(INFO) << "Desktop width: " << desktop.width;
-  LOG(INFO) << "Desktop height: " << desktop.height;
+  logger::info("Desktop width: " + std::to_string(desktop.width));
+  logger::info("Desktop height: " + std::to_string(desktop.height));
 
-  LOG(INFO) << "Screen scale ratio: " << scale;
+  logger::info("Screen scale ratio: " + std::to_string(scale));
 
   window.create(sf::VideoMode(SCREEN_WIDTH * scale, SCREEN_HEIGHT * scale),
                 "Portland");
@@ -35,7 +35,7 @@ bool init() {
 
   controls::init();
 
-  LOG(INFO) << "Game initialized";
+  logger::info("Game initialized");
 
   return true;
 }

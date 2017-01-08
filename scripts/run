@@ -4,7 +4,7 @@ set -e
 
 pushd build >/dev/null
 
-ninja
+make
 
 popd >/dev/null
 

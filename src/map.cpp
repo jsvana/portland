@@ -1,8 +1,7 @@
 #include "map.h"
 
+#include "log.h"
 #include "util.h"
-
-#include <glog/logging.h>
 
 #include <fstream>
 #include <iostream>
@@ -18,7 +17,7 @@ Map::Map(const std::string& path) : path_(path) { load(path); }
 bool Map::load(const std::string& path) {
   std::ifstream mapfile(path, std::ios::in);
   if (!mapfile.is_open()) {
-    LOG(WARNING) << "Unable to open mapfile: " << path;
+    logger::warning("Unable to open mapfile: " + path);
     return false;
   }
 
@@ -157,7 +156,7 @@ Tileset* Map::tilesetForTile(const TileId tile) {
       return tileset.get();
     }
   }
-  LOG(ERROR) << "Could not find tileset for " << tile;
+  logger::error("Could not find tileset for " + tile);
   return nullptr;
 }
 

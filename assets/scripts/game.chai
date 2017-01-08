@@ -93,9 +93,9 @@ def projectileCollision(projectileId, otherId) {
     return;
   }
   var enemy = getSprite(otherId);
-  print(enemy.hp());
+  info(enemy.hp().to_string());
   enemy.damage(5);
-  print(enemy.hp());
+  info(enemy.hp().to_string());
   getHero().setFlag("firing", false);
 }
 
@@ -104,19 +104,19 @@ def projectileCleanup(projectileId) {
 }
 
 def flagChange(newVal) {
-  print("hit_enemy changed");
-  print(newVal);
+  info("hit_enemy changed");
+  info(newVal.to_string());
 }
 
 def moneyChange(newVal) {
-  print("new money value");
-  print(newVal);
+  info("new money value");
+  info(newVal.to_string());
 }
 
 def heroCollision(heroId, otherId) {
   if (otherId == 1) {
     if (getFlag("hit_enemy")) {
-      print("already hit enemy");
+      info("already hit enemy");
     } else {
       getHero().damage(10);
       setFlag("hit_enemy", true);

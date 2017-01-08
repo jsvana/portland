@@ -1,10 +1,10 @@
 #pragma once
 
+#include "../log.h"
 #include "../util.h"
 
 #include <json.hpp>
 
-#include <glog/logging.h>
 #include <SFML/Graphics.hpp>
 
 #include <set>
@@ -129,7 +129,8 @@ class Sprite {
    */
   bool addItem(Id itemId) {
     if (heldItems_.find(itemId) != heldItems_.end()) {
-      LOG(ERROR) << "Sprite " << id << " is already holding " << itemId;
+      logger::error("Sprite " + std::to_string(id) + " is already holding " +
+                    std::to_string(itemId));
       return false;
     }
     heldItems_.insert(itemId);
@@ -145,7 +146,8 @@ class Sprite {
   bool removeItem(Id itemId) {
     auto iter = heldItems_.find(itemId);
     if (iter == heldItems_.end()) {
-      LOG(ERROR) << "Sprite " << id << " is not holding " << itemId;
+      logger::error("Sprite " + std::to_string(id) + " is not holding " +
+                    std::to_string(itemId));
       return false;
     }
     heldItems_.erase(iter);
