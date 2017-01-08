@@ -60,9 +60,9 @@ void run() {
         window.close();
         return;
       } else if (event.type == sf::Event::Resized) {
-        auto windowSize = window.getSize();
+        const auto windowSize = window.getSize();
         window.setView(
-            sf::View(sf::FloatRect(0.f, 0.f, windowSize.x, windowSize.y)));
+            sf::View(sf::FloatRect(0.f, 0.f, (float)windowSize.x, (float)windowSize.y)));
       }
 
       screens.top()->handleEvent(event);
@@ -78,7 +78,7 @@ void run() {
 
     sf::Sprite rendered(target.getTexture());
     rendered.setOrigin(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
-    rendered.setPosition(windowSize.x / 2, windowSize.y / 2);
+    rendered.setPosition((float)windowSize.x / 2, (float)windowSize.y / 2);
 
     float scale = std::min(1.0f * windowSize.y / SCREEN_HEIGHT,
                            1.0f * windowSize.x / SCREEN_WIDTH);

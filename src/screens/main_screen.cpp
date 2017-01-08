@@ -104,7 +104,7 @@ bool MainScreen::update(sf::Time& time) {
   chaiUpdate();
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
-  heroHealth_.setValue(GameState::hero()->hp());
+  heroHealth_.setValue((float)GameState::hero()->hp());
   for (const auto& sprite : GameState::sprites()) {
     if (!sprite || !sprite->active()) {
       continue;
@@ -183,7 +183,7 @@ bool MainScreen::update(sf::Time& time) {
       (moveDelta.x < 0 &&
        dim.left - GameState::camera().x - cameraPad.x < mapPos.x)) {
     float x = GameState::camera().x + moveDelta.x;
-    util::clamp<float>(x, 0, GameState::map()->pixelWidth() - SCREEN_WIDTH);
+    util::clamp<float>(x, 0.f, GameState::map()->pixelWidth() - (float)SCREEN_WIDTH);
     GameState::camera().x = x;
   }
   if ((moveDelta.y > 0 &&
@@ -192,7 +192,7 @@ bool MainScreen::update(sf::Time& time) {
       (moveDelta.y < 0 &&
        dim.top - GameState::camera().y - cameraPad.y < mapPos.y)) {
     float y = GameState::camera().y + moveDelta.y;
-    util::clamp<float>(y, 0, GameState::map()->pixelHeight() - SCREEN_HEIGHT);
+    util::clamp<float>(y, 0.f, GameState::map()->pixelHeight() - (float)SCREEN_HEIGHT);
     GameState::camera().y = y;
   }
 

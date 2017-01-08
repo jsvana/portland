@@ -87,13 +87,13 @@ void initialize() {
   prompt_.setCharacterSize(FONT_SIZE);
   prompt_.setPosition(MARGIN, MARGIN);
   prompt_.setString(">");
-  prompt_.setColor(sf::Color::White);
+  prompt_.setFillColor(sf::Color::White);
 
   const auto size = prompt_.getGlobalBounds();
   command_.setFont(font_);
   command_.setCharacterSize(FONT_SIZE);
   command_.setPosition(MARGIN + 2 * size.width, MARGIN);
-  command_.setColor(sf::Color::White);
+  command_.setFillColor(sf::Color::White);
 }
 
 void show() { visible_ = true; }
@@ -131,7 +131,7 @@ void handleEvent(sf::Event& event) {
       sf::Text line;
       line.setFont(font_);
       line.setCharacterSize(FONT_SIZE);
-      line.setColor(sf::Color::White);
+      line.setFillColor(sf::Color::White);
       line.setString(output);
       outputs_.push_front(line);
 
@@ -171,8 +171,8 @@ void render(sf::RenderTarget& window) {
   sf::RectangleShape background;
   background.setPosition(0, 0);
   background.setSize(sf::Vector2f(
-      SCREEN_WIDTH,
-      (2 * promptSize.height + 2 * PADDING) * (MAX_HISTORY + 1) + 2 * MARGIN));
+      (float)SCREEN_WIDTH,
+      (2 * (float)promptSize.height + 2 * PADDING) * ((float)MAX_HISTORY + 1) + 2 * MARGIN));
   background.setFillColor(sf::Color(42, 42, 42, 142));
   window.draw(background);
 

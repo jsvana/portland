@@ -32,9 +32,9 @@ bool OpeningScreen::update(sf::Time&) { return true; }
 void OpeningScreen::render(sf::RenderTarget& target) {
   auto windowSize = target.getSize();
 
-  titleText.setPosition(windowSize.x / 2, windowSize.y / 4);
+  titleText.setPosition((float)windowSize.x / 2, (float)windowSize.y / 4);
   target.draw(titleText);
 
-  enterText.setPosition(windowSize.x / 2, windowSize.y / 5 * 3);
+  enterText.setPosition((float)windowSize.x / 2, (float)windowSize.y / 5 * 3);
   target.draw(enterText);
 }

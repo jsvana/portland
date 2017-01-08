@@ -47,7 +47,7 @@ std::deque<sf::Text> Dialog::buildLines(const std::string& message) {
     text.setFont(font_);
     text.setString(line);
 
-    text.setColor(sf::Color::White);
+    text.setFillColor(sf::Color::White);
 
     lines.push_back(text);
   }
@@ -65,7 +65,7 @@ void Dialog::addOptions(const std::vector<std::string>& choices) {
   reflowText();
 }
 
-void Dialog::setPosition(const int x, const int y) {
+void Dialog::setPosition(const float x, const float y) {
   position_.x = x;
   position_.y = y;
 
@@ -75,7 +75,7 @@ void Dialog::setPosition(const int x, const int y) {
 }
 
 void Dialog::reflowText() {
-  int y = position_.y + TEXT_PADDING;
+  auto y = position_.y + TEXT_PADDING;
 
   if (lines_.size() <= VISIBLE_LINES) {
     moreIndicator_.reset();
@@ -93,7 +93,7 @@ void Dialog::reflowText() {
   // Reposition all visible lines
   for (std::size_t i = 0; i < VISIBLE_LINES; i++) {
     lines_[i].setPosition(TEXT_PADDING, y);
-    y += lines_[i].getGlobalBounds().height;
+    y += (float)lines_[i].getGlobalBounds().height;
   }
 
   // Position and show choices and choice indicator
@@ -105,13 +105,13 @@ void Dialog::reflowText() {
     choiceIndicator_ = std::make_unique<sf::Text>();
     choiceIndicator_->setFont(font_);
   }
-  int offset = 0;
-  int padding = 10;
+  float offset = 0;
+  float padding = 10;
   for (std::size_t i = 0; i < choices_.size(); i++) {
     sf::Text choiceText;
     choiceText.setFont(font_);
     choiceText.setString(choices_[i]);
-    choiceText.setColor(sf::Color::White);
+    choiceText.setFillColor(sf::Color::White);
     const auto dim = choiceText.getGlobalBounds();
     offset += dim.width + padding;
     if (i == selectedChoice_) {

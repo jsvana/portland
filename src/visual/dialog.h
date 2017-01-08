@@ -23,7 +23,7 @@ class Dialog {
  private:
   const int FRAME_DEBOUNCE_DELAY = 5;
 
-  const int TEXT_PADDING = 10;
+  const float TEXT_PADDING = 10.f;
 
   // TODO(jsvana): make these dynamic based on size of dialog
   const unsigned int LINE_LENGTH = 25;
@@ -121,7 +121,7 @@ class Dialog {
    * @param x New x coordinate of dialog
    * @param y New y coordinate of dialog
    */
-  void setPosition(const int x, const int y);
+  void setPosition(const float x, const float y);
 
   /**
    * Gets dialog width in pixels
@@ -144,7 +144,7 @@ class Dialog {
    */
   void setColor(const sf::Color color) {
     for (auto& line : lines_) {
-      line.setColor(color);
+      line.setFillColor(color);
     }
   }
 

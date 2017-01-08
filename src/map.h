@@ -36,7 +36,7 @@ class MapLayer {
    * @param p Location of tile
    * @return Tile number of tile at point
    */
-  TileId tileAt(const sf::Vector2f p) { return tileAt(p.x, p.y); }
+  TileId tileAt(const sf::Vector2f p) { return tileAt((int)p.x, (int)p.y); }
 };
 
 /**
@@ -88,8 +88,8 @@ class Map {
    * @param h Height of rectangle
    * @return Set of hit tiles
    */
-  std::set<TileId> hitTiles(const int x, const int y, const int w, const int h);
-
+  std::set<TileId> hitTiles(const float x, const float y, const float w, const float h);
+ 
   /**
    * Takes a rectangle in screen space and returns a list of tiles in
    * map space that the rectangle is touching
@@ -127,7 +127,7 @@ class Map {
    * @param x New x coordinate of map
    * @param y New y coordinate of map
    */
-  void setPosition(const int x, const int y) {
+  void setPosition(const float x, const float y) {
     position_.x = x;
     position_.y = y;
   }
@@ -169,7 +169,7 @@ class Map {
    * @param y Y coordinate to map
    * @return Mapped point
    */
-  sf::Vector2f pixelToMap(const int x, const int y);
+  sf::Vector2f pixelToMap(const float x, const float y);
 
   /**
    * Converts a point in pixel space to tile space
@@ -186,7 +186,7 @@ class Map {
    * @param y Y coordinate to map
    * @return Mapped point
    */
-  sf::Vector2f mapToPixel(const int x, const int y);
+  sf::Vector2f mapToPixel(const float x, const float y);
 
   /**
    * Converts a point in tile space to pixel space
@@ -223,7 +223,7 @@ class Map {
     if ((int)p.y % tileHeight_ >= tileHeight_ / 2) {
       ++newPoint.y;
     }
-    return mapPointToTileNumber(newPoint.x, newPoint.y);
+    return mapPointToTileNumber((int)newPoint.x, (int)newPoint.y);
   }
 
   /**
@@ -233,7 +233,7 @@ class Map {
    * @param t Unique tile number to calculate point for
    */
   sf::Vector2f tileNumberToPoint(const TileId t) {
-    sf::Vector2f p(t % mapWidth_, t / mapWidth_);
+    sf::Vector2f p((float)(t % mapWidth_), (float)t / mapWidth_);
     return mapToPixel(p);
   }
 
@@ -247,7 +247,7 @@ class Map {
    * @param h Height of rectangle to check
    * @return Whether the rect is walkable
    */
-  bool positionWalkable(const int x, const int y, const int w, const int h);
+  bool positionWalkable(const float x, const float y, const float w, const float h);
 
   /**
    * Determines whether or not a position as specified by a rectangle

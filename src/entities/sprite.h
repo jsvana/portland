@@ -212,7 +212,6 @@ class Sprite {
     dimensions.width = dimensions.width / scale_;
     dimensions.height = dimensions.height / scale_;
     dimensions_ = dimensions;
-    dimensions_.top = (int)dimensions_.top;
   }
 
   /**
@@ -318,14 +317,14 @@ class Sprite {
    *
    * @return Scaled width of sprite
    */
-  int width() { return dimensions_.width * scale_; }
+  float width() { return dimensions_.width * scale_; }
 
   /**
    * Gets scaled height of sprite
    *
    * @return Scaled height of sprite
    */
-  int height() { return dimensions_.height * scale_; }
+  float height() { return dimensions_.height * scale_; }
 
   /**
    * Sets sprite's tile in spritesheet

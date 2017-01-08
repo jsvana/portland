@@ -28,8 +28,8 @@ bool Sprite::load(const std::string& path) {
 
   auto spriteData = nlohmann::json::parse(fileData.str());
 
-  dimensions_.width = spriteData["width"].get<int>();
-  dimensions_.height = spriteData["height"].get<int>();
+  dimensions_.width = spriteData["width"].get<float>();
+  dimensions_.height = spriteData["height"].get<float>();
   tile_ = spriteData["tile"].get<int>();
   multiFile_ = spriteData["multi_file"].get<bool>();
   scale_ = spriteData["scale"].get<float>();
@@ -134,8 +134,8 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
     tile += frame_;
   }
   sf::IntRect source((tile % columns_) * dimensions_.width,
-                     (tile / columns_) * dimensions_.height, dimensions_.width,
-                     dimensions_.height);
+                     (tile / columns_) * dimensions_.height, (int)dimensions_.width,
+                     (int)dimensions_.height);
 
   sf::Texture tex;
   if (multiFile_) {
@@ -145,8 +145,8 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
   }
   sprite_.setTexture(tex);
   if (visualDirection_ == util::Direction::RIGHT) {
-    source.left += dimensions_.width;
-    source.width = -dimensions_.width;
+    source.left += (int)dimensions_.width;
+    source.width = (int)-dimensions_.width;
   }
   sprite_.setTextureRect(source);
   sprite_.setPosition(dimensions_.left - cameraPos.x,

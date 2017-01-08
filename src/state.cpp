@@ -199,7 +199,7 @@ float densePositionAbove(const std::unique_ptr<entities::Sprite>& sprite) {
 float positionOfSpriteBelow(const std::unique_ptr<entities::Sprite>& sprite) {
   auto dim = sprite->getDimensions();
   sf::FloatRect collisionRect(dim.left, dim.top + dim.height, dim.width,
-                              map()->pixelHeight());
+                              (float)map()->pixelHeight());
   const auto other = spriteCollision(sprite, collisionRect);
   if (other) {
     const auto oDim = other->getDimensions();
@@ -263,7 +263,7 @@ void setHeroMoveSpeed(int amount, int total) {
   moveSpeed_ = (float)amount / (float)total;
 }
 
-int heroMoveSpeed() { return moveSpeed_; }
+float heroMoveSpeed() { return moveSpeed_; }
 
 void pushSprites(std::vector<std::unique_ptr<entities::Sprite>> sprites) {
   sprites_.push(std::move(sprites));
@@ -397,7 +397,7 @@ bool popMap() {
   return true;
 }
 
-bool loadCharacter(std::string path, int tile, int initX, int initY) {
+bool loadCharacter(std::string path, int tile, float initX, float initY) {
   hero_ = std::make_unique<entities::Sprite>(path);
   hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
   hero_->setTile(tile);
@@ -408,7 +408,7 @@ bool loadCharacter(std::string path, int tile, int initX, int initY) {
   return true;
 }
 
-bool setSpritePosition(entities::Id spriteId, int x, int y) {
+bool setSpritePosition(entities::Id spriteId, float x, float y) {
   auto sprite = findSprite<entities::Sprite>(spriteId);
   if (!sprite) {
     return false;
@@ -419,8 +419,8 @@ bool setSpritePosition(entities::Id spriteId, int x, int y) {
   return true;
 }
 
-bool setCharacterMoveSpeed(int amount, int total) {
-  moveSpeed_ = (float)amount / (float)total;
+bool setCharacterMoveSpeed(float speed) {
+  moveSpeed_ = speed;
   return true;
 }
 
@@ -430,7 +430,7 @@ bool setCharacterMaxHp(int hp) {
 }
 
 template <typename T>
-entities::Id addSprite(const std::string& path, int tile, int x, int y) {
+entities::Id addSprite(const std::string& path, int tile, float x, float y) {
   sprites().push_back(std::make_unique<T>(path));
   auto item = sprites().back().get();
   item->setPosition(x * GameState::map()->tileWidth(),
@@ -442,15 +442,15 @@ entities::Id addSprite(const std::string& path, int tile, int x, int y) {
   return spriteId;
 }
 
-entities::Id addItem(const std::string& path, int tile, int x, int y) {
+entities::Id addItem(const std::string& path, int tile, float x, float y) {
   return addSprite<entities::Item>(path, tile, x, y);
 }
 
-entities::Id addNpc(const std::string& path, int tile, int x, int y) {
+entities::Id addNpc(const std::string& path, int tile, float x, float y) {
   return addSprite<entities::Npc>(path, tile, x, y);
 }
 
-entities::Id addProjectile(const std::string& path, int tile, int x, int y,
+entities::Id addProjectile(const std::string& path, int tile, float x, float y,
                            float speed, float maxDistance) {
   const auto id = addSprite<entities::Projectile>(path, tile, x, y);
   auto projectile =
@@ -514,7 +514,7 @@ bool setNpcCallback(const entities::Id npcId,
 
 visual::DialogManager::Id showDialog(std::string message) {
   auto dialog = new visual::Dialog(message);
-  dialog->setPosition(0, SCREEN_HEIGHT - dialog->pixelHeight());
+  dialog->setPosition(0, (float)SCREEN_HEIGHT - dialog->pixelHeight());
   return visual::DialogManager::queueDialog(dialog);
 }
 

@@ -157,7 +157,7 @@ class Tileset {
    * @param x X coordinate of render point
    * @param y Y coordinate of render point
    */
-  void renderTile(sf::RenderTarget& window, TileId tile, int x, int y);
+  void renderTile(sf::RenderTarget& window, TileId tile, float x, float y);
 };
 
 }  // namespace map

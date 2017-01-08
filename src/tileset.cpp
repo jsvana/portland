@@ -100,7 +100,7 @@ bool Tileset::update(const sf::Time& time) {
   return true;
 }
 
-void Tileset::renderTile(sf::RenderTarget& window, TileId tile, int x, int y) {
+void Tileset::renderTile(sf::RenderTarget& window, TileId tile, float x, float y) {
   if (tile == 0) {
     return;
   }

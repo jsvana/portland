@@ -21,7 +21,7 @@
 #include "../dispatchkit/boxed_value.hpp"
 #include "chaiscript_common.hpp"
 
-
+#pragma warning(disable : 4602)
 #if defined(CHAISCRIPT_MSVC) && defined(max) && defined(min)
 #pragma push_macro("max") // Why Microsoft? why? This is worse than bad
 #undef max

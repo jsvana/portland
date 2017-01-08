@@ -182,7 +182,7 @@ entities::Sprite* getHero();
  *
  * @return Hero's move speed
  */
-int heroMoveSpeed();
+float heroMoveSpeed();
 
 /**
  * Increments the internal sprite ID counter and returns the previous
@@ -369,7 +369,7 @@ bool popMap();
  * @param initY Initial y position
  * @return Whether the operation is successful
  */
-bool loadCharacter(std::string path, int tile, int initX, int initY);
+bool loadCharacter(std::string path, int tile, float initX, float initY);
 
 /**
  * Sets the character move speed
@@ -377,7 +377,7 @@ bool loadCharacter(std::string path, int tile, int initX, int initY);
  * @param speed New move speed
  * @return Whether the operation is successful
  */
-bool setCharacterMoveSpeed(int amount, int total);
+bool setCharacterMoveSpeed(float speed);
 
 /**
  * Adds a new item and sets its tile index and position
@@ -388,7 +388,7 @@ bool setCharacterMoveSpeed(int amount, int total);
  * @param initY Initial y position
  * @return Item ID
  */
-entities::Id addItem(const std::string& path, int tile, int x, int y);
+entities::Id addItem(const std::string& path, int tile, float x, float y);
 
 /**
  * Adds a new NPC and sets its tile index and position
@@ -399,7 +399,7 @@ entities::Id addItem(const std::string& path, int tile, int x, int y);
  * @param initY Initial y position
  * @return NPC ID
  */
-entities::Id addNpc(const std::string& path, int tile, int x, int y);
+entities::Id addNpc(const std::string& path, int tile, float x, float y);
 
 /**
  * Adds a new projectile and sets its tile index, position, speed, and max
@@ -413,7 +413,7 @@ entities::Id addNpc(const std::string& path, int tile, int x, int y);
  * @param maxDistance Maximum distance projectile may travel
  * @return Projectile ID
  */
-entities::Id addProjectile(const std::string& path, int tile, int x, int y,
+entities::Id addProjectile(const std::string& path, int tile, float x, float y,
                            float speed, float maxDistance);
 
 /**

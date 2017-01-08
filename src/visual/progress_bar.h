@@ -6,7 +6,7 @@
 
 class ProgressBar {
  private:
-  const int PADDING = 2;
+  const float PADDING = 2;
 
   float max_ = 0;
   float current_ = 0;
@@ -37,7 +37,7 @@ class ProgressBar {
 
  public:
   ProgressBar() {}
-  ProgressBar(int max) : max_(max), current_(max) {}
+  ProgressBar(float max) : max_(max), current_(max) {}
 
   void setMax(float max) {
     max_ = max;
@@ -93,7 +93,7 @@ class ProgressBar {
    * @param w New width of progress bar
    * @param h New height of progress bar
    */
-  void setDimensions(int x, int y, int w, int h) {
+  void setDimensions(float x, float y, float w, float h) {
     sf::FloatRect dim(x + PADDING, y + PADDING, w - 2 * PADDING,
                       h - 2 * PADDING);
     setDimensions(dim);
@@ -123,7 +123,7 @@ class ProgressBar {
    * @param x New x coordinate of progress bar
    * @param y New y coordinate of progress bar
    */
-  void setPosition(int x, int y) {
+  void setPosition(float x, float y) {
     dimensions_.left = x + PADDING;
     dimensions_.top = y + PADDING;
   }

@@ -50,11 +50,11 @@ bool Map::load(const std::string& path) {
 }
 
 void Map::ensurePointInMap(sf::Vector2f& p) {
-  util::clamp<float>(p.x, 0, mapWidth_ - 1);
-  util::clamp<float>(p.y, 0, mapHeight_ - 1);
+  util::clamp<float>(p.x, 0.f, (float)mapWidth_ - 1);
+  util::clamp<float>(p.y, 0.f, (float)mapHeight_ - 1);
 }
 
-sf::Vector2f Map::mapToPixel(const int x, const int y) {
+sf::Vector2f Map::mapToPixel(const float x, const float y) {
   sf::Vector2f pixelPosition(x, y);
   ensurePointInMap(pixelPosition);
   pixelPosition.x *= tileWidth_;
@@ -62,23 +62,23 @@ sf::Vector2f Map::mapToPixel(const int x, const int y) {
   return pixelPosition;
 }
 
-sf::Vector2f Map::pixelToMap(const int x, const int y) {
+sf::Vector2f Map::pixelToMap(const float x, const float y) {
   sf::Vector2f mapPosition(x, y);
-  mapPosition.x = (int)(mapPosition.x / tileWidth_);
-  mapPosition.y = (int)(mapPosition.y / tileHeight_);
+  mapPosition.x = mapPosition.x / tileWidth_;
+  mapPosition.y = mapPosition.y / tileHeight_;
   ensurePointInMap(mapPosition);
   return mapPosition;
 }
 
-std::set<TileId> Map::hitTiles(const int x, const int y, const int w,
-                               const int h) {
+std::set<TileId> Map::hitTiles(const float x, const float y, const float w,
+                               const float h) {
   auto topLeft = pixelToMap(x, y);
   auto bottomRight = pixelToMap(x + w - 1, y + h - 1);
 
   // Only add the top nonzero tile
   std::set<TileId> tiles;
-  for (int i = topLeft.y; i <= bottomRight.y; i++) {
-    for (int j = topLeft.x; j <= bottomRight.x; j++) {
+  for (int i = (int)topLeft.y; i <= (int)bottomRight.y; i++) {
+    for (int j = (int)topLeft.x; j <= (int)bottomRight.x; j++) {
       for (int k = (int)layers_.size() - 1; k >= 0; k--) {
         const auto tile = layers_[k].tileAt(j, i);
         if (tile != 0) {
@@ -91,18 +91,19 @@ std::set<TileId> Map::hitTiles(const int x, const int y, const int w,
   return tiles;
 }
 
+// This should be combined with the one below somehow
 float Map::positionOfTileAbove(const sf::FloatRect dim) {
   auto topLeft = pixelToMap(dim.left, dim.top);
   auto topRight = pixelToMap(dim.left + dim.width - 1, dim.top);
 
-  for (int i = topLeft.y; i >= 0; i--) {
-    for (int j = topLeft.x; j <= topRight.x; j++) {
+  for (int i = (int)topLeft.y; i >= 0; i--) {
+    for (int j = (int)topLeft.x; j <= (int)topRight.x; j++) {
       for (int k = (int)layers_.size() - 1; k >= 0; k--) {
         const auto tile = layers_[k].tileAt(j, i);
         if (tile == 0 || walkable(tile)) {
           continue;
         }
-        auto newPos = mapToPixel(j, i);
+        auto newPos = mapToPixel((float)j, (float)i);
         return newPos.y + tileHeight_;
       }
     }
@@ -116,14 +117,14 @@ float Map::positionOfTileBelow(const sf::FloatRect dim) {
   auto bottomRight =
       pixelToMap(dim.left + dim.width - 1, dim.top + dim.height - 1);
 
-  for (int i = bottomLeft.y; i < mapHeight_; i++) {
-    for (int j = bottomLeft.x; j <= bottomRight.x; j++) {
+  for (int i = (int)bottomLeft.y; i < mapHeight_; i++) {
+    for (int j = (int)bottomLeft.x; j <= (int)bottomRight.x; j++) {
       for (int k = (int)layers_.size() - 1; k >= 0; k--) {
         const auto tile = layers_[k].tileAt(j, i);
         if (tile == 0 || walkable(tile)) {
           continue;
         }
-        auto newPos = mapToPixel(j, i);
+        auto newPos = mapToPixel((float)j, (float)i);
         return newPos.y - dim.height;
       }
     }
@@ -132,7 +133,7 @@ float Map::positionOfTileBelow(const sf::FloatRect dim) {
   return std::numeric_limits<float>::max();
 }
 
-bool Map::positionWalkable(const int x, const int y, const int w, const int h) {
+bool Map::positionWalkable(const float x, const float y, const float w, const float h) {
   // Default bounds detection
   if (x < 0 || y < 0 || x + w > mapPixelWidth_ || y + h > mapPixelHeight_) {
     return false;
@@ -185,8 +186,8 @@ void Map::render(sf::RenderTarget& window, const sf::Vector2f cameraPos) {
   yStart = 0;
   yEnd = mapHeight_;
 
-  int x = position_.x - cameraPos.x;
-  int y = position_.y - cameraPos.y;
+  auto x = position_.x - cameraPos.x;
+  auto y = position_.y - cameraPos.y;
 
   for (auto& layer : layers_) {
     for (int i = yStart; i < yEnd; i++) {
