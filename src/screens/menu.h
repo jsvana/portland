@@ -9,6 +9,8 @@
 #include <string>
 #include <vector>
 
+typedef std::function<void()> MenuCallback;
+
 /**
  * Parent class to display interactive menus
  */
@@ -27,7 +29,7 @@ class MenuScreen : public Screen {
   std::string title_;
 
   std::vector<std::string> items_;
-  std::vector<std::function<void(void)>> itemFunctions_;
+  std::vector<MenuCallback> itemFunctions_;
 
   std::vector<sf::Text> textItems_;
   sf::Text titleText_;
