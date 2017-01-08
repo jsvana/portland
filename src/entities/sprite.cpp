@@ -133,8 +133,8 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
   if (!multiFile_) {
     tile += frame_;
   }
-  sf::IntRect source((tile % columns_) * dimensions_.width,
-                     (tile / columns_) * dimensions_.height, (int)dimensions_.width,
+  sf::IntRect source((tile % columns_) * (int)dimensions_.width,
+                     (tile / columns_) * (int)dimensions_.height, (int)dimensions_.width,
                      (int)dimensions_.height);
 
   sf::Texture tex;

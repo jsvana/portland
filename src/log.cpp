@@ -34,7 +34,9 @@ void log(const LogLevel& level, const std::string& line) {
   std::lock_guard<std::mutex> guard(file_lock);
   const auto now =
       std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
-  log_f << std::put_time(std::localtime(&now), "%D %H:%M:%S") << " "
+  struct tm timeinfo;
+  localtime_s(&timeinfo, &now);
+  log_f << std::put_time(&timeinfo, "%D %H:%M:%S") << " "
         << static_cast<char>(level) << " " << line << std::endl;
 }
 

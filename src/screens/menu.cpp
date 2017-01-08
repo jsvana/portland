@@ -15,7 +15,7 @@ void MenuScreen::load() {
   titleText_.setString(title_);
   titleText_.setFont(font_);
   titleText_.setCharacterSize(30);
-  titleText_.setColor(titleColor);
+  titleText_.setFillColor(titleColor);
   auto titleSize = titleText_.getGlobalBounds();
   titleText_.setOrigin(titleSize.width / 2, titleSize.height / 2);
   titleText_.setPosition(SCREEN_WIDTH / 2, 10);
@@ -27,16 +27,16 @@ void MenuScreen::load() {
     textItem.setCharacterSize(20);
     auto itemSize = textItem.getGlobalBounds();
     textItem.setOrigin(itemSize.width / 2, itemSize.height / 2);
-    textItem.setColor(NORMAL_COLOR);
+    textItem.setFillColor(NORMAL_COLOR);
     textItems_.push_back(textItem);
   }
 
-  textItems_[selectedItem_].setColor(SELECTED_COLOR);
+  textItems_[selectedItem_].setFillColor(SELECTED_COLOR);
 }
 
 void MenuScreen::handleEvent(sf::Event& event) {
   if (event.type == sf::Event::KeyPressed) {
-    textItems_[selectedItem_].setColor(NORMAL_COLOR);
+    textItems_[selectedItem_].setFillColor(NORMAL_COLOR);
     switch (event.key.code) {
       case sf::Keyboard::Up:
       case sf::Keyboard::W:
@@ -53,21 +53,21 @@ void MenuScreen::handleEvent(sf::Event& event) {
       default:
         break;
     }
-    textItems_[selectedItem_].setColor(SELECTED_COLOR);
+    textItems_[selectedItem_].setFillColor(SELECTED_COLOR);
   }
 }
 
 bool MenuScreen::update(sf::Time&) { return running_; }
 
 void MenuScreen::render(sf::RenderTarget& target) {
-  auto targetSize = target.getSize();
+  const auto targetSize = target.getSize();
 
   target.draw(titleText_);
 
-  for (unsigned int i = 0; i < textItems_.size(); i++) {
-    auto itemSize = textItems_[i].getLocalBounds();
-    textItems_[i].setPosition(targetSize.x / 2,
-                              100 + (itemSize.height + PADDING) * i);
+  for (std::size_t i = 0; i < textItems_.size(); i++) {
+    const auto itemSize = textItems_[i].getLocalBounds();
+    textItems_[i].setPosition((float)targetSize.x / 2,
+                              100 + ((float)itemSize.height + PADDING) * (float)i);
     target.draw(textItems_[i]);
   }
 }

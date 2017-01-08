@@ -17,17 +17,8 @@
 #include <cstring>
 
 
-
 #include "../dispatchkit/boxed_value.hpp"
 #include "chaiscript_common.hpp"
-
-#if defined(CHAISCRIPT_MSVC) && defined(max) && defined(min)
-#pragma warning(disable : 4602)
-#pragma push_macro("max") // Why Microsoft? why? This is worse than bad
-#undef max
-#pragma push_macro("min")
-#undef min
-#endif
 
 
 namespace chaiscript
@@ -2439,12 +2430,6 @@ namespace chaiscript
     };
   }
 }
-
-
-#ifdef CHAISCRIPT_MSVC
-#pragma pop_macro("min")
-#pragma pop_macro("max")
-#endif
 
 
 #endif /* CHAISCRIPT_PARSER_HPP_ */

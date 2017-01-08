@@ -106,15 +106,15 @@ void Tileset::renderTile(sf::RenderTarget& window, TileId tile, float x,
     return;
   }
 
-  bool flipHorizontal = tile & FLIPPED_HORIZONTALLY;
-  bool flipVertical = tile & FLIPPED_VERTICALLY;
-  bool flipDiagonal = tile & FLIPPED_DIAGONALLY;
+  bool flipHorizontal = (tile & FLIPPED_HORIZONTALLY) != 0;
+  bool flipVertical = (tile & FLIPPED_VERTICALLY) != 0;
+  bool flipDiagonal = (tile & FLIPPED_DIAGONALLY) != 0;
 
-  unsigned int angle = 0;
+  float angle = 0.f;
   if (flipDiagonal) {
-    angle = 90;
+    angle = 90.f;
     flipVertical = !(tile & FLIPPED_HORIZONTALLY);
-    flipHorizontal = tile & FLIPPED_VERTICALLY;
+    flipHorizontal = (tile & FLIPPED_VERTICALLY) != 0;
   }
 
   tile &= ~(FLIPPED_HORIZONTALLY | FLIPPED_VERTICALLY | FLIPPED_DIAGONALLY);
