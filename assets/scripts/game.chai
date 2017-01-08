@@ -1,6 +1,6 @@
 use("assets/scripts/helpers.chai");
 
-global UPDATE_INTERVAL = 500;
+global UPDATE_INTERVAL = 50;
 global PROJECTILE_SPEED = 3;
 global PROJECTILE_MAX_DISTANCE = 100;
 
@@ -58,7 +58,7 @@ def update() {
   }
 
   if (mod(ticks(), UPDATE_INTERVAL) == 0) {
-    getSprite(1).startJump(1);
+    /*randomMove(2);*/
   }
 }
 

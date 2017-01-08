@@ -99,6 +99,7 @@ void MainScreen::handleEvent(sf::Event& event) {
 bool MainScreen::update(sf::Time& time) {
   // Used for getting ticks in ChaiScript
   time_ = time;
+  GameState::tick();
 
   const auto chaiUpdate =
       GameState::chai().eval<std::function<void()>>("update");

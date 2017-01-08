@@ -7,6 +7,8 @@
 
 #include <limits.h>
 
+#include <random>
+
 namespace GameState {
 
 bool initialized_ = false;
@@ -41,6 +43,9 @@ std::stack<std::unique_ptr<map::Map>> maps_;
 std::unordered_map<int, std::tuple<TileCallback, bool>> tileEvents_;
 std::unordered_map<int, TileCallback> tileActions_;
 
+std::default_random_engine generator;
+std::uniform_int_distribution<int> distribution(0, INT_MAX);
+
 chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
 #define ADD_METHOD(Class, Name) chai_.add(chaiscript::fun(&Class::Name), #Name)
@@ -49,6 +54,7 @@ chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
 void initApi() {
   ADD_FUNCTION(mod);
+  ADD_FUNCTION(randomNumber);
 
   ADD_FUNCTION(initialized);
   ADD_FUNCTION(ticks);
@@ -197,7 +203,13 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
 
 int mod(int a, int b) { return a % b; }
 
+int randomNumber(int min, int max) {
+  return (distribution(generator) % (max - min)) + min;
+}
+
 void setTicks(util::Tick ticks) { ticks_ = ticks; }
+
+void tick() { ++ticks_; }
 
 int ticks() { return (int)(ticks_ % INT_MAX); }
 

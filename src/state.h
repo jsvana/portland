@@ -95,6 +95,20 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite);
 int mod(int a, int b);
 
 /**
+ * API wrapper from random number
+ *
+ * @param min Minimum of rand
+ * @param max Maximum of rand
+ * @return Random number between [min, max]
+ */
+int randomNumber(int min, int max);
+
+/**
+ * Advance ticks by one
+ */
+void tick();
+
+/**
  * Sets the current game ticks
  *
  * @param ticks Current game ticks
