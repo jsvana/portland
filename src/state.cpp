@@ -2,7 +2,6 @@
 
 #include "controls.h"
 #include "log.h"
-#include "quadtree.h"
 
 #include <limits.h>
 
