@@ -121,13 +121,15 @@ void initApi() {
   ADD_FUNCTION(setValue);
   ADD_FUNCTION(addValueChangeCallback);
 
-  chai_.add_global_const(chaiscript::const_var(util::Direction::LEFT),
-                         "DIRECTION_LEFT");
-  chai_.add_global_const(chaiscript::const_var(util::Direction::RIGHT),
-                         "DIRECTION_RIGHT");
-  ADD_FUNCTION(queueMove);
+  chai_.add_global_const(
+      chaiscript::const_var(static_cast<int>(util::Direction::LEFT)),
+      "DIRECTION_LEFT");
+  chai_.add_global_const(
+      chaiscript::const_var(static_cast<int>(util::Direction::RIGHT)),
+      "DIRECTION_RIGHT");
 
-  ADD_METHOD(controls, directionPressed);
+  ADD_FUNCTION(directionPressed);
+  ADD_FUNCTION(queueMove);
   ADD_METHOD(controls, jumpPressed);
 }
 
@@ -291,9 +293,15 @@ void markInitialized() { initialized_ = true; }
 
 bool initialized() { return initialized_; }
 
-void queueMove(const util::Direction dir) { queuedMoves_.push(dir); }
+void queueMove(const int dir) {
+  queuedMoves_.push(static_cast<util::Direction>(dir));
+}
 
 std::queue<util::Direction>& moves() { return queuedMoves_; }
+
+bool directionPressed(const int dir) {
+  return controls::directionPressed(static_cast<util::Direction>(dir));
+}
 
 bool loadMap(std::string path) {
   maps_.push(std::make_unique<map::Map>(path));

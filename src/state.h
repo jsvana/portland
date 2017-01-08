@@ -239,8 +239,28 @@ void markInitialized();
  */
 bool initialized();
 
-void queueMove(const util::Direction dir);
+/**
+ * Queues a move to be executed on the next update.
+ *
+ * @param dir Direction to move
+ */
+void queueMove(const int dir);
+
+/**
+ * Gets all queued moves
+ *
+ * @return Queued moves
+ */
 std::queue<util::Direction>& moves();
+
+/**
+ * Wrapper around controls::directionPressed to
+ * static_cast to util::Direction
+ *
+ * @param dir Direction to test
+ * @return Whether or not direction is pressed
+ */
+bool directionPressed(const int dir);
 
 /**
  * Loads a new map and pushes it onto the stack

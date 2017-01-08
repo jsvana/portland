@@ -99,7 +99,6 @@ bool MainScreen::update(sf::Time& time) {
     }
     sprite->update(time_);
   }
-  auto old_len = GameState::sprites().size();
   GameState::sprites().erase(
       std::remove_if(
           GameState::sprites().begin(), GameState::sprites().end(),
