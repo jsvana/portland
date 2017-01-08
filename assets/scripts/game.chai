@@ -4,6 +4,8 @@ global UPDATE_INTERVAL = 50;
 global PROJECTILE_SPEED = 3;
 global PROJECTILE_MAX_DISTANCE = 100;
 
+global movementFuncs = [0];
+
 def init() {
   if (initialized()) {
     return;
@@ -13,7 +15,8 @@ def init() {
   setCharacterMoveSpeed(200, 100);
   getHero().setMaxHp(100);
 
-  addNpc("assets/sprites/undead.json", 0, 3, 1);
+  var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
+  movementFuncs.push_back(randomMovement);
   addItem("assets/sprites/item.json", 2, 14, 6);
 
   getHero().setCollisionCallback(heroCollision);
@@ -57,25 +60,7 @@ def update() {
     queueMove(DIRECTION_RIGHT);
   }
 
-  var sprite = getSprite(1);
-  if (sprite.getFlag("moving")) {
-    var xMove = sprite.getValue("xMove");
-    print(xMove / iabs(xMove));
-    var sign = xMove / iabs(xMove);
-    sprite.move(sign, 0);
-    xMove += -1 * sign;
-    sprite.setValue("xMove", xMove);
-    if (xMove == 0) {
-      sprite.setFlag("moving", false);
-    }
-  } else {
-    if (mod(ticks(), UPDATE_INTERVAL) == 0) {
-      /*randomMove(2);*/
-      sprite.setFlag("moving", true);
-      sprite.setValue("xMove", randomMagnitude(10));
-      print(sprite.getValue("xMove"));
-    }
-  }
+  movementFuncs[1](1);
 }
 
 def projectileCollision(projectileId, otherId) {

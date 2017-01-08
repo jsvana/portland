@@ -22,3 +22,24 @@ def randomMagnitude(max) {
   }
   return randomNumber(1, 10) * sign;
 }
+
+def randomMovement(id) {
+  var sprite = getSprite(id);
+  if (sprite.getFlag("moving")) {
+    var xMove = sprite.getValue("xMove");
+    print(xMove / iabs(xMove));
+    var sign = xMove / iabs(xMove);
+    sprite.move(sign, 0);
+    xMove += -1 * sign;
+    sprite.setValue("xMove", xMove);
+    if (xMove == 0) {
+      sprite.setFlag("moving", false);
+    }
+  } else {
+    if (mod(ticks(), UPDATE_INTERVAL) == 0) {
+      sprite.setFlag("moving", true);
+      sprite.setValue("xMove", randomMagnitude(10));
+      print(sprite.getValue("xMove"));
+    }
+  }
+}
