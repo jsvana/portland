@@ -36,8 +36,8 @@ def action() {
 }
 
 def attack() {
-  if (!getFlag("hero_firing")) {
-    setFlag("hero_firing", true);
+  if (!getHero().getFlag("firing")) {
+    getHero().setFlag("firing", true);
     var id = fireFromSprite(getHero(), DIRECTION_RIGHT, "assets/sprites/ammo.json", 25);
     var projectile = getSprite(id);
     projectile.setCollisionCallback(projectileCollision);
@@ -57,8 +57,24 @@ def update() {
     queueMove(DIRECTION_RIGHT);
   }
 
-  if (mod(ticks(), UPDATE_INTERVAL) == 0) {
-    /*randomMove(2);*/
+  var sprite = getSprite(1);
+  if (sprite.getFlag("moving")) {
+    var xMove = sprite.getValue("xMove");
+    print(xMove / iabs(xMove));
+    var sign = xMove / iabs(xMove);
+    sprite.move(sign, 0);
+    xMove += -1 * sign;
+    sprite.setValue("xMove", xMove);
+    if (xMove == 0) {
+      sprite.setFlag("moving", false);
+    }
+  } else {
+    if (mod(ticks(), UPDATE_INTERVAL) == 0) {
+      /*randomMove(2);*/
+      sprite.setFlag("moving", true);
+      sprite.setValue("xMove", randomMagnitude(10));
+      print(sprite.getValue("xMove"));
+    }
   }
 }
 
@@ -67,11 +83,11 @@ def projectileCollision(projectileId, otherId) {
     return;
   }
   getSprite(projectileId).markNeedsCleanup();
-  setFlag("hero_firing", false);
+  getHero().setFlag("firing", false);
 }
 
 def projectileCleanup(projectileId) {
-  setFlag("hero_firing", false);
+  getHero().setFlag("firing", false);
 }
 
 def flagChange(newVal) {
@@ -104,5 +120,5 @@ def heroCollision(heroId, otherId) {
 }
 
 def showSign() {
-  showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");
+  showDialog("Hello!");
 }

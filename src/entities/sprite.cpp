@@ -80,6 +80,18 @@ void Sprite::zeroVelocity(bool stopJump) {
   jumping_ = !stopJump;
 }
 
+void Sprite::setFlag(const std::string& key, const bool flag) {
+  flags_[key] = flag;
+}
+
+bool Sprite::getFlag(const std::string& key) {
+  const auto iter = flags_.find(key);
+  if (iter == flags_.end()) {
+    return false;
+  }
+  return iter->second;
+}
+
 void Sprite::setValue(const std::string& key, const int value) {
   values_[key] = value;
 }

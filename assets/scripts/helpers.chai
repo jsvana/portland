@@ -13,15 +13,12 @@ def fireFromSprite(sprite, direction, projectile, tile) {
   return id;
 }
 
-def randomMove(id) {
-  if (randomNumber(0, 10) >= 4) {
-    return;
-  }
+def randomMagnitude(max) {
   var sign;
-  if (randomNumber(0, 1) == 1) {
+  if (randomNumber(0, 10) >= 5) {
     sign = 1;
   } else {
     sign = -1;
   }
-  getSprite(id).move(randomNumber(0, 10) * sign, 0);
+  return randomNumber(1, 10) * sign;
 }

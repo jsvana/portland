@@ -95,6 +95,14 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite);
 int mod(int a, int b);
 
 /**
+ * API wrapper from abs
+ *
+ * @param a Number to abs
+ * @return abs(a)
+ */
+int iabs(int a);
+
+/**
  * API wrapper from random number
  *
  * @param min Minimum of rand

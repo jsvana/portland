@@ -7,6 +7,7 @@
 
 #include <limits.h>
 
+#include <cmath>
 #include <random>
 
 namespace GameState {
@@ -54,6 +55,7 @@ chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
 void initApi() {
   ADD_FUNCTION(mod);
+  ADD_FUNCTION(iabs);
   ADD_FUNCTION(randomNumber);
 
   ADD_FUNCTION(initialized);
@@ -98,6 +100,8 @@ void initApi() {
   ADD_METHOD(entities::Sprite, setCollisionCallback);
   ADD_METHOD(entities::Sprite, setCleanupCallback);
   ADD_METHOD(entities::Sprite, addItem);
+  ADD_METHOD(entities::Sprite, getFlag);
+  ADD_METHOD(entities::Sprite, setFlag);
   ADD_METHOD(entities::Sprite, getValue);
   ADD_METHOD(entities::Sprite, setValue);
   ADD_METHOD(entities::Sprite, removeItem);
@@ -204,6 +208,7 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
 }
 
 int mod(int a, int b) { return a % b; }
+int iabs(int a) { return abs(a); }
 
 int randomNumber(int min, int max) {
   return (distribution(generator) % (max - min)) + min;

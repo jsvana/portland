@@ -73,6 +73,7 @@ class Sprite {
   util::Direction direction_;
   util::Direction visualDirection_;
 
+  std::unordered_map<std::string, bool> flags_;
   std::unordered_map<std::string, int> values_;
 
   /**
@@ -392,6 +393,22 @@ class Sprite {
    * @return Whether or not sprite can occupy the same space as another sprite
    */
   virtual bool phased() { return false; }
+
+  /**
+  * Set a sprite boolean value
+  *
+  * @param key Flag to set
+  * @param value New value
+  */
+  void setFlag(const std::string& key, const bool value);
+
+  /**
+  * Get a sprite boolean value
+  *
+  * @param key Flag to get
+  * @return Value or false if not set
+  */
+  bool getFlag(const std::string& key);
 
   /**
   * Set a sprite integer value
