@@ -39,7 +39,7 @@ void log(const LogLevel& level, const std::string& line) {
 #ifdef _WIN32
   struct tm timeObj;
   localtime_s(&timeObj, &now);
-  timeinfo = &timeobj;
+  timeinfo = &timeObj;
 #else
   timeinfo = localtime(&now);
 #endif
