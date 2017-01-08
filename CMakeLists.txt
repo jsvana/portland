@@ -11,6 +11,7 @@ if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU" OR ${CMAKE_CXX_COMPILER_ID} STREQUAL
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic -Wno-deprecated-declarations -std=c++14 -DCHAISCRIPT_NO_THREADS")
   set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS} -g")
   set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS} -O2")
+  set(PLATFORM_LIBRARIES dl)
 elseif (${CMAKE_CXX_COMPILER_ID} STREQUAL "MSVC")
   if (CMAKE_CXX_FLAGS MATCHES "/W[0-4]")
     string(REGEX REPLACE "/W[0-4]" "/W4" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
@@ -30,8 +31,6 @@ include_directories(
   "vendor/ChaiScript/include"
   "vendor/json"
 )
-
-set(PLATFORM_LIBRARIES dl)
 
 file(GLOB_RECURSE portland_sources src/*.cpp)
 add_executable(portland ${portland_sources})
