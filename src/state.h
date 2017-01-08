@@ -162,10 +162,18 @@ chaiscript::ChaiScript& chai();
  * Adds a callback to a specific tile
  *
  * @param id Tile ID to add callback to
- * @param callback Name of ChaiScript callback function
+ * @param callback ChaiScript callback function
  * @param clearOnFire If true, remove this callback after it is first triggered
  */
 void addTileEvent(int id, TileCallback callback, bool clearOnFire);
+
+/**
+ * Adds an action to a specific tile
+ *
+ * @param id Tile ID to add callback to
+ * @param callback ChaiScript action function
+ */
+void addTileAction(int id, TileCallback callback);
 
 /**
  * Checks if given tile ID has an event
@@ -175,12 +183,27 @@ void addTileEvent(int id, TileCallback callback, bool clearOnFire);
 bool tileHasEvent(int id);
 
 /**
- * Gets ChaiScript callback function name for tile ID
+ * Checks if given tile ID has an action
  *
- * @param id Tile ID to get callback function for
- * @return ChaiScript callback function name
+ * @return Whether tile has action
  */
-const std::tuple<TileCallback, bool>& tileCallback(int id);
+bool tileHasAction(int id);
+
+/**
+ * Gets ChaiScript callback function for tile ID
+ *
+ * @param id Tile ID to get event function for
+ * @return ChaiScript callback function
+ */
+const std::tuple<TileCallback, bool>& tileEvent(int id);
+
+/**
+ * Gets ChaiScript action function for tile ID
+ *
+ * @param id Tile ID to get action function for
+ * @return ChaiScript callback function
+ */
+const TileCallback& tileAction(int id);
 
 /**
  * Clears an event for a specific tile
@@ -226,6 +249,11 @@ void dispatchCollision(entities::Sprite* mover, entities::Sprite* other);
  * clears it
  */
 void runTileEvent();
+
+/**
+ * Checks for an action on the character's current tile and runs the event
+ */
+void runTileAction();
 
 /**
  * Marks the game as initialized
@@ -404,6 +432,13 @@ bool setNpcCallback(entities::Id npcId, entities::SpriteCallback callback);
 visual::DialogManager::Id showDialog(std::string message);
 
 /**
+ * Returns whether or not a dialog is active
+ *
+ * @return Whether or not a dialog is active
+ */
+bool dialogRunning();
+
+/**
  * Adds an option to the given dialog
  *
  * @param option Option to add to dialog
@@ -427,11 +462,22 @@ bool setDialogCallback(visual::DialogManager::Id uid,
  *
  * @param x X coordinate of tile
  * @param y Y coordinate of tile
- * @param callback Name of ChaiScript callback function to run on contact
+ * @param callback ChaiScript callback function to run on contact
  * @param clearOnFire If true, remove this callback after it is first triggered
  * @return Whether the operation is successful
  */
 bool registerTileEvent(int x, int y, TileCallback callback, bool clearOnFire);
+
+/**
+ * Adds a tile action to a tile to run when the character hits the
+ * action key on the tile
+ *
+ * @param x X coordinate of tile
+ * @param y Y coordinate of tile
+ * @param callback ChaiScript callback function to run on contact
+ * @return Whether the operation is successful
+ */
+bool registerTileAction(int x, int y, TileCallback callback);
 
 /**
  * Clears all registered tile events

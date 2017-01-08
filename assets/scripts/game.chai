@@ -18,32 +18,43 @@ def init() {
 
   getHero().setCollisionCallback(heroCollision);
 
-  registerTileEvent(9, 6, showSign, /*clearOnFire = */true);
-  registerTileEvent(11, 3, randomCallback, /*clearOnFire = */false);
+  registerTileAction(9, 6, showSign);
   addFlagChangeCallback("hit_enemy", flagChange);
   setValue("hero_money", 0);
   addValueChangeCallback("hero_money", moneyChange);
 }
 
+def jump() {
+  getHero().startJump(1);
+}
+
+def action() {
+  if (dialogRunning()) {
+    return;
+  }
+  runTileAction();
+}
+
+def attack() {
+  if (!getFlag("hero_firing")) {
+    setFlag("hero_firing", true);
+    var id = fireFromSprite(getHero(), DIRECTION_RIGHT, "assets/sprites/ammo.json", 25);
+    var projectile = getSprite(id);
+    projectile.setCollisionCallback(projectileCollision);
+    projectile.setCleanupCallback(projectileCleanup);
+  }
+}
+
 def update() {
+  if (dialogRunning()) {
+    return;
+  }
+
   if (directionPressed(DIRECTION_LEFT)) {
     queueMove(DIRECTION_LEFT);
   }
   if (directionPressed(DIRECTION_RIGHT)) {
     queueMove(DIRECTION_RIGHT);
-  }
-  if (jumpPressed()) {
-    getHero().startJump(1);
-  }
-
-  if (attackPressed()) {
-    if (!getFlag("hero_firing")) {
-      setFlag("hero_firing", true);
-      var id = fireFromSprite(getHero(), DIRECTION_RIGHT, "assets/sprites/ammo.json", 25);
-      var projectile = getSprite(id);
-      projectile.setCollisionCallback(projectileCollision);
-      projectile.setCleanupCallback(projectileCleanup);
-    }
   }
 
   if (mod(ticks(), UPDATE_INTERVAL) == 0) {
@@ -94,11 +105,4 @@ def heroCollision(heroId, otherId) {
 
 def showSign() {
   showDialog("Here's a really long dialog with lots of text that will probably span multiple lines and cause the dialog to scroll for at least two screens (but hopefully more than that).");
-}
-
-def randomCallback() {
-  print("touching lava!");
-}
-
-def dialogCallback(choice) {
 }

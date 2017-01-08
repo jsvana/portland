@@ -244,6 +244,8 @@ void handleEvent(sf::Event& event) {
   dialogs.front()->handleEvent(event);
 }
 
+bool running() { return !dialogs.empty(); }
+
 bool update(const sf::Time& time) {
   if (dialogs.empty()) {
     return false;

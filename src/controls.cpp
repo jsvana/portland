@@ -38,6 +38,16 @@ bool anyKeyPressed(const std::vector<sf::Keyboard::Key>& keys) {
   return false;
 }
 
+bool anyKeyEvent(const std::vector<sf::Keyboard::Key>& keys,
+                 const sf::Keyboard::Key code) {
+  for (const auto& key : keys) {
+    if (key == code) {
+      return true;
+    }
+  }
+  return false;
+}
+
 bool directionPressed(util::Direction direction) {
   return anyKeyPressed(directionKeys[direction]);
 }
@@ -47,5 +57,17 @@ bool jumpPressed() { return anyKeyPressed(jumpKeys); }
 bool actionPressed() { return anyKeyPressed(actionKeys); }
 
 bool attackPressed() { return anyKeyPressed(attackKeys); }
+
+bool jumpEvent(const sf::Keyboard::Key code) {
+  return anyKeyEvent(jumpKeys, code);
+}
+
+bool actionEvent(const sf::Keyboard::Key code) {
+  return anyKeyEvent(actionKeys, code);
+}
+
+bool attackEvent(const sf::Keyboard::Key code) {
+  return anyKeyEvent(attackKeys, code);
+}
 
 }  // namespace controls

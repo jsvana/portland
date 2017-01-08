@@ -39,6 +39,7 @@ std::stack<std::vector<std::unique_ptr<entities::Sprite>>> sprites_;
 std::stack<std::unique_ptr<map::Map>> maps_;
 
 std::unordered_map<int, std::tuple<TileCallback, bool>> tileEvents_;
+std::unordered_map<int, TileCallback> tileActions_;
 
 chaiscript::ChaiScript chai_(chaiscript::Std_Lib::library());
 
@@ -63,12 +64,15 @@ void initApi() {
 
   ADD_FUNCTION(addProjectile);
 
+  ADD_FUNCTION(dialogRunning);
   ADD_FUNCTION(showDialog);
   ADD_FUNCTION(addDialogOption);
   ADD_FUNCTION(setDialogCallback);
 
   ADD_FUNCTION(clearEvents);
   ADD_FUNCTION(registerTileEvent);
+  ADD_FUNCTION(registerTileAction);
+  ADD_FUNCTION(runTileAction);
 
   ADD_TYPE(entities::Sprite, "Sprite");
   ADD_METHOD(entities::Sprite, id);
@@ -229,11 +233,21 @@ void addTileEvent(int id, TileCallback callback, bool clearOnFire) {
   tileEvents_[id] = std::make_tuple(callback, clearOnFire);
 }
 
+void addTileAction(int id, TileCallback callback) {
+  tileActions_[id] = callback;
+}
+
 bool tileHasEvent(int id) { return tileEvents_.find(id) != tileEvents_.end(); }
 
-const std::tuple<TileCallback, bool>& tileCallback(int id) {
+const std::tuple<TileCallback, bool>& tileEvent(int id) {
   return tileEvents_[id];
 }
+
+bool tileHasAction(int id) {
+  return tileActions_.find(id) != tileActions_.end();
+}
+
+const TileCallback& tileAction(int id) { return tileActions_[id]; }
 
 void clearTileEvent(int id) { tileEvents_.erase(id); }
 
@@ -245,11 +259,20 @@ void runTileEvent() {
     return;
   }
 
-  auto p = tileCallback(tileNumber);
+  auto p = tileEvent(tileNumber);
   std::get<TileCallback>(p)();
   if (std::get<bool>(p)) {
     clearTileEvent(tileNumber);
   }
+}
+
+void runTileAction() {
+  int tileNumber = map()->pointToTileNumber(hero_->getPosition());
+  if (!tileHasAction(tileNumber)) {
+    return;
+  }
+
+  tileAction(tileNumber)();
 }
 
 bool positionWalkable(const std::unique_ptr<entities::Sprite>& sprite,
@@ -437,10 +460,13 @@ bool setNpcCallback(const entities::Id npcId,
 }
 
 visual::DialogManager::Id showDialog(std::string message) {
+  LOG(INFO) << "Dialog running? " << (dialogRunning() ? "yes" : "no");
   auto dialog = new visual::Dialog(message);
   dialog->setPosition(0, SCREEN_HEIGHT - dialog->pixelHeight());
   return visual::DialogManager::queueDialog(dialog);
 }
+
+bool dialogRunning() { return visual::DialogManager::running(); }
 
 bool addDialogOption(visual::DialogManager::Id uid, std::string option) {
   return visual::DialogManager::addDialogOption(uid, option);
@@ -453,6 +479,11 @@ bool setDialogCallback(visual::DialogManager::Id uid,
 
 bool registerTileEvent(int x, int y, TileCallback callback, bool clearOnFire) {
   addTileEvent(map()->mapPointToTileNumber(x, y), callback, clearOnFire);
+  return true;
+}
+
+bool registerTileAction(int x, int y, TileCallback callback) {
+  addTileAction(map()->mapPointToTileNumber(x, y), callback);
   return true;
 }
 

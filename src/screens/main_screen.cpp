@@ -80,6 +80,19 @@ void MainScreen::handleEvent(sf::Event& event) {
         visual::Console::show();
       }
     }
+
+    auto runFunc = [](const std::string& name) {
+      auto func = GameState::chai().eval<std::function<void()>>(name);
+      func();
+    };
+
+    if (controls::jumpEvent(event.key.code)) {
+      runFunc("jump");
+    } else if (controls::actionEvent(event.key.code)) {
+      runFunc("action");
+    } else if (controls::attackEvent(event.key.code)) {
+      runFunc("attack");
+    }
   }
 }
 

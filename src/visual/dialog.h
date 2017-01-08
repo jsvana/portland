@@ -228,6 +228,13 @@ int dialogChoice(const Id uid);
 void handleEvent(sf::Event& event);
 
 /**
+ * Returns whether or not a dialog is active
+ *
+ * @return Whether or not a dialog is active
+ */
+bool running();
+
+/**
  * Update the first dialog in the queue
  *
  * @param time Amount of time since last update
