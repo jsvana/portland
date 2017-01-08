@@ -4,7 +4,18 @@ global UPDATE_INTERVAL = 50;
 global PROJECTILE_SPEED = 3;
 global PROJECTILE_MAX_DISTANCE = 100;
 
-global movementFuncs = [0];
+global movementFuncs = [noopMovement];
+
+def addMovementFunc(id, func) {
+  if (movementFuncs.size() != id) {
+    throw("Expected movementFuncs to have " + id + " elements, but it has " + movementFuncs.size());
+  }
+  movementFuncs.push_back(func);
+}
+
+def skipMovementFunc(id) {
+  addMovementFunc(id, noopMovement);
+}
 
 def init() {
   if (initialized()) {
@@ -16,8 +27,9 @@ def init() {
   getHero().setMaxHp(100);
 
   var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
-  movementFuncs.push_back(randomMovement);
-  addItem("assets/sprites/item.json", 2, 14, 6);
+  addMovementFunc(id, randomMovement);
+  id = addItem("assets/sprites/item.json", 2, 14, 6);
+  skipMovementFunc(id);
 
   getHero().setCollisionCallback(heroCollision);
 
@@ -60,7 +72,13 @@ def update() {
     queueMove(DIRECTION_RIGHT);
   }
 
-  movementFuncs[1](1);
+  if (jumpPressed()) {
+    getHero().startJump(1);
+  }
+
+  for (var i = 1; i < movementFuncs.size(); i += 1) {
+    movementFuncs[i](i);
+  }
 }
 
 def projectileCollision(projectileId, otherId) {
