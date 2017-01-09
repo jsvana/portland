@@ -268,7 +268,9 @@ class Sprite {
    *
    * @return Current sprite direction
    */
-  util::Direction getDirection() { return direction_; }
+  // TODO(jsvana): figure out how to use == on enums in Chai so we don't
+  // have to do this dumb casting
+  int getDirection() { return static_cast<int>(direction_); }
 
   /**
    * Sets HP to max HP

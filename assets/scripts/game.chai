@@ -22,7 +22,7 @@ def init() {
     return;
   }
   loadMap("assets/maps/main.json");
-  loadCharacter("assets/sprites/hero.json", 0, 1, 6);
+  loadCharacter("assets/sprites/hero.json", 6, 1, 6);
   setCharacterMoveSpeed(2.0);
   getHero().setMaxHp(100);
 
@@ -56,7 +56,7 @@ def action() {
 def attack() {
   if (!getHero().getFlag("firing")) {
     getHero().setFlag("firing", true);
-    var id = fireFromSprite(getHero(), DIRECTION_RIGHT, "assets/sprites/ammo.json", 25);
+    var id = fireFromSprite(getHero(), "assets/sprites/ammo.json", 25);
     var projectile = getSprite(id);
     projectile.setCollisionCallback(projectileCollision);
     projectile.setCleanupCallback(projectileCleanup);

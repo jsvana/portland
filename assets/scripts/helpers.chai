@@ -1,15 +1,21 @@
-def fireFromSprite(sprite, direction, projectile, tile) {
+def fireFromSprite(sprite, projectile, tile) {
   var dir;
-  if (direction == DIRECTION_LEFT) {
+  var x;
+  var dim = sprite.getDimensions();
+  if (sprite.getDirection() == DIRECTION_LEFT) {
     dir = -1;
   } else {
     dir = 1;
   }
-  var dim = sprite.getDimensions();
   var id = addProjectile(projectile, tile, 0, 0, PROJECTILE_SPEED * dir, PROJECTILE_MAX_DISTANCE)
   var projectile = getSprite(id);
   var pDim = projectile.getDimensions();
-  projectile.setPosition(dim.left + dim.width / 2, dim.top + dim.height / 2 - pDim.height / 2);
+  if (sprite.getDirection() == DIRECTION_LEFT) {
+    x = dim.left - pDim.width;
+  } else {
+    x = dim.left + dim.width;
+  }
+  projectile.setPosition(x, dim.top + dim.height / 2 - pDim.height / 2);
   return id;
 }
 

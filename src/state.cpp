@@ -112,6 +112,7 @@ void initApi() {
   ADD_METHOD(entities::Sprite, activate);
   ADD_METHOD(entities::Sprite, deactivate);
   ADD_METHOD(entities::Sprite, markNeedsCleanup);
+  ADD_METHOD(entities::Sprite, getDirection);
 
   ADD_TYPE(entities::Item, "Item");
   ADD_METHOD(entities::Item, held);

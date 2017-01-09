@@ -1,13 +1,11 @@
 {
-    "width": 16,
-    "height": 16,
-    "columns": 8,
-    "scale": 1,
-    "multi_file": true,
-    "tile": 0,
+    "width": 32,
+    "height": 32,
+    "columns": 5,
+    "scale": 0.5,
+    "multi_file": false,
+    "tile": 6,
     "frame_spacing": 0,
-    "frames": [
-      "../img/dawnlike/Characters/Player0.png",
-      "../img/dawnlike/Characters/Player1.png"
-    ]
+    "total_frames": 1,
+    "texture": "../img/PortlandAll.png"
 }

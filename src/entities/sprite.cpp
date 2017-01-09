@@ -33,6 +33,7 @@ bool Sprite::load(const std::string& path) {
   tile_ = spriteData["tile"].get<int>();
   multiFile_ = spriteData["multi_file"].get<bool>();
   scale_ = spriteData["scale"].get<float>();
+  sprite_.setScale(scale_, scale_);
   frameSpacing_ = spriteData["frame_spacing"].get<int>();
   columns_ = spriteData["columns"].get<int>();
 
