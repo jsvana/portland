@@ -9,6 +9,7 @@ def fireFromSprite(sprite, projectile, tile) {
   }
   var id = addProjectile(projectile, tile, 0, 0, PROJECTILE_SPEED * dir, PROJECTILE_MAX_DISTANCE)
   var projectile = getSprite(id);
+  projectile.setVisualDirection(sprite.getDirection());
   var pDim = projectile.getDimensions();
   if (sprite.getDirection() == DIRECTION_LEFT) {
     x = dim.left - pDim.width;

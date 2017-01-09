@@ -264,6 +264,17 @@ class Sprite {
   }
 
   /**
+   * Sets sprite's visual direction
+   *
+   * @param dir New direction
+   */
+  void setVisualDirection(int dir) {
+    auto utilDir = static_cast<util::Direction>(dir);
+    visualDirection_ = utilDir;
+    direction_ = utilDir;
+  }
+
+  /**
    * Gets current sprite direction
    *
    * @return Current sprite direction

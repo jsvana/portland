@@ -31,7 +31,7 @@ def init() {
   var npc = getSprite(id);
   npc.setMaxHp(10);
   npc.fullHeal();
-  id = addItem("assets/sprites/item.json", 2, 14, 6);
+  id = addItem("assets/sprites/item.json", 4, 14, 6);
   skipMovementFunc(id);
 
   getHero().setCollisionCallback(heroCollision);
@@ -56,7 +56,7 @@ def action() {
 def attack() {
   if (!getHero().getFlag("firing")) {
     getHero().setFlag("firing", true);
-    var id = fireFromSprite(getHero(), "assets/sprites/ammo.json", 25);
+    var id = fireFromSprite(getHero(), "assets/sprites/fireball.json", 2);
     var projectile = getSprite(id);
     projectile.setCollisionCallback(projectileCollision);
     projectile.setCleanupCallback(projectileCleanup);
