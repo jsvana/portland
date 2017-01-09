@@ -99,6 +99,8 @@ Thanks to:
 
 - [The Chayed - KIIRA](http://opengameart.org/users/the-chayed-kiira) for the tileset
 
+- Alex Arens for the awesome hipster sprites
+
 ## License
 
 [MIT](LICENSE)
