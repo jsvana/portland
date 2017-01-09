@@ -3,6 +3,7 @@
     "height": 32,
     "columns": 5,
     "scale": 0.5,
+    "update_ms": 500,
     "multi_file": false,
     "total_frames": 1,
     "tile": 0,

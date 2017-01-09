@@ -5,7 +5,8 @@
     "scale": 0.5,
     "multi_file": false,
     "total_frames": 2,
+    "update_ms": 250,
     "tile": 2,
-    "frame_spacing": 0,
+    "frame_spacing": 1,
     "texture": "../img/PortlandAll.png"
 }

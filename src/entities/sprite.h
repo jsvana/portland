@@ -44,6 +44,8 @@ class Sprite {
   int frameSpacing_;
   int columns_;
 
+  sf::Time updateMs_;
+
   int frame_ = 0;
 
   int hp_;

@@ -4,6 +4,7 @@
     "columns": 5,
     "scale": 0.5,
     "multi_file": false,
+    "update_ms": 500,
     "tile": 6,
     "frame_spacing": 0,
     "total_frames": 1,

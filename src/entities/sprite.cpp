@@ -31,6 +31,7 @@ bool Sprite::load(const std::string& path) {
   dimensions_.width = spriteData["width"].get<float>();
   dimensions_.height = spriteData["height"].get<float>();
   tile_ = spriteData["tile"].get<int>();
+  updateMs_ = sf::milliseconds(spriteData["update_ms"].get<int>());
   multiFile_ = spriteData["multi_file"].get<bool>();
   scale_ = spriteData["scale"].get<float>();
   sprite_.setScale(scale_, scale_);
@@ -108,9 +109,9 @@ void Sprite::update(const sf::Time& time) {
     return;
   }
   time_ += time;
-  if (time_ >= sf::milliseconds(500)) {
+  if (time_ >= updateMs_) {
     int limit = textures_.size();
-    if (limit == 1 || totalFrames_ == 1) {
+    if (limit == 1 && totalFrames_ == 1) {
       return;
     }
     int frameIncrease;
@@ -122,6 +123,9 @@ void Sprite::update(const sf::Time& time) {
       frameIncrease = frameSpacing_;
     }
     frame_ = (frame_ + frameIncrease) % limit;
+    if (id > 2) {
+      logger::info("changed frame to frame " + std::to_string(frame_));
+    }
     time_ = sf::seconds(0);
   }
 }
@@ -135,8 +139,8 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
     tile += frame_;
   }
   sf::IntRect source((tile % columns_) * (int)dimensions_.width,
-                     (tile / columns_) * (int)dimensions_.height, (int)dimensions_.width,
-                     (int)dimensions_.height);
+                     (tile / columns_) * (int)dimensions_.height,
+                     (int)dimensions_.width, (int)dimensions_.height);
 
   sf::Texture tex;
   if (multiFile_) {

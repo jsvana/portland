@@ -5,6 +5,7 @@
     "scale": 1,
     "multi_file": false,
     "total_frames": 1,
+    "update_ms": 500,
     "tile": 0,
     "frame_spacing": 0,
     "texture": "../img/dawnlike/Items/Ammo.png"

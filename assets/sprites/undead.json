@@ -3,6 +3,7 @@
     "height": 16,
     "columns": 8,
     "scale": 1,
+    "update_ms": 500,
     "multi_file": true,
     "tile": 0,
     "frame_spacing": 0,
