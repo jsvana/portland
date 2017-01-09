@@ -123,9 +123,6 @@ void Sprite::update(const sf::Time& time) {
       frameIncrease = frameSpacing_;
     }
     frame_ = (frame_ + frameIncrease) % limit;
-    if (id > 2) {
-      logger::info("changed frame to frame " + std::to_string(frame_));
-    }
     time_ = sf::seconds(0);
   }
 }
