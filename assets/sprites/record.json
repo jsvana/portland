@@ -1,0 +1,12 @@
+{
+    "width": 32,
+    "height": 32,
+    "columns": 5,
+    "scale": 0.5,
+    "multi_file": false,
+    "total_frames": 1,
+    "update_ms": 250,
+    "tile": 0,
+    "frame_spacing": 0,
+    "texture": "../img/PortlandAll.png"
+}

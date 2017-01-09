@@ -56,7 +56,13 @@ def action() {
 def attack() {
   if (!getHero().getFlag("firing")) {
     getHero().setFlag("firing", true);
-    var id = fireFromSprite(getHero(), "assets/sprites/fireball.json", 2);
+    var id;
+    // TODO(jsvana): change this to check inventory?
+    if (getHero().getFlag("has_zippo")) {
+      id = fireFromSprite(getHero(), "assets/sprites/fireball.json", 2);
+    } else {
+      id = fireFromSprite(getHero(), "assets/sprites/record.json", 0);
+    }
     var projectile = getSprite(id);
     projectile.setCollisionCallback(projectileCollision);
     projectile.setCleanupCallback(projectileCleanup);
@@ -126,6 +132,7 @@ def heroCollision(heroId, otherId) {
     if (item.held()) {
       return;
     }
+    getHero().setFlag("has_zippo", true);
     item.hold();
     getHero().addItem(otherId);
     setValue("hero_money", getValue("hero_money") + 10);
