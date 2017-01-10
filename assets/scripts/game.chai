@@ -26,12 +26,14 @@ def init() {
   setCharacterMoveSpeed(2.0);
   getHero().setMaxHp(100);
 
+  /*
   var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
   addMovementFunc(id, randomMovement);
   var npc = getSprite(id);
   npc.setMaxHp(10);
   npc.fullHeal();
-  id = addItem("assets/sprites/item.json", 8, 6, 10);
+  */
+  var id = addItem("assets/sprites/item.json", 8, 6, 10);
   skipMovementFunc(id);
   id = addItem("assets/sprites/item.json", 4, 19, 10);
   skipMovementFunc(id);
@@ -40,8 +42,6 @@ def init() {
 
   registerTileAction(9, 6, showSign);
   addFlagChangeCallback("hit_enemy", flagChange);
-  setValue("hero_money", 0);
-  addValueChangeCallback("hero_money", moneyChange);
 }
 
 def jump() {
@@ -119,26 +119,17 @@ def flagChange(newVal) {
 }
 
 def heroCollision(heroId, otherId) {
-  if (otherId == 1) {
-    if (getFlag("hit_enemy")) {
-      info("already hit enemy");
-    } else {
-      getHero().damage(10);
-      setFlag("hit_enemy", true);
-    }
-  } else if (otherId == 2 || otherId == 3) {
-    var item = getItem(otherId);
-    if (item.held()) {
-      return;
-    }
-    if (otherId == 2) {
-      getHero().setFlag("has_bowtie", true);
-    } else if (otherId == 3) {
-      getHero().setFlag("has_zippo", true);
-    }
-    item.hold();
-    getHero().addItem(otherId);
+  var item = getItem(otherId);
+  if (item.held()) {
+    return;
   }
+  if (otherId == 1) {
+    getHero().setFlag("has_bowtie", true);
+  } else if (otherId == 2) {
+    getHero().setFlag("has_zippo", true);
+  }
+  item.hold();
+  getHero().addItem(otherId);
 }
 
 def showSign() {
