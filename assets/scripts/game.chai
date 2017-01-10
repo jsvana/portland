@@ -21,7 +21,7 @@ def init() {
   if (initialized()) {
     return;
   }
-  loadMap("assets/maps/main.json");
+  loadMap("assets/maps/city.json");
   loadCharacter("assets/sprites/hero.json", 6, 1, 6);
   setCharacterMoveSpeed(2.0);
   getHero().setMaxHp(100);
@@ -31,7 +31,9 @@ def init() {
   var npc = getSprite(id);
   npc.setMaxHp(10);
   npc.fullHeal();
-  id = addItem("assets/sprites/item.json", 4, 14, 6);
+  id = addItem("assets/sprites/item.json", 8, 6, 10);
+  skipMovementFunc(id);
+  id = addItem("assets/sprites/item.json", 4, 19, 10);
   skipMovementFunc(id);
 
   getHero().setCollisionCallback(heroCollision);
@@ -43,7 +45,9 @@ def init() {
 }
 
 def jump() {
-  getHero().startJump(1);
+  if (getHero().getFlag("has_bowtie")) {
+    getHero().startJump(1);
+  }
 }
 
 def action() {
@@ -82,7 +86,7 @@ def update() {
   }
 
   if (jumpPressed()) {
-    getHero().startJump(1);
+    jump();
   }
 
   for (var i = 1; i < movementFuncs.size(); i += 1) {
@@ -114,11 +118,6 @@ def flagChange(newVal) {
   info(newVal.to_string());
 }
 
-def moneyChange(newVal) {
-  info("new money value");
-  info(newVal.to_string());
-}
-
 def heroCollision(heroId, otherId) {
   if (otherId == 1) {
     if (getFlag("hit_enemy")) {
@@ -127,15 +126,18 @@ def heroCollision(heroId, otherId) {
       getHero().damage(10);
       setFlag("hit_enemy", true);
     }
-  } else if (otherId == 2) {
+  } else if (otherId == 2 || otherId == 3) {
     var item = getItem(otherId);
     if (item.held()) {
       return;
     }
-    getHero().setFlag("has_zippo", true);
+    if (otherId == 2) {
+      getHero().setFlag("has_bowtie", true);
+    } else if (otherId == 3) {
+      getHero().setFlag("has_zippo", true);
+    }
     item.hold();
     getHero().addItem(otherId);
-    setValue("hero_money", getValue("hero_money") + 10);
   }
 }
 
