@@ -4,6 +4,10 @@ set -e
 
 pushd build >/dev/null
 
+if [ ! -e compile_commands.json ]; then
+  cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=ON ..
+fi
+
 make
 
 popd >/dev/null
