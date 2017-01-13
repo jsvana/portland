@@ -222,7 +222,7 @@ bool addDialogOption(const Id uid, const std::string& option) {
   return true;
 }
 
-bool setDialogCallback(const Id uid, visual::DialogCallback callback) {
+bool setDialogCallback(const Id uid, const visual::DialogCallback& callback) {
   const auto& dialog = getDialogByUid(uid);
   if (!dialog) {
     return false;

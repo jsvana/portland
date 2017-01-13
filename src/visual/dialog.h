@@ -202,7 +202,7 @@ bool addDialogOption(const Id uid, const std::string& option);
  * @param callback Callback function
  * @return Whether operation was successful
  */
-bool setDialogCallback(const Id uid, visual::DialogCallback callback);
+bool setDialogCallback(const Id uid, const visual::DialogCallback& callback);
 
 /**
  * Gets the most recently closed dialog or nullptr if there isn't one

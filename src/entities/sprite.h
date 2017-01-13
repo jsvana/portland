@@ -48,8 +48,8 @@ class Sprite {
 
   int frame_ = 0;
 
-  int hp_;
-  int maxHp_;
+  int hp_ = 0;
+  int maxHp_ = 0;
 
   bool canJump_ = true;
   bool jumping_ = false;
@@ -96,7 +96,7 @@ class Sprite {
   // API function to call when sprite is marked for cleanup
   CleanupCallback cleanupFunc;
 
-  Id id;
+  Id id = 0;
 
   Sprite(const std::string& path) : Sprite(path, SpriteType::HERO) {}
 
@@ -161,7 +161,7 @@ class Sprite {
    *
    * @param New collision callback
    */
-  void setCollisionCallback(const CollisionCallback func) {
+  void setCollisionCallback(const CollisionCallback& func) {
     collisionFunc = func;
   }
 
@@ -170,7 +170,7 @@ class Sprite {
    *
    * @param New cleanup callback
    */
-  void setCleanupCallback(const CleanupCallback func) { cleanupFunc = func; }
+  void setCleanupCallback(const CleanupCallback& func) { cleanupFunc = func; }
 
   /**
    * Returns whether or not sprite is active

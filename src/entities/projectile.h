@@ -16,10 +16,10 @@ namespace entities {
  */
 class Projectile : public Sprite {
  private:
-  float speed_;
+  float speed_ = 1;
   float moved_ = 0;
 
-  float maxDistance_;
+  float maxDistance_ = 0;
 
   /**
    * Loads sprite from given path
