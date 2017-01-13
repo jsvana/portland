@@ -22,9 +22,10 @@ def init() {
     return;
   }
   loadMap("assets/maps/city.json");
-  loadCharacter("assets/sprites/hero.json", 6, 1, 6);
-  setCharacterMoveSpeed(2.0);
+  loadCharacter("assets/sprites/hero.json", 1, 6);
+  getHero().setTile(6);
   getHero().setMaxHp(100);
+  setCharacterMoveSpeed(2.0);
 
   /*
   var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
@@ -33,9 +34,11 @@ def init() {
   npc.setMaxHp(10);
   npc.fullHeal();
   */
-  var id = addItem("assets/sprites/item.json", 8, 6, 10);
+  var id = addItem("assets/sprites/item.json", 6, 10);
+  getSprite(id).setTile(8);
   skipMovementFunc(id);
-  id = addItem("assets/sprites/item.json", 4, 19, 10);
+  id = addItem("assets/sprites/item.json", 19, 10);
+  getSprite(id).setTile(4);
   skipMovementFunc(id);
 
   getHero().setCollisionCallback(heroCollision);

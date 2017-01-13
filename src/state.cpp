@@ -88,6 +88,7 @@ void initApi() {
   ADD_TYPE(entities::Sprite, "Sprite");
   ADD_METHOD(entities::Sprite, id);
   ADD_METHOD(entities::Sprite, hp);
+  ADD_METHOD(entities::Sprite, setTile);
   ADD_METHOD(entities::Sprite, damage);
   ADD_METHOD(entities::Sprite, heal);
   ADD_METHOD(entities::Sprite, fullHeal);
@@ -119,6 +120,10 @@ void initApi() {
   ADD_METHOD(entities::Item, held);
   ADD_METHOD(entities::Item, hold);
   ADD_METHOD(entities::Item, drop);
+
+  ADD_TYPE(entities::Projectile, "Projectile");
+  ADD_METHOD(entities::Projectile, setSpeed);
+  ADD_METHOD(entities::Projectile, setMaxDistance);
 
   ADD_TYPE(sf::Vector2f, "Vector2f");
   ADD_METHOD(sf::Vector2f, x);
@@ -399,10 +404,9 @@ bool popMap() {
   return true;
 }
 
-bool loadCharacter(std::string path, int tile, float initX, float initY) {
+bool loadCharacter(std::string path, float initX, float initY) {
   hero_ = std::make_unique<entities::Sprite>(path);
   hero_->setPosition(initX * map()->tileWidth(), initY * map()->tileHeight());
-  hero_->setTile(tile);
 
   // IDs will start at 1, the hero gets 0
   hero_->id = 0;
@@ -432,34 +436,27 @@ bool setCharacterMaxHp(int hp) {
 }
 
 template <typename T>
-entities::Id addSprite(const std::string& path, int tile, float x, float y) {
+entities::Id addSprite(const std::string& path, float x, float y) {
   sprites().push_back(std::make_unique<T>(path));
   auto item = sprites().back().get();
   item->setPosition(x * GameState::map()->tileWidth(),
                     y * GameState::map()->tileHeight());
-  item->setTile(tile);
 
   const auto spriteId = sprites().size() - 1;
   item->id = spriteId;
   return spriteId;
 }
 
-entities::Id addItem(const std::string& path, int tile, float x, float y) {
-  return addSprite<entities::Item>(path, tile, x, y);
+entities::Id addItem(const std::string& path, float x, float y) {
+  return addSprite<entities::Item>(path, x, y);
 }
 
-entities::Id addNpc(const std::string& path, int tile, float x, float y) {
-  return addSprite<entities::Npc>(path, tile, x, y);
+entities::Id addNpc(const std::string& path, float x, float y) {
+  return addSprite<entities::Npc>(path, x, y);
 }
 
-entities::Id addProjectile(const std::string& path, int tile, float x, float y,
-                           float speed, float maxDistance) {
-  const auto id = addSprite<entities::Projectile>(path, tile, x, y);
-  auto projectile =
-      findSprite<entities::Projectile>(id, entities::SpriteType::PROJECTILE);
-  projectile->setSpeed(speed);
-  projectile->setMaxDistance(maxDistance);
-  return id;
+entities::Id addProjectile(const std::string& path, float x, float y) {
+  return addSprite<entities::Projectile>(path, x, y);
 }
 
 template <typename T>

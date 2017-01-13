@@ -364,12 +364,11 @@ bool popMap();
  * Loads a character sprite and sets its tile index and position
  *
  * @param path Path to sprite definition
- * @param tile Tile index of sprite
  * @param initX Initial x position
  * @param initY Initial y position
  * @return Whether the operation is successful
  */
-bool loadCharacter(std::string path, int tile, float initX, float initY);
+bool loadCharacter(std::string path, float initX, float initY);
 
 /**
  * Sets the character move speed
@@ -383,38 +382,32 @@ bool setCharacterMoveSpeed(float speed);
  * Adds a new item and sets its tile index and position
  *
  * @param path Path to item definition
- * @param tile Tile index of item
  * @param initX Initial x position
  * @param initY Initial y position
  * @return Item ID
  */
-entities::Id addItem(const std::string& path, int tile, float x, float y);
+entities::Id addItem(const std::string& path, float x, float y);
 
 /**
  * Adds a new NPC and sets its tile index and position
  *
  * @param path Path to NPC definition
- * @param tile Tile index of NPC
  * @param initX Initial x position
  * @param initY Initial y position
  * @return NPC ID
  */
-entities::Id addNpc(const std::string& path, int tile, float x, float y);
+entities::Id addNpc(const std::string& path, float x, float y);
 
 /**
  * Adds a new projectile and sets its tile index, position, speed, and max
  * distance
  *
  * @param path Path to NPC definition
- * @param tile Tile index of NPC
  * @param initX Initial x position
  * @param initY Initial y position
- * @param speed Projectile speed
- * @param maxDistance Maximum distance projectile may travel
  * @return Projectile ID
  */
-entities::Id addProjectile(const std::string& path, int tile, float x, float y,
-                           float speed, float maxDistance);
+entities::Id addProjectile(const std::string& path, float x, float y);
 
 /**
  * Finds a sprite with the given ID or returns nullptr
