@@ -18,8 +18,7 @@ MainScreen::MainScreen() {
 
   // Load the game script
   GameState::chai().eval_file("assets/scripts/game.chai");
-  auto init = GameState::chai().eval<std::function<void()>>("init");
-  init();
+  GameState::chai().eval<std::function<void()>>("init")();
   GameState::markInitialized();
 
   visual::Console::initialize();
@@ -99,9 +98,7 @@ bool MainScreen::update(sf::Time& time) {
   time_ = time;
   GameState::tick();
 
-  const auto chaiUpdate =
-      GameState::chai().eval<std::function<void()>>("update");
-  chaiUpdate();
+  GameState::chai().eval<std::function<void()>>("update")();
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
   heroHealth_.setValue((float)GameState::hero()->hp());
@@ -183,7 +180,8 @@ bool MainScreen::update(sf::Time& time) {
       (moveDelta.x < 0 &&
        dim.left - GameState::camera().x - cameraPad.x < mapPos.x)) {
     float x = GameState::camera().x + moveDelta.x;
-    util::clamp<float>(x, 0.f, GameState::map()->pixelWidth() - (float)SCREEN_WIDTH);
+    util::clamp<float>(x, 0.f,
+                       GameState::map()->pixelWidth() - (float)SCREEN_WIDTH);
     GameState::camera().x = x;
   }
   if ((moveDelta.y > 0 &&
@@ -192,7 +190,8 @@ bool MainScreen::update(sf::Time& time) {
       (moveDelta.y < 0 &&
        dim.top - GameState::camera().y - cameraPad.y < mapPos.y)) {
     float y = GameState::camera().y + moveDelta.y;
-    util::clamp<float>(y, 0.f, GameState::map()->pixelHeight() - (float)SCREEN_HEIGHT);
+    util::clamp<float>(y, 0.f,
+                       GameState::map()->pixelHeight() - (float)SCREEN_HEIGHT);
     GameState::camera().y = y;
   }
 

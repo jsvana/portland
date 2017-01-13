@@ -110,6 +110,7 @@ const nlohmann::json Sprite::serialize() {
 
   out["id"] = id;
   out["path"] = path_;
+  out["tile"] = static_cast<int>(tile_);
   out["type"] = static_cast<int>(type_);
   out["dimensions"] = serializeFloatRect(dimensions_);
   out["hp"] = hp_;
@@ -120,6 +121,31 @@ const nlohmann::json Sprite::serialize() {
   out["values"] = values_;
 
   return out;
+}
+
+void Sprite::deserialize(const nlohmann::json& data) {
+  id = data["id"].get<Id>();
+  tile_ = data["tile"].get<int>();
+  type_ = static_cast<SpriteType>(data["type"].get<int>());
+  dimensions_ = deserializeFloatRect(
+      data["dimensions"].get<std::unordered_map<std::string, double>>());
+  hp_ = data["hp"].get<double>();
+  maxHp_ = data["max_hp"].get<double>();
+  active_ = data["active"].get<bool>();
+  heldItems_.clear();
+  for (const auto itemId : data["held_items"].get<std::vector<Id>>()) {
+    heldItems_.insert(itemId);
+  }
+  flags_.clear();
+  for (const auto& p :
+       data["flags"].get<std::unordered_map<std::string, bool>>()) {
+    flags_[p.first] = p.second;
+  }
+  values_.clear();
+  for (const auto& p :
+       data["values"].get<std::unordered_map<std::string, int>>()) {
+    values_[p.first] = p.second;
+  }
 }
 
 void Sprite::update(const sf::Time& time) {

@@ -611,4 +611,12 @@ void addValueChangeCallback(const std::string& key,
  */
 bool save(const std::string& path);
 
+/**
+ * Load the game from disk.
+ *
+ * @param path Save file location
+ * @return Whether or not operation was successful
+ */
+bool load(const std::string& path);
+
 }  // namespace GameState

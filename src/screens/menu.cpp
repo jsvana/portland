@@ -5,6 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
+#include <cassert>
 #include <iostream>
 
 MenuScreen::MenuScreen() { font_.loadFromFile("assets/fonts/arcade.ttf"); }
@@ -32,6 +33,8 @@ void MenuScreen::load() {
   }
 
   textItems_[selectedItem_].setFillColor(SELECTED_COLOR);
+
+  assert(textItems_.size() == items_.size());
 }
 
 void MenuScreen::handleEvent(sf::Event& event) {
@@ -40,12 +43,12 @@ void MenuScreen::handleEvent(sf::Event& event) {
     switch (event.key.code) {
       case sf::Keyboard::Up:
       case sf::Keyboard::W:
-        selectedItem_ = (selectedItem_ + 1) % items_.size();
+        selectedItem_ =
+            (selectedItem_ > 0) ? selectedItem_ - 1 : items_.size() - 1;
         break;
       case sf::Keyboard::Down:
       case sf::Keyboard::S:
-        selectedItem_ =
-            (selectedItem_ > 0) ? selectedItem_ - 1 : items_.size() - 1;
+        selectedItem_ = (selectedItem_ + 1) % items_.size();
         break;
       case sf::Keyboard::Return:
         itemFunctions_[selectedItem_]();
@@ -66,8 +69,9 @@ void MenuScreen::render(sf::RenderTarget& target) {
 
   for (std::size_t i = 0; i < textItems_.size(); i++) {
     const auto itemSize = textItems_[i].getLocalBounds();
-    textItems_[i].setPosition((float)targetSize.x / 2,
-                              100 + ((float)itemSize.height + PADDING) * (float)i);
+    textItems_[i].setPosition(
+        (float)targetSize.x / 2,
+        100 + ((float)itemSize.height + PADDING) * (float)i);
     target.draw(textItems_[i]);
   }
 }

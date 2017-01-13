@@ -630,4 +630,65 @@ bool save(const std::string& path) {
   return true;
 }
 
+bool load(const std::string& path) {
+  std::ifstream saveFile(path, std::ios::in);
+  if (!saveFile.is_open()) {
+    logger::warning("Unable to open save file: " + path);
+    return false;
+  }
+
+  std::stringstream fileData;
+  fileData << saveFile.rdbuf();
+  saveFile.close();
+
+  const auto saveData = nlohmann::json::parse(fileData.str());
+
+  const auto heroData =
+      saveData["hero"].get<std::unordered_map<std::string, nlohmann::json>>();
+  hero_ = std::make_unique<entities::Sprite>(
+      heroData.find("path")->second.get<std::string>());
+  hero_->deserialize(heroData);
+
+  sprites().clear();
+  sprites().emplace_back();
+  for (const auto& spriteData :
+       saveData["sprites"].get<std::vector<nlohmann::json>>()) {
+    if (spriteData.is_null()) {
+      continue;
+    }
+    const auto spritePath = spriteData["path"].get<std::string>();
+    const auto spriteType =
+        static_cast<entities::SpriteType>(spriteData["type"].get<int>());
+    switch (spriteType) {
+      case entities::SpriteType::NPC:
+        sprites().push_back(std::make_unique<entities::Npc>(spritePath));
+        break;
+      case entities::SpriteType::ITEM:
+        sprites().push_back(std::make_unique<entities::Item>(spritePath));
+        break;
+      case entities::SpriteType::PROJECTILE:
+        sprites().push_back(std::make_unique<entities::Projectile>(spritePath));
+        break;
+      default:
+        sprites().push_back(std::make_unique<entities::Sprite>(spritePath));
+        break;
+    }
+    sprites().back()->deserialize(spriteData);
+  }
+  flags_.clear();
+  for (const auto& p :
+       saveData["flags"].get<std::unordered_map<std::string, bool>>()) {
+    flags_[p.first] = p.second;
+  }
+  values_.clear();
+  for (const auto& p :
+       saveData["values"].get<std::unordered_map<std::string, int>>()) {
+    values_[p.first] = p.second;
+  }
+
+  chai().eval<std::function<void()>>("restoreCallbacks")();
+
+  return true;
+}
+
 }  // namespace GameState

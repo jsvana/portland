@@ -41,10 +41,14 @@ def init() {
   getSprite(id).setTile(4);
   skipMovementFunc(id);
 
-  getHero().setCollisionCallback(heroCollision);
+  restoreCallbacks();
 
   registerTileAction(9, 6, showSign);
   addFlagChangeCallback("hit_enemy", flagChange);
+}
+
+def restoreCallbacks() {
+  getHero().setCollisionCallback(heroCollision);
 }
 
 def jump() {
@@ -122,6 +126,7 @@ def flagChange(newVal) {
 }
 
 def heroCollision(heroId, otherId) {
+  print(otherId);
   var item = getItem(otherId);
   if (item.held()) {
     return;
@@ -133,7 +138,6 @@ def heroCollision(heroId, otherId) {
   }
   item.hold();
   getHero().addItem(otherId);
-  save("foo.save");
 }
 
 def showSign() {

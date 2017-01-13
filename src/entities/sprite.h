@@ -101,6 +101,22 @@ class Sprite {
     return out;
   }
 
+  /**
+   * Deserializes a given FloatRect from a JSON blob
+   *
+   * @param data JSON blob to deserialize
+   * @return Deserialized FloatRect
+   */
+  const sf::FloatRect deserializeFloatRect(
+      const std::unordered_map<std::string, double> data) {
+    sf::FloatRect rect;
+    rect.left = data.find("left")->second;
+    rect.top = data.find("top")->second;
+    rect.width = data.find("width")->second;
+    rect.height = data.find("height")->second;
+    return rect;
+  }
+
  public:
   // API function to call when sprite is interacted with
   SpriteCallback callbackFunc;
@@ -463,6 +479,13 @@ class Sprite {
    * @return Self as a serialized JSON object
    */
   const nlohmann::json serialize();
+
+  /**
+   * Deserializes the object from a JSON object
+   *
+   * @param data JSON to deserialize from
+   */
+  void deserialize(const nlohmann::json& data);
 
   /**
    * Animates sprite
