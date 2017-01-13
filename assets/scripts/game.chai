@@ -133,6 +133,7 @@ def heroCollision(heroId, otherId) {
   }
   item.hold();
   getHero().addItem(otherId);
+  save("foo.save");
 }
 
 def showSign() {

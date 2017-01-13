@@ -6,6 +6,7 @@
 #include <limits.h>
 
 #include <cmath>
+#include <ostream>
 #include <random>
 
 namespace GameState {
@@ -19,10 +20,6 @@ util::Tick ticks_ = 0;
 
 std::unique_ptr<entities::Sprite> hero_;
 float moveSpeed_;
-
-// Jumping stuff
-bool jumping_ = false;
-int velocityY_ = 0;
 
 std::queue<util::Direction> queuedMoves_;
 
@@ -69,6 +66,8 @@ void initApi() {
   ADD_FUNCTION(loadCharacter);
   ADD_FUNCTION(addItem);
   ADD_FUNCTION(setCharacterMoveSpeed);
+
+  ADD_FUNCTION(save);
 
   ADD_FUNCTION(addNpc);
   ADD_FUNCTION(setNpcCallback);
@@ -599,6 +598,36 @@ const std::list<ValueChangeCallback> valueChangeCallbacks(
 void addValueChangeCallback(const std::string& key,
                             const ValueChangeCallback& func) {
   valueChangeCallbacks_[key].push_back(func);
+}
+
+bool save(const std::string& path) {
+  nlohmann::json gameState;
+  gameState["hero"] = hero()->serialize();
+
+  nlohmann::json savedSprites;
+  for (const auto& sprite : sprites()) {
+    if (!sprite) {
+      continue;
+    }
+    savedSprites[sprite->id] = sprite->serialize();
+  }
+  gameState["sprites"] = savedSprites;
+  gameState["flags"] = flags_;
+  gameState["values"] = values_;
+
+  std::ofstream saveFile(path);
+
+  if (!saveFile.is_open()) {
+    logger::error("Unable to open save file: " + path);
+    return false;
+  }
+
+  saveFile << gameState.dump(4);
+  saveFile.close();
+
+  logger::info("Game saved to " + path);
+
+  return true;
 }
 
 }  // namespace GameState

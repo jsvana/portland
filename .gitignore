@@ -27,3 +27,6 @@ cmake_install.cmake
 # Logs
 log.txt
 portland.log
+
+# Save files
+*.save

@@ -10,6 +10,7 @@
 
 #include <chaiscript/chaiscript.hpp>
 #include <chaiscript/chaiscript_stdlib.hpp>
+#include <json.hpp>
 
 #include <iterator>
 #include <memory>
@@ -601,5 +602,13 @@ const std::list<ValueChangeCallback> valueChangeCallbacks(
  */
 void addValueChangeCallback(const std::string& key,
                             const ValueChangeCallback& func);
+
+/**
+ * Save the game to disk.
+ *
+ * @param path Where to save the game
+ * @return Whether or not operation was successful
+ */
+bool save(const std::string& path);
 
 }  // namespace GameState

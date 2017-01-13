@@ -7,7 +7,8 @@
 
 namespace entities {
 
-Sprite::Sprite(const std::string& path, SpriteType type) : type_(type) {
+Sprite::Sprite(const std::string& path, SpriteType type)
+    : path_(path), type_(type) {
   load(path);
 
   direction_ = util::Direction::RIGHT;
@@ -102,6 +103,23 @@ int Sprite::getValue(const std::string& key) {
     return 0;
   }
   return iter->second;
+}
+
+const nlohmann::json Sprite::serialize() {
+  nlohmann::json out;
+
+  out["id"] = id;
+  out["path"] = path_;
+  out["type"] = static_cast<int>(type_);
+  out["dimensions"] = serializeFloatRect(dimensions_);
+  out["hp"] = hp_;
+  out["max_hp"] = maxHp_;
+  out["active"] = active_;
+  out["held_items"] = heldItems_;
+  out["flags"] = flags_;
+  out["values"] = values_;
+
+  return out;
 }
 
 void Sprite::update(const sf::Time& time) {

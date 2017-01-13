@@ -3,9 +3,8 @@
 #include "../log.h"
 #include "../util.h"
 
-#include <json.hpp>
-
 #include <SFML/Graphics.hpp>
+#include <json.hpp>
 
 #include <set>
 #include <string>
@@ -34,6 +33,7 @@ class Sprite {
   const float GRAVITY = .5;
   const float STARTING_JUMP_VELOCITY = -7;
 
+  const std::string path_;
   SpriteType type_;
 
   sf::FloatRect dimensions_;
@@ -85,6 +85,21 @@ class Sprite {
    * @param Whether operation was successful
    */
   bool load(const std::string& path);
+
+  /**
+   * Serializes a given FloatRect into a JSON blob
+   *
+   * @param rect FloatRect to serialize
+   * @return Serialized JSON blob
+   */
+  const nlohmann::json serializeFloatRect(const sf::FloatRect& rect) {
+    nlohmann::json out;
+    out["left"] = rect.left;
+    out["top"] = rect.top;
+    out["width"] = rect.width;
+    out["height"] = rect.height;
+    return out;
+  }
 
  public:
   // API function to call when sprite is interacted with
@@ -441,6 +456,13 @@ class Sprite {
   * @return Value or 0 if not set
   */
   int getValue(const std::string& key);
+
+  /**
+   * Serializes the object into a JSON object
+   *
+   * @return Self as a serialized JSON object
+   */
+  const nlohmann::json serialize();
 
   /**
    * Animates sprite
