@@ -30,7 +30,7 @@ enum class SpriteType : int {
  * Class to load, render, and update sprites onscreen
  */
 class Sprite {
- private:
+ protected:
   const float GRAVITY = .5;
   const float STARTING_JUMP_VELOCITY = -7;
 

@@ -27,17 +27,22 @@ def init() {
   getHero().setMaxHp(100);
   setCharacterMoveSpeed(2.0);
 
-  /*
-  var id = addNpc("assets/sprites/undead.json", 0, 3, 1);
+  // Add an NPC
+  var id = addNpc("assets/sprites/undead.json", 4, 1);
   addMovementFunc(id, randomMovement);
+  setId("enemy", id);
   var npc = getSprite(id);
+  npc.setTile(0);
   npc.setMaxHp(10);
   npc.fullHeal();
-  */
-  var id = addItem("assets/sprites/item.json", 6, 10);
+
+  // Add a jump-enabling bowtie
+  id = addItem("assets/sprites/item.json", 6, 10);
   setId("bowtie", id);
   getSprite(id).setTile(8);
   skipMovementFunc(id);
+
+  // Add a fireball-enabling zippo
   id = addItem("assets/sprites/item.json", 19, 10);
   setId("zippo", id);
   getSprite(id).setTile(4);
@@ -45,8 +50,7 @@ def init() {
 
   restoreCallbacks();
 
-  registerTileAction(9, 6, showSign);
-  addFlagChangeCallback("hit_enemy", flagChange);
+  // registerTileAction(9, 6, showSign);
 }
 
 def restoreCallbacks() {
@@ -98,6 +102,9 @@ def update() {
   }
 
   for (var i = 1; i < movementFuncs.size(); i += 1) {
+    if (spriteNull(i)) {
+      continue;
+    }
     movementFuncs[i](i);
   }
 }
@@ -107,26 +114,22 @@ def projectileCollision(projectileId, otherId) {
     return;
   }
   getSprite(projectileId).markNeedsCleanup();
-  if (otherId != 1) {
+  if (otherId != getId("enemy")) {
     return;
   }
   var enemy = getSprite(otherId);
-  info(enemy.hp().to_string());
+  enemy.move(5, 0);
   enemy.damage(5);
-  info(enemy.hp().to_string());
-  getHero().setFlag("firing", false);
 }
 
 def projectileCleanup(projectileId) {
   getHero().setFlag("firing", false);
 }
 
-def flagChange(newVal) {
-  info("hit_enemy changed");
-  info(newVal.to_string());
-}
-
 def heroCollision(heroId, otherId) {
+  if (otherId != getId("bowtie") && otherId != getId("zippo")) {
+    return;
+  }
   var item = getItem(otherId);
   if (item.held()) {
     return;

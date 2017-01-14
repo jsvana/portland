@@ -137,6 +137,7 @@ void initApi() {
 
   ADD_FUNCTION(getHero);
   ADD_FUNCTION(getSprite);
+  ADD_FUNCTION(spriteNull);
   ADD_FUNCTION(getNpc);
   ADD_FUNCTION(getItem);
   ADD_FUNCTION(getProjectile);
@@ -224,15 +225,15 @@ float densePositionBelow(const std::unique_ptr<entities::Sprite>& sprite) {
 }
 
 void dispatchCollisions() {
-  for (std::size_t i = 1; i < sprites().size(); i++) {
+  for (std::size_t i = 0; i < sprites().size(); i++) {
     const auto sprite1 = sprites()[i].get();
-    if (!sprite1->active()) {
+    if (!sprite1 || !sprite1->active()) {
       continue;
     }
     const auto dim1 = sprite1->getDimensions();
     for (std::size_t j = i + 1; j < sprites().size(); j++) {
       const auto sprite2 = sprites()[j].get();
-      if (!sprite2->active()) {
+      if (!sprite2 || !sprite2->active()) {
         continue;
       }
       if (dim1.intersects(sprite2->getDimensions())) {
@@ -487,6 +488,8 @@ T* findSprite(const entities::Id spriteId, const entities::SpriteType type) {
 entities::Sprite* getSprite(const entities::Id spriteId) {
   return findSprite<entities::Sprite>(spriteId);
 }
+
+bool spriteNull(const entities::Id spriteId) { return !getSprite(spriteId); }
 
 entities::Npc* getNpc(const entities::Id npcId) {
   return findSprite<entities::Npc>(npcId, entities::SpriteType::NPC);

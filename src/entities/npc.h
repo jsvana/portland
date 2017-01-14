@@ -18,6 +18,8 @@ class Npc : public Sprite {
 
   bool phased() { return false; }
 
+  void update(const sf::Time& time);
+
   void render(sf::RenderTarget& window, sf::Vector2f cameraPos);
 };
 

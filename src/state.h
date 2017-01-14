@@ -429,6 +429,14 @@ T* findSprite(entities::Id spriteId);
 entities::Sprite* getSprite(const entities::Id spriteId);
 
 /**
+ * API wrapper to see if a sprite is not null
+ *
+ * @param spriteId ID of sprite to check
+ * @return Whether or not sprite is null
+ */
+bool spriteNull(const entities::Id spriteId);
+
+/**
  * API wrapper to get an NPC
  *
  * @param npcId ID of NPC to get

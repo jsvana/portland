@@ -102,17 +102,16 @@ bool MainScreen::update(sf::Time& time) {
   GameState::map()->update(time_);
   GameState::hero()->update(time_);
   heroHealth_.setValue((float)GameState::hero()->hp());
-  for (const auto& sprite : GameState::sprites()) {
+  for (auto& sprite : GameState::sprites()) {
     if (!sprite || !sprite->active()) {
       continue;
     }
     sprite->update(time_);
+
+    if (sprite->needsCleanup()) {
+      sprite.reset();
+    }
   }
-  GameState::sprites().erase(
-      std::remove_if(
-          GameState::sprites().begin(), GameState::sprites().end(),
-          [](const auto& sprite) { return sprite && sprite->needsCleanup(); }),
-      GameState::sprites().end());
 
   GameState::dispatchCollisions();
 
