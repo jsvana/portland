@@ -104,6 +104,7 @@ void initApi() {
   ADD_METHOD(entities::Sprite, setCollisionCallback);
   ADD_METHOD(entities::Sprite, setCleanupCallback);
   ADD_METHOD(entities::Sprite, addItem);
+  ADD_METHOD(entities::Sprite, holdingItem);
   ADD_METHOD(entities::Sprite, getFlag);
   ADD_METHOD(entities::Sprite, setFlag);
   ADD_METHOD(entities::Sprite, getValue);

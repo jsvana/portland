@@ -55,3 +55,11 @@ def randomMovement(id) {
     }
   }
 }
+
+def setId(item, id) {
+  return setValue(item + "_id", id);
+}
+
+def getId(item) {
+  return getValue(item + "_id");
+}

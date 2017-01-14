@@ -172,6 +172,16 @@ class Sprite {
   }
 
   /**
+   * Checks if sprite is holding the given item
+   *
+   * @param itemId Item ID to check
+   * @return Whether or not sprite is holding the item
+   */
+  bool holdingItem(const Id itemId) {
+    return heldItems_.find(itemId) != heldItems_.end();
+  }
+
+  /**
    * Removes an item from the user's held item set
    *
    * @param itemId ID of item to remove
