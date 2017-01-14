@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../log.h"
+#include "../map.h"
 #include "../util.h"
 
 #include <SFML/Graphics.hpp>
@@ -38,7 +39,7 @@ class Sprite {
 
   sf::FloatRect dimensions_;
   int totalFrames_ = 0;
-  int tile_;
+  map::TileId tile_;
   float scale_;
   bool multiFile_;
   int frameSpacing_;
@@ -64,9 +65,9 @@ class Sprite {
   std::set<Id> heldItems_;
 
   // Ticks at last frame transition
-  unsigned long lastTicks_ = 0;
+  util::Tick lastTicks_ = 0;
 
-  const unsigned long FRAME_TICKS_INTERVAL = 24;
+  const util::Tick FRAME_TICKS_INTERVAL = 24;
 
   sf::FloatRect textureDimensions_;
   std::vector<sf::Texture> textures_;
@@ -108,7 +109,7 @@ class Sprite {
    * @return Deserialized FloatRect
    */
   const sf::FloatRect deserializeFloatRect(
-      const std::unordered_map<std::string, double> data) {
+      const std::unordered_map<std::string, float> data) {
     sf::FloatRect rect;
     rect.left = data.find("left")->second;
     rect.top = data.find("top")->second;
@@ -377,7 +378,7 @@ class Sprite {
    *
    * @param tile New spritesheet tile for sprite
    */
-  void setTile(int tile) { tile_ = tile; }
+  void setTile(const map::TileId tile) { tile_ = tile; }
 
   /**
    * Gets the sprite's vertical velocity

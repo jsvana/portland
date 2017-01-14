@@ -657,8 +657,8 @@ bool load(const std::string& path) {
       continue;
     }
     const auto spritePath = spriteData["path"].get<std::string>();
-    const auto spriteType =
-        static_cast<entities::SpriteType>(spriteData["type"].get<int>());
+    const auto spriteType = static_cast<entities::SpriteType>(
+        spriteData["type"].get<entities::Id>());
     switch (spriteType) {
       case entities::SpriteType::NPC:
         sprites().push_back(std::make_unique<entities::Npc>(spritePath));

@@ -35,9 +35,11 @@ def init() {
   npc.fullHeal();
   */
   var id = addItem("assets/sprites/item.json", 6, 10);
+  setValue("bowtie_id", id);
   getSprite(id).setTile(8);
   skipMovementFunc(id);
   id = addItem("assets/sprites/item.json", 19, 10);
+  setValue("zippo_id", id);
   getSprite(id).setTile(4);
   skipMovementFunc(id);
 
@@ -126,14 +128,13 @@ def flagChange(newVal) {
 }
 
 def heroCollision(heroId, otherId) {
-  print(otherId);
   var item = getItem(otherId);
   if (item.held()) {
     return;
   }
-  if (otherId == 1) {
+  if (otherId == getValue("bowtie_id")) {
     getHero().setFlag("has_bowtie", true);
-  } else if (otherId == 2) {
+  } else if (otherId == getValue("zippo_id")) {
     getHero().setFlag("has_zippo", true);
   }
   item.hold();

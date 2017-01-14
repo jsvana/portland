@@ -31,7 +31,7 @@ bool Sprite::load(const std::string& path) {
 
   dimensions_.width = spriteData["width"].get<float>();
   dimensions_.height = spriteData["height"].get<float>();
-  tile_ = spriteData["tile"].get<int>();
+  tile_ = spriteData["tile"].get<map::TileId>();
   updateMs_ = sf::milliseconds(spriteData["update_ms"].get<int>());
   multiFile_ = spriteData["multi_file"].get<bool>();
   scale_ = spriteData["scale"].get<float>();
@@ -110,7 +110,7 @@ const nlohmann::json Sprite::serialize() {
 
   out["id"] = id;
   out["path"] = path_;
-  out["tile"] = static_cast<int>(tile_);
+  out["tile"] = tile_;
   out["type"] = static_cast<int>(type_);
   out["dimensions"] = serializeFloatRect(dimensions_);
   out["hp"] = hp_;
@@ -125,12 +125,12 @@ const nlohmann::json Sprite::serialize() {
 
 void Sprite::deserialize(const nlohmann::json& data) {
   id = data["id"].get<Id>();
-  tile_ = data["tile"].get<int>();
+  tile_ = data["tile"].get<map::TileId>();
   type_ = static_cast<SpriteType>(data["type"].get<int>());
   dimensions_ = deserializeFloatRect(
-      data["dimensions"].get<std::unordered_map<std::string, double>>());
-  hp_ = data["hp"].get<double>();
-  maxHp_ = data["max_hp"].get<double>();
+      data["dimensions"].get<std::unordered_map<std::string, float>>());
+  hp_ = data["hp"].get<float>();
+  maxHp_ = data["max_hp"].get<float>();
   active_ = data["active"].get<bool>();
   heldItems_.clear();
   for (const auto itemId : data["held_items"].get<std::vector<Id>>()) {
@@ -175,7 +175,7 @@ void Sprite::render(sf::RenderTarget& window, sf::Vector2f cameraPos) {
   if (!active()) {
     return;
   }
-  int tile = tile_;
+  map::TileId tile = tile_;
   if (!multiFile_) {
     tile += frame_;
   }
